@@ -1,0 +1,16 @@
+# Copyright 2020 Hewlett Packard Enterprise Development LP
+#
+#   @***@ variables in this file are sed replaced using this repository's
+#   runBuildPrep.sh script.
+
+# For products that import Ansible configuration content
+cray-import-config:
+  config_image:
+    name: "@config_image_name@"
+    tag: "@config_image_tag@"
+
+  import_job:
+    CF_IMPORT_PRODUCT_NAME: "@product_name@"
+    CF_IMPORT_PRODUCT_VERSION: "@product_version@"
+    CF_IMPORT_GITEA_REPO: "@product_name@-config-management"
+

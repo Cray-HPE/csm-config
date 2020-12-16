@@ -1,0 +1,6 @@
+---
+dependencies:
+  - name: cray-import-config
+    version: "0.1.1"
+    repository: "@cray-internal"
+
