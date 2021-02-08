@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Copyright 2020 Hewlett Packard Enterprise Development LP
+# Copyright 2020-2021 Hewlett Packard Enterprise Development LP
 
 PRODUCT_VERSION=$(cat csm_product_version)
 
@@ -18,7 +18,8 @@ sed -i s/@product_name@/csm/g kubernetes/csm-config/values.yaml
 sed -i s/@product_version@/${PRODUCT_VERSION}/g kubernetes/csm-config/values.yaml
 
 # Set the cf-gitea-import image version (for the config import)
-wget http://car.dev.cray.com/artifactory/csm/SCMS/noos/noarch/dev/master/cms-team/manifest.txt
+# The URL to the manifest.txt file must be updated to point to the stable manifest when cutting a release branch.
+wget https://arti.dev.cray.com/artifactory/csm-misc-master-local/manifest/manifest.txt
 cf_gitea_import_image_tag=$(cat manifest.txt | grep cf-gitea-import | sed s/.*://g | tr -d '[:space:]')
 sed -i s/@cf_gitea_import_image_tag@/${cf_gitea_import_image_tag}/g Dockerfile
 rm manifest.txt
