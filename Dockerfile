@@ -18,7 +18,7 @@ FROM arti.dev.cray.com/csm-docker-stable-local/cf-gitea-import:@cf_gitea_import_
 
 WORKDIR /
 ENV CF_IMPORT_PRODUCT_NAME=csm
-ADD csm_product_version /product_version
+ADD .version /product_version
 
 # Copy in dependencies' Ansible content
 COPY --from=product-content-base /opt/cray/ansible/roles/      /content/roles/
