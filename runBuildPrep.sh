@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Copyright 2020-2021 Hewlett Packard Enterprise Development LP
 
-PRODUCT_VERSION=$(cat csm_product_version)
+PRODUCT_VERSION=$(cat .version)
 
 # Set the docker image name for the config image
 config_image_name=${IMAGE_NAME}
@@ -15,6 +15,7 @@ sed -i s/@config_image_tag@/${config_image_tag}/g kubernetes/csm-config/values.y
 
 # Set the product name and version
 sed -i s/@product_name@/csm/g kubernetes/csm-config/values.yaml
+sed -i s/@product_version@/${PRODUCT_VERSION}/g kubernetes/csm-config/Chart.yaml
 sed -i s/@product_version@/${PRODUCT_VERSION}/g kubernetes/csm-config/values.yaml
 
 # Set the cf-gitea-import image version (for the config import)
