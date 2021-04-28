@@ -2,7 +2,7 @@ apiVersion: v1
 description: "Kubernetes resources for csm-config"
 name: "csm-config"
 home: "scms/csm-config"
-version: 1.5.4
+version: @product_version@
 keywords:
   - csm
   - cfs
