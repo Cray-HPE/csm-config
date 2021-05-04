@@ -26,4 +26,6 @@ sed -i s/@cf_gitea_import_image_tag@/${cf_gitea_import_image_tag}/g Dockerfile
 rm manifest.txt
 
 # Debug
+cat Dockerfile
 cat kubernetes/csm-config/values.yaml
+
