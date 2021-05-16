@@ -1,8 +1,11 @@
+#   @***@ variables in this file are sed replaced using this repository's
+#   runBuildPrep.sh script.
+
 apiVersion: v1
 description: "Kubernetes resources for csm-config"
 name: "csm-config"
 home: "scms/csm-config"
-version: 1.1.5
+version: @product_version@
 keywords:
   - csm
   - cfs
