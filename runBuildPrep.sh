@@ -26,15 +26,17 @@
 # Set the docker image name for the config image
 config_image_name=${IMAGE_NAME}
 echo "config_image_name=${config_image_name}"
-sed -i s/@config_image_name@/${config_image_name}/g kubernetes/csm-config/values.yaml
+[ -n "${config_image_name}" ] || exit 1
+sed -i s/@config_image_name@/${config_image_name}/g kubernetes/csm-config/values.yaml || exit 1
 
 # Set the docker image tag for the config image
 config_image_tag=${IMAGE_TAG}
 echo "config_image_tag=${config_image_tag}"
-sed -i s/@config_image_tag@/${config_image_tag}/g kubernetes/csm-config/values.yaml
+[ -n "${config_image_tag}" ] || exit 1
+sed -i s/@config_image_tag@/${config_image_tag}/g kubernetes/csm-config/values.yaml || exit 1
 
 # Set the product name
-sed -i s/@product_name@/csm/g kubernetes/csm-config/values.yaml
+sed -i s/@product_name@/csm/g kubernetes/csm-config/values.yaml || exit 1
 
 # Replace @product_version@ string in Chart.yaml and values.yaml
 ./cms_meta_tools/update_versions/update_versions.sh || exit 1
@@ -42,9 +44,11 @@ rm -rf ./cms_meta_tools
 
 # Set the cf-gitea-import image version (for the config import)
 # The URL to the manifest.txt file must be updated to point to the stable manifest when cutting a release branch.
-wget https://arti.dev.cray.com/artifactory/csm-misc-stable-local/manifest/manifest.txt
+wget https://arti.dev.cray.com/artifactory/csm-misc-stable-local/manifest/manifest.txt || exit 1
 cf_gitea_import_image_tag=$(cat manifest.txt | grep cf-gitea-import | sed s/.*://g | tr -d '[:space:]')
-sed -i s/@cf_gitea_import_image_tag@/${cf_gitea_import_image_tag}/g Dockerfile
+echo "cf_gitea_import_image_tag=${cf_gitea_import_image_tag}"
+[ -n "${cf_gitea_import_image_tag}" ] || exit 1
+sed -i s/@cf_gitea_import_image_tag@/${cf_gitea_import_image_tag}/g Dockerfile || exit 1
 rm manifest.txt
 
 # Debug
