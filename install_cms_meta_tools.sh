@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Copyright 2020-2021 Hewlett Packard Enterprise Development LP
 #
@@ -22,7 +22,8 @@
 #
 # (MIT License)
 
-CMT_RPMS_URL=http://car.dev.cray.com/artifactory/internal/SCMS/sle15_sp2/noarch/release/cmt-0.1/cms-team/
+REL=cmt-0.1
+CMT_RPMS_URL=https://arti.dev.cray.com/artifactory/internal-rpm-master-local/release/$REL/sle15_sp2/noarch/
 
 # Find latest cms-meta-tools RPM in our chosen release (0.1)
 function cmt-rpm-url
