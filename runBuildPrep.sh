@@ -24,13 +24,13 @@
 ./install_cms_meta_tools.sh || exit 1
 
 # Set the docker image name for the config image
-config_image_name=${IMAGE_NAME}
+config_image_name=${DOCKER_IMAGE}
 echo "config_image_name=${config_image_name}"
 [ -n "${config_image_name}" ] || exit 1
 sed -i s/@config_image_name@/${config_image_name}/g kubernetes/csm-config/values.yaml || exit 1
 
 # Set the docker image tag for the config image
-config_image_tag=${IMAGE_TAG}
+config_image_tag=${VERSION}
 echo "config_image_tag=${config_image_tag}"
 [ -n "${config_image_tag}" ] || exit 1
 sed -i s/@config_image_tag@/${config_image_tag}/g kubernetes/csm-config/values.yaml || exit 1
