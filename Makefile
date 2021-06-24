@@ -21,8 +21,8 @@
 # (MIT License)
 
 NAME ?= csm-config
-VERSION ?= $(shell cat .version)-local
-DOCKER_IMAGE ?= ${NAME}:${VERSION}
+export VERSION ?= $(shell cat .version)-local
+export DOCKER_IMAGE ?= ${NAME}:${VERSION}
 
 all: build_prep lint image
 

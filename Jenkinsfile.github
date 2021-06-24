@@ -16,7 +16,6 @@ pipeline {
         IS_STABLE = getBuildIsStable()
         VERSION = getDockerBuildVersion(isStable: env.IS_STABLE)
         DOCKER_ARGS = getDockerBuildArgs(name: env.NAME, description: env.DESCRIPTION)
-        CHART_VERSION = getChartVersion(version: env.VERSION)
     }
 
     stages {
