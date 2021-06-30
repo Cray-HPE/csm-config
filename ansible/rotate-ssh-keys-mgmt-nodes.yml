@@ -1,5 +1,5 @@
 #!/usr/bin/env ansible-playbook
-# Copyright 2020-2021 Hewlett Packard Enterprise Development LP
+# Copyright 2021 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -21,25 +21,12 @@
 #
 # (MIT License)
 
-# Top-level site.yml for CSM Deployed Environments (NCNs)
+# Retrieve the ssh keys for management nodes from Vault and apply them
 - hosts: Management
-  gather_facts: yes
   any_errors_fatal: true
   remote_user: root
 
   roles:
-    # Allow trust of CSM generated keys for elective passwordless SSH;
-    # Enables both passwordless ssh from, and to, all nodes.
-    - role: trust-csm-ssh-keys
-    - role: passwordless-ssh
-
-    # Set the root password from the value stored in cray-vault
-    - role: csm.password
-      vars:
-        password_username: 'root'
-
-    # Distribute SSH keys for the root user
     - role: csm.ssh_keys
       vars:
-        ssh_keys_username: 'root'
-
+        ssh_keys_username: root

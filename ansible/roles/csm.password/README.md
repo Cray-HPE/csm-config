@@ -1,15 +1,17 @@
 csm.password
 =========
 
-Retrieve the password from the CSM vault instance and set it on the target host(s) for
-the given user.
+Retrieve the password from the CSM vault instance and set it on the target
+host(s) for the given user.
 
 Requirements
 ------------
 
 A password for the specified user must exist in the vault instance prior to
-running this role. This role must be run in the context of the CSM Configuration
-Framework Service (CFS) in its Ansible Execution Environment (AEE).
+running this role. If the password does not exist, the role will exit cleanly
+and make no changes to the target host(s). This role must be run in the context
+of the CSM Configuration Framework Service (CFS) in its Ansible Execution
+Environment (AEE).
 
 Role Variables
 --------------
@@ -19,7 +21,8 @@ Available variables are listed below, along with default values (located in
 
     password_vault_url: 'http://cray-vault.vault:8200'
 
-The address of the CSM Vault instance. This must be accessible to the AEE.
+The address of the CSM Vault instance. If a non-CSM Vault instance is used, it
+must be accessible to the AEE.
 
     password_vault_jwt_file: '/var/run/secrets/kubernetes.io/serviceaccount/token'
 
@@ -31,13 +34,15 @@ already in place when using AEE.
 The Kubernetes role file located in the pod running this role. This is already
 in place when using AEE.
 
-    password_vault_secret: 'secret/csm/management_nodes'
+    password_vault_secret_prefix: 'secret/csm/users/'
 
-The secret in Vault that contains the key holding the password of the user.
+The secret in Vault that contains the key holding the password of the user. The
+full secret will be `password_vault_secret_prefix` + `password_username`.
+This value *must* end with a `/`.
 
-    password_vault_secret_key: 'root_password'
+    password_vault_secret_key: 'password'
 
-The key in the `password_vault_secret` secret which contains the hashed password.
+The field in the `password_vault_secret` secret which contains the hashed password.
 
     password_username: 'root'
 
@@ -51,12 +56,18 @@ None
 Example Playbook
 ----------------
 
-While this role is meant for setting the `root` password, other user passwords
+While this role sets the `root` user password by default, other user passwords
 can be set by pointing to the correct locations in Vault as shown below:
 
     - hosts: Management
       roles:
-         - { role: csm.password, password_username: foo, password_vault_secret_key: foo_password }
+         - role: csm.password
+           vars:
+             password_username: foo
+
+Set this user's password in Vault with the following:
+
+    vault write secret/csm/users/foo password='.....'
 
 License
 -------

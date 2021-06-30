@@ -24,6 +24,6 @@
 password_vault_url: 'http://cray-vault.vault:8200'
 password_vault_jwt_file: '/var/run/secrets/kubernetes.io/serviceaccount/token'
 password_vault_role_file: '/var/run/secrets/kubernetes.io/serviceaccount/namespace'
-password_vault_secret: 'secret/csm/management_nodes'
-password_vault_secret_key: 'root_password'
+password_vault_secret: 'secret/csm/users/'
+password_vault_secret_key: 'password'
 password_username: 'root'

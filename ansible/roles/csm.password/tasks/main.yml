@@ -35,14 +35,20 @@
   run_once: true
 
 - name: Retrieve the credentials
-  no_log: true
-  run_once: true
-  delegate_to: localhost
-  set_fact:
-    the_password: "{{ lookup('hashi_vault',
-                    'secret=' + password_vault_secret + ':' + password_vault_secret_key +
-                    ' token=' + vault_login.json.auth.client_token +
-                    ' url=' + password_vault_url) }}"
+  block:
+    - name: Lookup the password value in Vault
+      no_log: true
+      run_once: true
+      delegate_to: localhost
+      set_fact:
+        the_password: "{{ lookup('hashi_vault',
+                        'secret=' + password_vault_secret + password_username + ':' + password_vault_secret_key +
+                        ' token=' + vault_login.json.auth.client_token +
+                        ' url=' + password_vault_url) }}"
+  rescue:
+    - name: Skip updating the password if none was found in Vault
+      set_fact:
+        the_password: ""
 
 - name: Set the password for the specified user
   user:

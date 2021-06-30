@@ -1,5 +1,4 @@
-#!/usr/bin/env ansible-playbook
-# Copyright 2020-2021 Hewlett Packard Enterprise Development LP
+# Copyright 2021 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -21,25 +20,13 @@
 #
 # (MIT License)
 
-# Top-level site.yml for CSM Deployed Environments (NCNs)
-- hosts: Management
-  gather_facts: yes
-  any_errors_fatal: true
-  remote_user: root
-
-  roles:
-    # Allow trust of CSM generated keys for elective passwordless SSH;
-    # Enables both passwordless ssh from, and to, all nodes.
-    - role: trust-csm-ssh-keys
-    - role: passwordless-ssh
-
-    # Set the root password from the value stored in cray-vault
-    - role: csm.password
-      vars:
-        password_username: 'root'
-
-    # Distribute SSH keys for the root user
-    - role: csm.ssh_keys
-      vars:
-        ssh_keys_username: 'root'
-
+# Defaults for the csm.ssh_keys role. See the README.md for information.
+ssh_keys_vault_url: 'http://cray-vault.vault:8200'
+ssh_keys_vault_jwt_file: '/var/run/secrets/kubernetes.io/serviceaccount/token'
+ssh_keys_vault_role_file: '/var/run/secrets/kubernetes.io/serviceaccount/namespace'
+ssh_keys_user_private_key_secret_prefix: 'secret/csm/users/'
+ssh_keys_user_private_key_key: 'ssh_private_key'
+ssh_keys_user_public_key_secret_prefix: 'secret/csm/users/'
+ssh_keys_user_public_key_key: 'ssh_public_key'
+ssh_keys_username: 'root'
+ssh_keys_keytype: 'rsa'
