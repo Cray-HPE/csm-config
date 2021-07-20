@@ -1,5 +1,5 @@
-# Dockerfile for importing CSM content into gitea, to be used with CFS
-# Copyright 2020-2021 Hewlett Packard Enterprise Development LP
+#!/usr/bin/env ansible-playbook
+# Copyright 2021 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -21,29 +21,27 @@
 #
 # (MIT License)
 
-FROM arti.dev.cray.com/baseos-docker-master-local/sles15sp2:sles15sp2 as product-content-base
-WORKDIR /
+# NCN Master Nodes Play
+- hosts: Management_Master
+  gather_facts: yes
+  any_errors_fatal: true
+  remote_user: root
+  vars_files:
+    - vars/csm_repos.yml
+    - vars/csm_packages.yml
 
-# Install dependencies as RPMs
-RUN zypper ar --no-gpgcheck http://car.dev.cray.com/artifactory/csm/SCMS/sle15_sp2_ncn/x86_64/release/csm-1.1 csm-1.1 && \
-    zypper refresh && \
-    zypper in -y \
-        csm-ssh-keys-roles
+  roles:
+    # Allow trust of CSM generated keys for elective passwordless SSH;
+    # Enables both passwordless ssh from, and to, all nodes.
+    - role: trust-csm-ssh-keys
+    - role: passwordless-ssh
 
-# Use the cf-gitea-import as a base image with CSM content copied in
-FROM arti.dev.cray.com/csm-docker-stable-local/cf-gitea-import:@cf_gitea_import_image_tag@
+    # Install CSM repositories and packages
+    - role: csm.packages
 
-# Use for testing/not in pipeline builds
-#FROM arti.dev.cray.com/csm-docker-unstable-local/cf-gitea-import:latest
-
-WORKDIR /
-ENV CF_IMPORT_PRODUCT_NAME=csm
-ADD .version /product_version
-
-# Copy in dependencies' Ansible content
-COPY --from=product-content-base /opt/cray/ansible/roles/      /content/roles/
-
-# Copy in CSM Ansible content
-COPY ansible/ /content/
-
-# Base image entrypoint takes it from here
+    # Set the root password from the value stored in cray-vault
+    - role: csm.password
+      vars:
+        password_vault_secret: 'secret/csm/management_nodes'
+        password_vault_secret_key: 'root_password'
+        password_username: 'root'
