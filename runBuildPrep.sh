@@ -44,12 +44,10 @@ rm -rf ./cms_meta_tools
 
 # Set the cf-gitea-import image version (for the config import)
 # The URL to the manifest.txt file must be updated to point to the stable manifest when cutting a release branch.
-wget https://arti.dev.cray.com/artifactory/csm-misc-stable-local/manifest/manifest.txt || exit 1
-cf_gitea_import_image_tag=$(cat manifest.txt | grep cf-gitea-import | sed s/.*://g | tr -d '[:space:]')
-echo "cf_gitea_import_image_tag=${cf_gitea_import_image_tag}"
-[ -n "${cf_gitea_import_image_tag}" ] || exit 1
-sed -i s/@cf_gitea_import_image_tag@/${cf_gitea_import_image_tag}/g Dockerfile || exit 1
-rm manifest.txt
+wget https://arti.dev.cray.com/artifactory/csm-misc-stable-local/manifest/cf-gitea-import-manifest.txt
+cf_gitea_import_image_tag=$(cat cf-gitea-import-manifest.txt | grep cf-gitea-import | sed s/.*://g | tr -d '[:space:]')
+sed -i s/@cf_gitea_import_image_tag@/${cf_gitea_import_image_tag}/g Dockerfile
+rm *manifest.txt
 
 # Debug
 cat Dockerfile
