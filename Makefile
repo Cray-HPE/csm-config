@@ -18,7 +18,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
-NAME ?= cray-meds
+NAME ?= csm-config
 VERSION ?= $(shell cat .version)
 
 # Helm Chart
@@ -27,17 +27,21 @@ CHART_NAME ?= csm-config
 CHART_VERSION ?= local
 
 
-all: image chart unittest coverage
+all: build image chart unittest coverage
 
-image:
+build:
+	./install_cms_meta_tools.sh
+	./runBuildPrep.sh
+
+image: build
 	docker build --pull ${DOCKER_ARGS} --tag '${NAME}:${VERSION}' .
 
-chart:
+chart: build
 	helm dep up ${CHART_PATH}/${CHART_NAME}
 	helm package ${CHART_PATH}/${CHART_NAME} -d ${CHART_PATH}/.packaged --version ${CHART_VERSION}
 
-unittest:
+unittest: build
 	./runUnitTest.sh
 
-coverage:
+coverage: build
 	./runCoverage.sh
