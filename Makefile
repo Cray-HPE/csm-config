@@ -40,8 +40,4 @@ chart: build
 	helm dep up ${CHART_PATH}/${CHART_NAME}
 	helm package ${CHART_PATH}/${CHART_NAME} -d ${CHART_PATH}/.packaged --version ${CHART_VERSION}
 
-unittest: build
-	./runUnitTest.sh
 
-coverage: build
-	./runCoverage.sh
