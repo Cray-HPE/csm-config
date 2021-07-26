@@ -30,7 +30,7 @@ CHART_NAME ?= csm-config
 CHART_VERSION := @CHART_VERSION@
 HELM_UNITTEST_IMAGE ?= quintush/helm-unittest:3.3.0-0.2.5
 
-all: lint image chart_setup chart_package
+all: lint image chart_setup chart_package chart_test
 chart: chart_setup chart_package chart_test
 
 image: 
@@ -40,7 +40,6 @@ lint:
 	./runLint.sh
 
 chart_package:
-	cat ${CHART_PATH}/${NAME}/values.yaml
 	helm dep up ${CHART_PATH}/${CHART_NAME}
 	helm package ${CHART_PATH}/${CHART_NAME} -d ${CHART_PATH}/.packaged --version ${CHART_VERSION}
 

@@ -16,9 +16,12 @@ pipeline {
         IS_STABLE = getBuildIsStable()
         VERSION = getDockerBuildVersion(isStable: env.IS_STABLE)
         DOCKER_ARGS = getDockerBuildArgs(name: env.NAME, description: env.DESCRIPTION, version: env.VERSION) 
+        CHART_NAME = 'csm-config'
+        CHART_VERSION = getChartVersion(version: env.VERSION)
     }
 
     stages {
+
         stage("Pre-Prepare") {
             steps {
                 script {
