@@ -41,8 +41,7 @@ pipeline {
             steps {
                 script {
                     publishCsmDockerImage(image: env.NAME, tag: env.VERSION, isStable: env.IS_STABLE)
-                    publishCsmHelmCharts(component: env.CHART_NAME, chartsPath: "${WORKSPACE}/kubernetes/.packaged", isStable: env.IS_STABLE)
-
+                    publishCsmHelmCharts(component: env.CHART_NAME, chartsPath: "${WORKSPACE}/kubernetes/.packaged", isStable: env.IS_STABLE) 
                 }
             }
         }
