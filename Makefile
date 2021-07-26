@@ -27,7 +27,7 @@ CHART_NAME ?= csm-config
 CHART_VERSION ?= local
 
 
-all: prep image chart unittest coverage
+all: build image chart unittest coverage
 
 prep:
 	./runBuildPrep.sh
