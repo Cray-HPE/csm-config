@@ -30,13 +30,12 @@ CHART_VERSION ?= local
 all: build image chart unittest coverage
 
 build:
-	./install_cms_meta_tools.sh
 	./runBuildPrep.sh
 
-image: build
+image:
 	docker build --pull ${DOCKER_ARGS} --tag '${NAME}:${VERSION}' .
 
-chart: build
+chart:
 	helm dep up ${CHART_PATH}/${CHART_NAME}
 	helm package ${CHART_PATH}/${CHART_NAME} -d ${CHART_PATH}/.packaged --version ${CHART_VERSION}
 
