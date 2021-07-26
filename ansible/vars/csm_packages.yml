@@ -1,4 +1,3 @@
-#!/usr/bin/env sh
 # Copyright 2021 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
@@ -21,8 +20,6 @@
 #
 # (MIT License)
 
-./install_cms_meta_tools.sh || exit 1
-RC=0
-./cms_meta_tools/scripts/runBuildPrep.sh || RC=1
-rm -rf ./cms_meta_tools
-exit $RC
+csm_sles_packages:
+  - hms-ct-test-crayctldeploy
+  - cray-cmstools-crayctldeploy

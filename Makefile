@@ -1,4 +1,4 @@
-# (C) Copyright 2021 Hewlett Packard Enterprise Development LP
+# Copyright 2021 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -17,26 +17,36 @@
 # OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
+#
+# (MIT License)
 
+# Docker Image
 NAME ?= csm-config
-VERSION ?= $(shell cat .version)
+VERSION := @DOCKER_VERSION@
 
 # Helm Chart
 CHART_PATH ?= kubernetes
 CHART_NAME ?= csm-config
-CHART_VERSION ?= local
+CHART_VERSION := @CHART_VERSION@
+HELM_UNITTEST_IMAGE ?= quintush/helm-unittest:3.3.0-0.2.5
 
+all: lint image chart_setup chart_package chart_test
+chart: chart_setup chart_package chart_test
 
-all: build image chart unittest coverage
-
-prep:
-	./runBuildPrep.sh
-
-image:
+image: 
 	docker build --pull ${DOCKER_ARGS} --tag '${NAME}:${VERSION}' .
 
-chart:
+lint:
+	./runLint.sh
+
+chart_package:
 	helm dep up ${CHART_PATH}/${CHART_NAME}
 	helm package ${CHART_PATH}/${CHART_NAME} -d ${CHART_PATH}/.packaged --version ${CHART_VERSION}
 
+chart_setup:
+	mkdir -p ${CHART_PATH}/.packaged
+
+chart_test:
+	helm lint "${CHART_PATH}/${NAME}"
+	docker run --rm -v ${PWD}/${CHART_PATH}:/apps ${HELM_UNITTEST_IMAGE} -3 ${NAME}
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env ansible-playbook
 # Copyright 2021 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
@@ -21,8 +21,27 @@
 #
 # (MIT License)
 
-./install_cms_meta_tools.sh || exit 1
-RC=0
-./cms_meta_tools/scripts/runBuildPrep.sh || RC=1
-rm -rf ./cms_meta_tools
-exit $RC
+# NCN Storage Nodes Play
+- hosts: Management_Storage
+  gather_facts: yes
+  any_errors_fatal: true
+  remote_user: root
+  vars_files:
+    - vars/csm_repos.yml
+    - vars/csm_packages.yml
+
+  roles:
+    # Allow trust of CSM generated keys for elective passwordless SSH;
+    # Enables both passwordless ssh from, and to, all nodes.
+    - role: trust-csm-ssh-keys
+    - role: passwordless-ssh
+
+    # Install CSM repositories and packages
+    - role: csm.packages
+
+    # Set the root password from the value stored in cray-vault
+    - role: csm.password
+      vars:
+        password_vault_secret: 'secret/csm/management_nodes'
+        password_vault_secret_key: 'root_password'
+        password_username: 'root'
