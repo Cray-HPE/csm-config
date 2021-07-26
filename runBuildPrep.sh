@@ -26,4 +26,3 @@ RC=0
 ./cms_meta_tools/scripts/runBuildPrep.sh || RC=1
 rm -rf ./cms_meta_tools
 exit $RC
-
