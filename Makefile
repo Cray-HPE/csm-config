@@ -37,6 +37,6 @@ image:
 
 chart:
 	helm dep up ${CHART_PATH}/${CHART_NAME}
-	helm package ${CHART_PATH}/${CHART_NAME} -d ${CHART_PATH}/.packaged --version ${CHART_VERSION}
+	helm package ${CHART_PATH}/${CHART_NAME} -d ${CHART_PATH}/.packaged 
 
 
