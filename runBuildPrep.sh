@@ -1,4 +1,5 @@
-# (C) Copyright 2021 Hewlett Packard Enterprise Development LP
+#!/usr/bin/env sh
+# Copyright 2020-2021 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -17,27 +18,38 @@
 # OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
+#
+# (MIT License)
 
-NAME ?= csm-config
-VERSION ?= $(shell cat .version)
+./install_cms_meta_tools.sh || exit 1
 
-# Helm Chart
-CHART_PATH ?= kubernetes
-CHART_NAME ?= csm-config
-CHART_VERSION ?= local
+# Set the docker image name for the config image
+config_image_name=${NAME}
+echo "config_image_name=${config_image_name}"
+[ -n "${config_image_name}" ] || exit 1
+sed -i s/@config_image_name@/${config_image_name}/g kubernetes/csm-config/values.yaml || exit 1
 
+# Set the docker image tag for the config image
+config_image_tag=${VERSION}
+echo "config_image_tag=${config_image_tag}"
+[ -n "${config_image_tag}" ] || exit 1
+sed -i s/@config_image_tag@/${config_image_tag}/g kubernetes/csm-config/values.yaml || exit 1
 
-all: build image chart unittest coverage
+# Set the product name
+sed -i s/@product_name@/csm/g kubernetes/csm-config/values.yaml || exit 1
 
-build:
-	./install_cms_meta_tools.sh
-	./runBuildPrep.sh
+# Replace @product_version@ string in Chart.yaml and values.yaml
+./cms_meta_tools/update_versions/update_versions.sh || exit 1
+rm -rf ./cms_meta_tools
 
-image: build
-	docker build --pull ${DOCKER_ARGS} --tag '${NAME}:${VERSION}' .
+# Set the cf-gitea-import image version (for the config import)
+# The URL to the manifest.txt file must be updated to point to the stable manifest when cutting a release branch.
+wget https://arti.dev.cray.com/artifactory/csm-misc-stable-local/manifest/cf-gitea-import-manifest.txt
+cf_gitea_import_image_tag=$(cat cf-gitea-import-manifest.txt | grep cf-gitea-import | sed s/.*://g | tr -d '[:space:]')
+sed -i s/@cf_gitea_import_image_tag@/${cf_gitea_import_image_tag}/g Dockerfile
+rm *manifest.txt
 
-chart: build
-	helm dep up ${CHART_PATH}/${CHART_NAME}
-	helm package ${CHART_PATH}/${CHART_NAME} -d ${CHART_PATH}/.packaged --version ${CHART_VERSION}
-
+# Debug
+cat Dockerfile
+cat kubernetes/csm-config/values.yaml
 
