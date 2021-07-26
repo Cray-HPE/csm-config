@@ -25,7 +25,7 @@ FROM arti.dev.cray.com/baseos-docker-master-local/sles15sp2:sles15sp2 as product
 WORKDIR /
 
 # Install dependencies as RPMs
-RUN zypper ar --no-gpgcheck http://car.dev.cray.com/artifactory/csm/SCMS/sle15_sp2_ncn/x86_64/release/csm-1.1 csm-1.1 && \
+RUN zypper ar --no-gpgcheck http://car.dev.cray.com/artifactory/csm/SCMS/sle15_sp2_ncn/x86_64/dev/master csm && \
     zypper refresh && \
     zypper in -y \
         csm-ssh-keys-roles
