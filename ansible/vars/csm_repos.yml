@@ -1,5 +1,4 @@
-#!/usr/bin/env ansible-playbook
-# Copyright 2020-2021 Hewlett Packard Enterprise Development LP
+# Copyright 2021 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -21,7 +20,8 @@
 #
 # (MIT License)
 
-# Top-level site.yml for CSM Deployed Environments (NCNs, except for UANs)
-- import_playbook: ncn-master_nodes.yml
-- import_playbook: ncn-worker_nodes.yml
-- import_playbook: ncn-storage_nodes.yml
+csm_sles_repositories:
+- name: csm-sle-15sp2
+  description: "CSM SLE 15 SP2 Packages (added by Ansible)"
+  repo: https://packages.local/repository/csm-sle-15sp2
+

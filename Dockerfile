@@ -77,9 +77,9 @@ ADD .version /product_version
 
 # Copy in dependencies' Ansible content
 COPY --from=product-content-base /opt/cray/ansible/roles/      /content/roles/
-#COPY --from=product-content-base /opt/cray/ansible/playbooks/ /content/playbooks/
 
 # Copy in CSM Ansible content
 COPY ansible/ /content/
 
 # Base image entrypoint takes it from here
+

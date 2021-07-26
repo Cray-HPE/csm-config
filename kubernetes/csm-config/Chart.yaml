@@ -6,8 +6,12 @@ version: @product_version@
 keywords:
   - csm
   - cfs
+  - ansible
 sources:
   - "https://github.com/Cray-HPE/csm-config"
 maintainers:
   - name: jsl
     email: joel.landsteiner@hpe.com
+  - name: rkleinman
+    email: randy.kleinman@hpe.com
+

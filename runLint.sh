@@ -1,4 +1,5 @@
-#!/usr/bin/env ansible-playbook
+#!/bin/bash
+
 # Copyright 2020-2021 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
@@ -21,7 +22,9 @@
 #
 # (MIT License)
 
-# Top-level site.yml for CSM Deployed Environments (NCNs, except for UANs)
-- import_playbook: ncn-master_nodes.yml
-- import_playbook: ncn-worker_nodes.yml
-- import_playbook: ncn-storage_nodes.yml
+./install_cms_meta_tools.sh || exit 1
+RC=0
+./cms_meta_tools/scripts/runLint.sh || RC=1
+rm -rf ./cms_meta_tools
+exit $RC
+
