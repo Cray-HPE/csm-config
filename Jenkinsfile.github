@@ -19,6 +19,12 @@ pipeline {
     }
 
     stages {
+        stage("Build Prep") {
+            steps {
+                sh "make prep"
+            }
+        }
+
         stage("Image") {
             steps {
                 sh "make image"
