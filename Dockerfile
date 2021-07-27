@@ -31,7 +31,7 @@ RUN zypper ar --no-gpgcheck https://artifactory.algol60.net/artifactory/csm-rpms
         csm-ssh-keys-roles
 
 # Use the cf-gitea-import as a base image with CSM content copied in
-FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:1.2.10
+FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:1.3.5
 
 WORKDIR /
 ENV CF_IMPORT_PRODUCT_NAME=csm
