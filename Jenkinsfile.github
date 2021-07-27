@@ -73,8 +73,6 @@ pipeline {
                 stage('Image') {
                     steps {
                         echo "Docker args are ${env.DOCKER_ARGS}"
-                        sh "wget https://arti.dev.cray.com/artifactory/mirror-SUSE/Updates/SLE-Module-Basesystem/15-SP2/x86_64/update/repodata/repomd.xml"
-                        sh "cat repomd.xml"
                         sh "make image"
                     }
                 }
