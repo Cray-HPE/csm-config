@@ -25,16 +25,14 @@ FROM arti.dev.cray.com/baseos-docker-master-local/sles15sp2:sles15sp2 as product
 WORKDIR /
 
 # Install dependencies as RPMs
-RUN zypper ar --no-gpgcheck http://car.dev.cray.com/artifactory/csm/SCMS/sle15_sp2_ncn/x86_64/release/csm-1.1 csm-1.1 && \
+RUN zypper ar --no-gpgcheck https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/ csm && \
     zypper refresh && \
     zypper in -y \
         csm-ssh-keys-roles
 
-# Use the cf-gitea-import as a base image with CSM content copied in
-FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:@cf_gitea_import_image_tag@
 
 # Use for testing/not in pipeline builds
-#FROM arti.dev.cray.com/csm-docker-unstable-local/cf-gitea-import:latest
+FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:1.3.5
 
 WORKDIR /
 ENV CF_IMPORT_PRODUCT_NAME=csm

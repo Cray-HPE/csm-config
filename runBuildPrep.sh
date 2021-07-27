@@ -25,4 +25,8 @@
 RC=0
 ./cms_meta_tools/scripts/runBuildPrep.sh || RC=1
 rm -rf ./cms_meta_tools
+
+# Debug
+cat Dockerfile
+cat kubernetes/csm-config/values.yaml
 exit $RC
