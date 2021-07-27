@@ -21,20 +21,45 @@
 #
 # (MIT License)
 
-FROM arti.dev.cray.com/baseos-docker-master-local/sles15sp1:sles15sp1 as product-content-base
-WORKDIR /
+FROM artifactory.algol60.net/registry.suse.com/suse/sle15:15.3 as product-content-base
+ARG SLES_MIRROR=https://slemaster.us.cray.com/SUSE
+ARG ARCH=x86_64
+RUN \
+  zypper --non-interactive rr --all &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Basesystem/15-SP3/${ARCH}/product/ sles15sp3-Module-Basesystem-product &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Basesystem/15-SP3/${ARCH}/update/ sles15sp3-Module-Basesystem-update &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Development-Tools/15-SP3/${ARCH}/product/ sles15sp3-Module-Development-Tools-product &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Development-Tools/15-SP3/${ARCH}/update/ sles15sp3-Module-Development-Tools-update &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Containers/15-SP3/${ARCH}/product/ sles15sp3-Module-Containers-product &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Containers/15-SP3/${ARCH}/update/ sles15sp3-Module-Containers-update &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Desktop-Applications/15-SP3/${ARCH}/product/ sles15sp3-Module-Desktop-Applications-product &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Desktop-Applications/15-SP3/${ARCH}/update/ sles15sp3-Module-Desktop-Applications-update &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-HPC/15-SP3/${ARCH}/product/ sles15sp3-Module-HPC-product &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-HPC/15-SP3/${ARCH}/update/ sles15sp3-Module-HPC-update &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Legacy/15-SP3/${ARCH}/product/ sles15sp3-Module-Legacy-product &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Legacy/15-SP3/${ARCH}/update/ sles15sp3-Module-Legacy-update &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Public-Cloud/15-SP3/${ARCH}/product/ sles15sp3-Module-Public-Cloud-product &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Public-Cloud/15-SP3/${ARCH}/update/ sles15sp3-Module-Public-Cloud-update &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Python2/15-SP3/${ARCH}/product/ sles15sp3-Module-Python2-product &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Python2/15-SP3/${ARCH}/update/ sles15sp3-Module-Python2-update &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Server-Applications/15-SP3/${ARCH}/product/ sles15sp3-Module-Server-Applications-product &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Server-Applications/15-SP3/${ARCH}/update/ sles15sp3-Module-Server-Applications-update &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Web-Scripting/15-SP3/${ARCH}/product/ sles15sp3-Module-Web-Scripting-product &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Web-Scripting/15-SP3/${ARCH}/update/ sles15sp3-Module-Web-Scripting-update &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Product-SLES/15-SP3/${ARCH}/product/ sles15sp3-Product-SLES-product &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Product-SLES/15-SP3/${ARCH}/update/ sles15sp3-Product-SLES-update &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-INSTALLER/15-SP3/${ARCH}/update/ sles15sp3-SLE-INSTALLER-update &&\
+  zypper --non-interactive clean &&\
+  zypper --non-interactive --gpg-auto-import-keys refresh
 
 # Install dependencies as RPMs
-RUN zypper ar --no-gpgcheck http://car.dev.cray.com/artifactory/csm/SCMS/sle15_sp1_ncn/x86_64/dev/master/ csm && \
+RUN zypper ar --no-gpgcheck https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/ csm && \
     zypper refresh && \
     zypper in -y \
         csm-ssh-keys-roles
 
 # Use the cf-gitea-import as a base image with CSM content copied in
-FROM arti.dev.cray.com/csm-docker-stable-local/cf-gitea-import:@cf_gitea_import_image_tag@
-
-# Use for testing/not in pipeline builds
-#FROM arti.dev.cray.com/csm-docker-unstable-local/cf-gitea-import:latest
+FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:1.2.10
 
 WORKDIR /
 ENV CF_IMPORT_PRODUCT_NAME=csm
