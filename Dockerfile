@@ -22,6 +22,7 @@
 # (MIT License)
 
 FROM artifactory.algol60.net/registry.suse.com/suse/sle15:15.3 as product-content-base
+WORKDIR /
 ARG SLES_MIRROR=https://slemaster.us.cray.com/SUSE
 ARG ARCH=x86_64
 RUN \
@@ -47,7 +48,7 @@ RUN \
   zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Web-Scripting/15-SP3/${ARCH}/product/ sles15sp3-Module-Web-Scripting-product &&\
   zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Web-Scripting/15-SP3/${ARCH}/update/ sles15sp3-Module-Web-Scripting-update &&\
   zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Product-SLES/15-SP3/${ARCH}/product/ sles15sp3-Product-SLES-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Product-SLES/15-SP3/${ARCH}/update/ sles15sp3-Product-SLES-update &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Product-SLES/15-SP3/${ARCH}/update/ sles15sp3-Product-SLES-update &&\
   zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-INSTALLER/15-SP3/${ARCH}/update/ sles15sp3-SLE-INSTALLER-update &&\
   zypper --non-interactive clean &&\
   zypper --non-interactive --gpg-auto-import-keys refresh
@@ -55,19 +56,19 @@ RUN \
 # Install dependencies as RPMs
 RUN zypper ar --no-gpgcheck https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/ csm && \
     zypper refresh && \
-    zypper in -y \
-        csm-ssh-keys-roles
+    zypper in -y csm-ssh-keys-roles==1.3.4
 
 # Use the cf-gitea-import as a base image with CSM content copied in
-FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:1.2.10
+FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:@cf_gitea_import_image_tag@
 
-WORKDIR /
+# Use for testing/not in pipeline builds
+#FROM arti.dev.cray.com/csm-docker-unstable-local/cf-gitea-import:latest
+
 ENV CF_IMPORT_PRODUCT_NAME=csm
 ADD .version /product_version
 
 # Copy in dependencies' Ansible content
 COPY --from=product-content-base /opt/cray/ansible/roles/      /content/roles/
-#COPY --from=product-content-base /opt/cray/ansible/playbooks/ /content/playbooks/
 
 # Copy in CSM Ansible content
 COPY ansible/ /content/
