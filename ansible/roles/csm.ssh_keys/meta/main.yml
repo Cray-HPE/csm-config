@@ -19,11 +19,17 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 # (MIT License)
+---
+dependencies: []
 
-# Defaults for the csm.password role. See the README.md for information.
-password_vault_url: 'http://cray-vault.vault:8200'
-password_vault_jwt_file: '/var/run/secrets/kubernetes.io/serviceaccount/token'
-password_vault_role_file: '/var/run/secrets/kubernetes.io/serviceaccount/namespace'
-password_vault_secret: 'secret/csm/users/'
-password_vault_secret_key: 'password'
-password_username: 'root'
+galaxy_info:
+  role_name: csm.ssh_keys
+  author: randy.kleinman@hpe.com
+  description: SSH Key Propagation for CSM users
+  company: "Hewlett Packard Enterprise Development LP"
+  license: "MIT"
+  min_ansible_version: 2.9
+  platforms: []
+  galaxy_tags:
+    - system
+    - hpc

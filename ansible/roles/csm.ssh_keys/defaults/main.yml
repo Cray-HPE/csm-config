@@ -20,10 +20,13 @@
 #
 # (MIT License)
 
-# Defaults for the csm.password role. See the README.md for information.
-password_vault_url: 'http://cray-vault.vault:8200'
-password_vault_jwt_file: '/var/run/secrets/kubernetes.io/serviceaccount/token'
-password_vault_role_file: '/var/run/secrets/kubernetes.io/serviceaccount/namespace'
-password_vault_secret: 'secret/csm/users/'
-password_vault_secret_key: 'password'
-password_username: 'root'
+# Defaults for the csm.ssh_keys role. See the README.md for information.
+ssh_keys_vault_url: 'http://cray-vault.vault:8200'
+ssh_keys_vault_jwt_file: '/var/run/secrets/kubernetes.io/serviceaccount/token'
+ssh_keys_vault_role_file: '/var/run/secrets/kubernetes.io/serviceaccount/namespace'
+ssh_keys_user_private_key_secret_prefix: 'secret/csm/users/'
+ssh_keys_user_private_key_key: 'ssh_private_key'
+ssh_keys_user_public_key_secret_prefix: 'secret/csm/users/'
+ssh_keys_user_public_key_key: 'ssh_public_key'
+ssh_keys_username: 'root'
+ssh_keys_keytype: 'rsa'

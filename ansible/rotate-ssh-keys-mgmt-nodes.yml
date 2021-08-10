@@ -1,3 +1,4 @@
+#!/usr/bin/env ansible-playbook
 # Copyright 2021 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
@@ -20,10 +21,12 @@
 #
 # (MIT License)
 
-# Defaults for the csm.password role. See the README.md for information.
-password_vault_url: 'http://cray-vault.vault:8200'
-password_vault_jwt_file: '/var/run/secrets/kubernetes.io/serviceaccount/token'
-password_vault_role_file: '/var/run/secrets/kubernetes.io/serviceaccount/namespace'
-password_vault_secret: 'secret/csm/users/'
-password_vault_secret_key: 'password'
-password_username: 'root'
+# Retrieve the ssh keys for management nodes from Vault and apply them
+- hosts: Management
+  any_errors_fatal: true
+  remote_user: root
+
+  roles:
+    - role: csm.ssh_keys
+      vars:
+        ssh_keys_username: root

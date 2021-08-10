@@ -21,7 +21,7 @@
 #
 # (MIT License)
 
-FROM artifactory.algol60.net/registry.suse.com/suse/sle15:15.3 as product-content-base
+FROM arti.dev.cray.com/baseos-docker-master-local/sles15sp3:latest as product-content-base
 WORKDIR /
 ARG SLES_MIRROR=https://slemaster.us.cray.com/SUSE
 ARG ARCH=x86_64
@@ -56,7 +56,7 @@ RUN \
 # Install dependencies as RPMs
 RUN zypper ar --no-gpgcheck https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/ csm && \
     zypper refresh && \
-    zypper in -y csm-ssh-keys-roles==1.3.4
+    zypper install -y csm-ssh-keys-roles==1.3.4
 
 # Use the cf-gitea-import as a base image with CSM content copied in
 FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:@cf_gitea_import_image_tag@
@@ -74,3 +74,4 @@ COPY --from=product-content-base /opt/cray/ansible/roles/      /content/roles/
 COPY ansible/ /content/
 
 # Base image entrypoint takes it from here
+

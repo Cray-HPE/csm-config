@@ -23,13 +23,10 @@
 
 # Retrieve the root password for management nodes from Vault and apply it
 - hosts: Management
-  gather_facts: no
   any_errors_fatal: true
   remote_user: root
 
   roles:
     - role: csm.password
       vars:
-        password_vault_secret: 'secret/csm/management_nodes'
-        password_vault_secret_key: 'root_password'
         password_username: 'root'

@@ -42,6 +42,10 @@
     # Set the root password from the value stored in cray-vault
     - role: csm.password
       vars:
-        password_vault_secret: 'secret/csm/management_nodes'
-        password_vault_secret_key: 'root_password'
         password_username: 'root'
+
+    # Distribute SSH keys for the root user
+    - role: csm.ssh_keys
+      vars:
+        ssh_keys_username: 'root'
+
