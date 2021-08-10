@@ -21,7 +21,7 @@
 #
 # (MIT License)
 
-FROM arti.dev.cray.com/baseos-docker-master-local/sles15sp3:latest as product-content-base
+FROM artifactory.algol60.net/registry.suse.com/suse/sle15:15.3 as product-content-base
 WORKDIR /
 ARG SLES_MIRROR=https://slemaster.us.cray.com/SUSE
 ARG ARCH=x86_64
