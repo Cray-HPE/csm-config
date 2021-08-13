@@ -14,38 +14,88 @@ pipeline {
         NAME = "csm-config"
         DESCRIPTION = "Ansible roles and playbooks for the CSM product for use with CFS"
         IS_STABLE = getBuildIsStable()
-        VERSION = getDockerBuildVersion(isStable: env.IS_STABLE)
-        DOCKER_ARGS = getDockerBuildArgs(name: env.NAME, description: env.DESCRIPTION, version: env.VERSION) 
-        CHART_NAME = 'csm-config'
-        CHART_VERSION = getChartVersion(version: env.VERSION)
+        CHART_NAME = "${env.NAME}"
+        CHART_PATH = "kubernetes"
     }
 
     stages {
-        stage("Build Prep") {
+        stage("Clone cms_meta_tools repo") {
             steps {
-                sh "make prep"
+                withCredentials([gitUsernamePassword(credentialsId: 'jenkins-algol60-cray-hpe-github-integration')]) {
+                    sh 'git clone --depth 1 --no-single-branch https://github.com/Cray-HPE/cms-meta-tools.git ./cms_meta_tools'
+                }
             }
         }
 
-        stage("Image") {
+        stage("Set Versions") {
             steps {
-                sh "make image"
+                script {
+                    // Get version from .version
+                    def ver = sh(returnStdout: true, script: "head -1 .version").trim()
+                    echo "Base version is ${ver}"
+
+                    // Generate docker version string
+                    def dockerver = getDockerBuildVersion(isStable: env.IS_STABLE)
+                    echo "Docker version is ${dockerver}"
+
+                    // Write docker version string to .docker_version
+                    writeFile(file: ".docker_version", text: dockerver)
+
+                    // Generate chart version string
+                    def chartver = dockerver.replaceAll("_", "+")
+                    echo "Chart version is ${chartver}"
+
+                    // Write chart version to .chart_version
+                    writeFile(file: ".chart_version", text: chartver)
+                }
             }
         }
 
-        stage("Chart") {
+        stage("runBuildPrep") {
             steps {
-                sh "make chart"
+                sh "make runbuildprep"
+            }
+        }
+
+        stage("Lint") {
+            steps {
+                sh "make lint"
+            }
+        }
+
+        stage("Build") {
+            environment {
+                DOCKER_VERSION = sh(returnStdout: true, script: "head -1 .docker_version").trim()
+            }
+            parallel {
+                stage('Image') {
+                    environment {
+                        DOCKER_ARGS = getDockerBuildArgs(name: env.NAME, description: env.DESCRIPTION, version: env.DOCKER_VERSION)
+                    }
+
+                    steps {
+                        echo "Docker args are ${env.DOCKER_ARGS}"
+                        sh "make image"
+                    }
+                }
+
+                stage('Chart') {
+                    steps {
+                        updateCsmHelmChartAppVersion(chartPath: "${WORKSPACE}/${env.CHART_PATH}/${env.CHART_NAME}", appVersion: env.DOCKER_VERSION)
+                        sh "make chart"
+                    }
+                }
             }
         }
 
         stage("Publish") {
-            steps {
-                script {
-                    publishCsmDockerImage(image: env.NAME, tag: env.VERSION, isStable: env.IS_STABLE)
-                    publishCsmHelmCharts(component: env.CHART_NAME, chartsPath: "${WORKSPACE}/kubernetes/.packaged", isStable: env.IS_STABLE)
+            environment {
+                DOCKER_VERSION = sh(returnStdout: true, script: "head -1 .docker_version").trim()
+            }
 
-                }
+            steps {
+                    publishCsmDockerImage(image: env.NAME, tag: env.DOCKER_VERSION, isStable: env.IS_STABLE)
+                    publishCsmHelmCharts(component: env.CHART_NAME, chartsPath: "${WORKSPACE}/${env.CHART_PATH}/.packaged", isStable: env.IS_STABLE)
             }
         }
     }

@@ -17,26 +17,67 @@
 # OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
+#
+# (MIT License)
+
+# If you wish to perform a local build, you will need to clone or copy the contents of the
+# cms-meta-tools repo to ./cms_meta_tools
 
 NAME ?= csm-config
-VERSION ?= $(shell cat .version)
+DOCKER_VERSION ?= $(shell head -1 .docker_version)
+CHART_VERSION ?= $(shell head -1 .chart_version)
 
 # Helm Chart
 CHART_PATH ?= kubernetes
-CHART_NAME ?= csm-config
-CHART_VERSION ?= local
+CHART_NAME ?= $(NAME)
 
+CONFIG_IMAGE_NAME ?= $(NAME)
+CONFIG_IMAGE_TAG ?= $(CHART_VERSION)
 
-all: prep image chart unittest coverage
+HELM_UNITTEST_IMAGE ?= quintush/helm-unittest:3.3.0-0.2.5
 
-prep:
-	./runBuildPrep.sh
+all: runbuildprep lint image chart
+chart: chart_setup chart_package chart_test
+
+runbuildprep:
+		# Set the docker image name for the config image
+		echo "config_image_name=${CONFIG_IMAGE_NAME}"
+		[ -n "${CONFIG_IMAGE_NAME}" ]
+		sed -i s/@config_image_name@/${CONFIG_IMAGE_NAME}/g ${CHART_PATH}/${CHART_NAME}/values.yaml
+		# Debug
+		cat ${CHART_PATH}/${CHART_NAME}/values.yaml
+		
+		# Set the docker image tag for the config image
+
+		echo "config_image_tag=${CONFIG_IMAGE_TAG}"
+		[ -n "${CONFIG_IMAGE_TAG}" ]
+		sed -i s/@config_image_tag@/${CONFIG_IMAGE_TAG}/g ${CHART_PATH}/${CHART_NAME}/values.yaml
+		
+		# Set the product name
+		sed -i s/@product_name@/csm/g ${CHART_PATH}/${CHART_NAME}/values.yaml
+		
+		# runBuildPrep calls update_versions, which will 
+		# replace @product_version@ string in Chart.yaml and values.yaml
+		./cms_meta_tools/scripts/runBuildPrep.sh
+		
+		# Debug
+		cat Dockerfile
+		cat ${CHART_PATH}/${CHART_NAME}/values.yaml
+
+lint:
+		./cms_meta_tools/scripts/runLint.sh
 
 image:
-	docker build --pull ${DOCKER_ARGS} --tag '${NAME}:${VERSION}' .
+		docker build --pull ${DOCKER_ARGS} --tag '${NAME}:${DOCKER_VERSION}' .
 
-chart:
-	helm dep up ${CHART_PATH}/${CHART_NAME}
-	helm package ${CHART_PATH}/${CHART_NAME} -d ${CHART_PATH}/.packaged --version ${CHART_VERSION}
+chart_setup:
+		mkdir -p ${CHART_PATH}/.packaged
+		printf "\nglobal:\n  appVersion: ${DOCKER_VERSION}" >> ${CHART_PATH}/${CHART_NAME}/values.yaml
 
+chart_package:
+		helm dep up ${CHART_PATH}/${CHART_NAME}
+		helm package ${CHART_PATH}/${CHART_NAME} -d ${CHART_PATH}/.packaged --app-version ${DOCKER_VERSION} --version ${CHART_VERSION}
 
+chart_test:
+		helm lint "${CHART_PATH}/${CHART_NAME}"
+		docker run --rm -v ${PWD}/${CHART_PATH}:/apps ${HELM_UNITTEST_IMAGE} -3 ${CHART_NAME}

@@ -7,7 +7,7 @@ keywords:
   - csm
   - cfs
 sources:
-  - "https://stash.us.cray.com/projects/SCMS/repos/csm-config/browse"
+  - "https://github.com/Cray-HPE/csm-config"
 maintainers:
   - name: jsl
     email: joel.landsteiner@hpe.com
