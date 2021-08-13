@@ -14,48 +14,50 @@ pipeline {
         NAME = "csm-config"
         DESCRIPTION = "Ansible roles and playbooks for the CSM product for use with CFS"
         IS_STABLE = getBuildIsStable()
-        VERSION = getDockerBuildVersion(isStable: env.IS_STABLE)
-        DOCKER_ARGS = getDockerBuildArgs(name: env.NAME, description: env.DESCRIPTION, version: env.VERSION) 
-        CHART_NAME = 'csm-config'
-        CHART_VERSION = getChartVersion(version: env.VERSION)
+        CHART_NAME = "${env.NAME}"
+        CHART_PATH = "kubernetes"
     }
 
     stages {
-
-        stage("Pre-Prepare") {
+        stage("Clone cms_meta_tools repo") {
             steps {
-                script {
-                    def ver = sh(returnStdout: true, script: "head -1 .version").trim()
-                    echo "Base version is ${ver}"
-                    def dockerver = getDockerBuildVersion(isStable: env.IS_STABLE).trim()
-                    echo "Docker version is ${dockerver}"
-                    sh(script: """
-                            #!/usr/bin/env bash
-                            set -x
-                            set -e
-                            echo "${dockerver}" > .docker_version
-                        """)
-                    def chartver = getChartVersion(version: dockerver).trim()
-                    echo "Chart version is ${chartver}"
-                    sh(script: """
-                            #!/usr/bin/env bash
-                            set -x
-                            set -e
-                            echo "${chartver}" > .chart_version
-                            ./runBuildPrep.sh
-                        """)
+                withCredentials([gitUsernamePassword(credentialsId: 'jenkins-algol60-cray-hpe-github-integration')]) {
+                    sh 'git clone --depth 1 --no-single-branch https://github.com/Cray-HPE/cms-meta-tools.git ./cms_meta_tools'
                 }
             }
         }
 
-        stage("Lint") {
-            environment {
-                VERSION = sh(returnStdout: true, script: "head -1 .docker_version").trim()
-                CHART_VERSION = sh(returnStdout: true, script: "head -1 .chart_version").trim()
-                DOCKER_ARGS = getDockerBuildArgs(name: env.NAME, description: env.DESCRIPTION, version: env.VERSION).trim()
-                BUILD_METADATA = getRpmRevision(isStable: env.IS_STABLE).trim()
+        stage("Set Versions") {
+            steps {
+                script {
+                    // Get version from .version
+                    def ver = sh(returnStdout: true, script: "head -1 .version").trim()
+                    echo "Base version is ${ver}"
+
+                    // Generate docker version string
+                    def dockerver = getDockerBuildVersion(isStable: env.IS_STABLE)
+                    echo "Docker version is ${dockerver}"
+
+                    // Write docker version string to .docker_version
+                    writeFile(file: ".docker_version", text: dockerver)
+
+                    // Generate chart version string
+                    def chartver = dockerver.replaceAll("_", "+")
+                    echo "Chart version is ${chartver}"
+
+                    // Write chart version to .chart_version
+                    writeFile(file: ".chart_version", text: chartver)
+                }
             }
-            
+        }
+
+        stage("runBuildPrep") {
+            steps {
+                sh "make runbuildprep"
+            }
+        }
+
+        stage("Lint") {
             steps {
                 sh "make lint"
             }
@@ -63,14 +65,14 @@ pipeline {
 
         stage("Build") {
             environment {
-                VERSION = sh(returnStdout: true, script: "head -1 .docker_version").trim()
-                CHART_VERSION = sh(returnStdout: true, script: "head -1 .chart_version").trim()
-                DOCKER_ARGS = getDockerBuildArgs(name: env.NAME, description: env.DESCRIPTION, version: env.VERSION).trim()
-                BUILD_METADATA = getRpmRevision(isStable: env.IS_STABLE).trim()
+                DOCKER_VERSION = sh(returnStdout: true, script: "head -1 .docker_version").trim()
             }
-            
             parallel {
                 stage('Image') {
+                    environment {
+                        DOCKER_ARGS = getDockerBuildArgs(name: env.NAME, description: env.DESCRIPTION, version: env.DOCKER_VERSION)
+                    }
+
                     steps {
                         echo "Docker args are ${env.DOCKER_ARGS}"
                         sh "make image"
@@ -79,25 +81,21 @@ pipeline {
 
                 stage('Chart') {
                     steps {
+                        updateCsmHelmChartAppVersion(chartPath: "${WORKSPACE}/${env.CHART_PATH}/${env.CHART_NAME}", appVersion: env.DOCKER_VERSION)
                         sh "make chart"
                     }
                 }
             }
         }
 
-        stage('Publish ') {
+        stage("Publish") {
             environment {
-                VERSION = sh(returnStdout: true, script: "head -1 .docker_version").trim()
-                CHART_VERSION = sh(returnStdout: true, script: "head -1 .chart_version").trim()
-                DOCKER_ARGS = getDockerBuildArgs(name: env.NAME, description: env.DESCRIPTION, version: env.VERSION).trim()
-                BUILD_METADATA = getRpmRevision(isStable: env.IS_STABLE).trim()
+                DOCKER_VERSION = sh(returnStdout: true, script: "head -1 .docker_version").trim()
             }
 
             steps {
-                script {
-                    publishCsmDockerImage(image: env.NAME, tag: env.VERSION, isStable: env.IS_STABLE)
-                    publishCsmHelmCharts(component: env.NAME, chartsPath: "${WORKSPACE}/kubernetes/.packaged", isStable: env.IS_STABLE)
-                }
+                    publishCsmDockerImage(image: env.NAME, tag: env.DOCKER_VERSION, isStable: env.IS_STABLE)
+                    publishCsmHelmCharts(component: env.CHART_NAME, chartsPath: "${WORKSPACE}/${env.CHART_PATH}/.packaged", isStable: env.IS_STABLE)
             }
         }
     }
