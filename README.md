@@ -32,12 +32,18 @@ CSM repositories to be added to the system should be specified in the
 CSM packages to be installed on systems should be specified in the
 `ansible/vars/csm_packages.yml` file.
 
+## Build Helpers
+This repo uses some build helper scripts from the 
+[cms-meta-tools](https://github.com/Cray-HPE/cms-meta-tools) repo. See that repo for more details.
+
+## Local Builds
+If you wish to perform a local build, you will first need to clone or copy the contents of the
+cms-meta-tools repo to `./cms_meta_tools` in the same directory as the `Makefile`.
+
 ## Versioning
-Use [SemVer](http://semver.org/). The version is located in the [.version](.version)
-file. Other files either read the version string from this file or have this
-version string written to them at build time using the [update_versions.sh](update_versions.sh)
-script, based on the information in the  [update_versions.conf](update_versions.conf)
-file.
+Use [SemVer](http://semver.org/). The version is located in the [.version](.version) file. At
+build time, [Jenkinsfile.github](Jenkinsfile.github) generates the Docker version and Chart version
+strings, and writes those to .docker_version and .chart_version respectively.
 
 ## Copyright and License
 This project is copyrighted by Hewlett Packard Enterprise Development LP and is
