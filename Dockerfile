@@ -59,7 +59,7 @@ RUN zypper ar --no-gpgcheck https://artifactory.algol60.net/artifactory/csm-rpms
         csm-ssh-keys-roles
 
 # Use for testing/not in pipeline builds
-FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:@CF_GITEA_IMPORT_VERSION@
+FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:@CF_GITEA_IMPORT_VERSION@ as cf-gitea-import-base
 
 WORKDIR /
 ENV CF_IMPORT_PRODUCT_NAME=csm
