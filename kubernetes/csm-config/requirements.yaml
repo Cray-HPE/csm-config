@@ -1,6 +1,6 @@
 ---
 dependencies:
   - name: cray-import-config
-    version: "0.2.9"
-    repository: "@cray-internal"
+    version: "1.0.0"
+    repository: "@cray-algol60"
 
