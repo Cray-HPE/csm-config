@@ -22,6 +22,11 @@
 # (MIT License)
 
 FROM artifactory.algol60.net/registry.suse.com/suse/sle15:15.3 as product-content-base
+
+# Pin the version of csm-ssh-keys being installed. The actual version is substituted by
+# the runBuildPrep script at build time
+ARG CSM_SSH_KEYS_VERSION=@RPM_VERSION@
+
 ARG SLES_MIRROR=https://slemaster.us.cray.com/SUSE
 ARG ARCH=x86_64
 RUN \
@@ -52,11 +57,12 @@ RUN \
   zypper --non-interactive clean &&\
   zypper --non-interactive --gpg-auto-import-keys refresh
 
-# Install dependencies as RPMs
+# Install csm-ssh-keys-roles RPM, and lock the version, just to be certain it is not
+# upgraded inadvertently somehow later
 RUN zypper ar --no-gpgcheck https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/ csm && \
     zypper refresh && \
-    zypper in -y \
-        csm-ssh-keys-roles
+	zypper in -f --no-confirm csm-ssh-keys-roles-${CSM_SSH_KEYS_VERSION} && \
+	zypper al csm-ssh-keys-roles
 
 # Apply security patches
 RUN zypper patch -y --with-update --with-optional
