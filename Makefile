@@ -58,7 +58,9 @@ runbuildprep:
 		
 		# runBuildPrep calls update_versions, which will 
 		# replace @product_version@ string in Chart.yaml and values.yaml
-		./cms_meta_tools/scripts/runBuildPrep.sh
+		# We call a local copy of runBuildPrep because we need to do some
+		# fancy footwork with the csm-ssh-keys version as well
+		./runBuildPrep.sh
 		
 		# Debug
 		cat Dockerfile
