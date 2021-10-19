@@ -40,8 +40,10 @@ all: runbuildprep lint image chart
 chart: chart_setup chart_package chart_test
 
 runbuildprep:
-		./cms_meta_tools/scripts/runBuildPrep.sh
-
+		# We call a local copy of runBuildPrep because we need to do some
+		# fancy footwork with the csm-ssh-keys version as well
+		./runBuildPrep.sh
+		
 		# Debug
 		cat Dockerfile
 		cat ${CHART_PATH}/${CHART_NAME}/values.yaml
