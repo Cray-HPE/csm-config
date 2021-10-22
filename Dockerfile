@@ -23,9 +23,27 @@
 
 FROM artifactory.algol60.net/registry.suse.com/suse/sle15:15.3 as product-content-base
 
-# Pin the version of csm-ssh-keys being installed. The actual version is substituted by
+# Pin the version of csm-ssh-keys-roles being installed. The actual version is substituted by
 # the runBuildPrep script at build time
-ARG CSM_SSH_KEYS_VERSION=@RPM_VERSION@
+ARG CSM_SSH_KEYS_ROLES_RPM_URL=@RPM_URL@
+
+# First install just the packages we need to install csm-ssh-keys-roles
+RUN zypper in --no-confirm curl
+RUN zypper in --no-confirm -C rpm
+
+# Get HPE key to install signed RPMs
+RUN curl -XGET "https://arti.dev.cray.com:443/artifactory/dst-misc-stable-local/SigningKeys/HPE-SHASTA-RPM-PROD.asc" --output HPE-SHASTA-RPM-PROD.asc
+
+# Import key
+RUN rpm --import HPE-SHASTA-RPM-PROD.asc
+
+# Install csm-ssh-keys-roles
+RUN zypper in -f --no-confirm ${CSM_SSH_KEYS_ROLES_RPM_URL}
+# And lock the version, just to be certain it is not upgraded inadvertently by some later
+# zypper command
+RUN zypper al csm-ssh-keys-roles
+
+# Now proceed with the rest of the installs
 
 ARG SLES_MIRROR=https://slemaster.us.cray.com/SUSE
 ARG ARCH=x86_64
@@ -56,13 +74,6 @@ ARG ARCH=x86_64
 #  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-INSTALLER/15-SP3/${ARCH}/update/ sles15sp3-SLE-INSTALLER-update &&\
 #  zypper --non-interactive clean &&\
 #  zypper --non-interactive --gpg-auto-import-keys refresh
-
-# Install csm-ssh-keys-roles RPM, and lock the version, just to be certain it is not
-# upgraded inadvertently somehow later
-RUN zypper ar --no-gpgcheck https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/ csm && \
-    zypper refresh && \
-	zypper in -f --no-confirm csm-ssh-keys-roles-${CSM_SSH_KEYS_VERSION} && \
-	zypper al csm-ssh-keys-roles
 
 # Apply security patches
 RUN zypper patch -y --with-update --with-optional
