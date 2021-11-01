@@ -66,8 +66,8 @@ RUN zypper ar --no-gpgcheck https://artifactory.algol60.net/artifactory/csm-rpms
     zypper al csm-ssh-keys-roles
 
 # Apply security patches
-RUN zypper patch -y --with-update --with-optional
-RUN zypper clean -a
+COPY zypper-refresh-patch-clean.sh /
+RUN /zypper-refresh-patch-clean.sh && rm /zypper-refresh-patch-clean.sh
 
 # Use for testing/not in pipeline builds
 FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:@CF_GITEA_IMPORT_VERSION@ as cf-gitea-import-base
