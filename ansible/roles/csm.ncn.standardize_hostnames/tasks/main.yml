@@ -1,0 +1,70 @@
+# Copyright 2021 Hewlett Packard Enterprise Development LP
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+# (MIT License)
+
+---
+# Include this role to make sure that the hostname(s) you're targeting is usable for NCN plays.
+# This will register two facts, target_hostname (ncn-XYYY) and all_target_hostnames (ncn-XYYY,ncn-XYYZ,etc.)
+
+- name: Standardize inventory_hostname
+  delegate_to: localhost
+  environment:
+    SLS_BASE_URL: "{{ sls_url }}"
+    BSS_BASE_URL: "{{ bss_url }}"
+    HSM_BASE_URL: "{{ hsm_url }}"
+    TOKEN: "{{ token }}"
+  command: csi automate ncn preflight --action standardize-hostname --hostnames {{ inventory_hostname }}
+    --kubeconfig "{{ kubeconfig_file }}"
+  register: inventory_hostname_output
+
+- name: Check standardization worked
+  delegate_to: localhost
+  when: inventory_hostname_output.rc != 0
+  fail:
+    msg: "Inventory hostname {{ inventory_hostname }} failed to standardize!"
+
+- name: Set target_hostname fact
+  set_fact:
+    target_hostname: "{{ inventory_hostname_output.stdout }}"
+
+
+- name: Standardize ansible_play_hosts_all
+  delegate_to: localhost
+  run_once: true
+  environment:
+    SLS_BASE_URL: "{{ sls_url }}"
+    BSS_BASE_URL: "{{ bss_url }}"
+    HSM_BASE_URL: "{{ hsm_url }}"
+    TOKEN: "{{ token }}"
+  command: csi automate ncn preflight --action standardize-hostname --hostnames {{ ansible_play_hosts_all | join(',') }}
+    --kubeconfig "{{ kubeconfig_file }}"
+  register: ansible_play_hosts_all_output
+
+- name: Check standardization worked
+  delegate_to: localhost
+  run_once: true
+  when: ansible_play_hosts_all_output.rc != 0
+  fail:
+    msg: "Inventory hostnames {{ ansible_play_hosts_all }} failed to standardize!"
+
+- name: Set all_target_hostnames fact
+  set_fact:
+    all_target_hostnames: "{{ ansible_play_hosts_all_output.stdout }}"
