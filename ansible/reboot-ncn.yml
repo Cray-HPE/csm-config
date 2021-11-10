@@ -1,0 +1,46 @@
+#!/usr/bin/env ansible-playbook
+# Copyright 2021 Hewlett Packard Enterprise Development LP
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+# (MIT License)
+
+# These roles must be executed serially for each of the NCNs that is getting rebooted!
+- hosts: all
+  gather_facts: yes
+  any_errors_fatal: true
+  remote_user: root
+  serial: 1
+  vars_files:
+    - vars/csm_ncn_lifecycle.yml
+  roles:
+    - role: csm.ncn.validate_plan
+    - role: csm.ncn.move_first_master
+    - role: csm.ncn.failover_postgres
+
+
+# These next set of roles can be done in parallel as effectively these nodes have been completely removed by this
+# point, so they can do everything else they need at whatever pace they please.
+- hosts: all
+  any_errors_fatal: true
+  remote_user: root
+  vars_files:
+    - vars/csm_ncn_lifecycle.yml
+  roles:
+    - role: csm.ncn.reboot
