@@ -69,8 +69,7 @@ COPY zypper-refresh-patch-clean.sh /
 RUN /zypper-refresh-patch-clean.sh && rm /zypper-refresh-patch-clean.sh
 
 # Use the cf-gitea-import as a base image with CSM content copied in
-#FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:@CF_GITEA_IMPORT_VERSION@ as cf-gitea-import-base
-FROM artifactory.algol60.net/csm-docker/unstable/cf-gitea-import:0.3525.47-20211109201050_06b2fcd as cf-gitea-import-base
+FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:@CF_GITEA_IMPORT_VERSION@ as cf-gitea-import-base
 
 WORKDIR /
 ENV CF_IMPORT_PRODUCT_NAME=csm
