@@ -4,11 +4,11 @@
 # For products that import Ansible configuration content
 cray-import-config:
   config_image:
-    name: csm-config
-    tag: "@config_image_tag@"
+    image:
+      repository: artifactory.algol60.net/csm-docker/stable/csm-config
+      tag: 0.0.0-image
 
   import_job:
     CF_IMPORT_PRODUCT_NAME: "csm"
-    CF_IMPORT_PRODUCT_VERSION: "@product_version@"
+    CF_IMPORT_PRODUCT_VERSION: 0.0.0-image
     CF_IMPORT_GITEA_REPO: "csm-config-management"
-
