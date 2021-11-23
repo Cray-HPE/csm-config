@@ -22,7 +22,7 @@
 # (MIT License)
 
 # These roles must be executed serially for each of the NCNs that is getting rebuilt!
-- hosts: all
+- hosts: Management
   gather_facts: yes
   any_errors_fatal: true
   remote_user: root

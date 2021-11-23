@@ -21,7 +21,8 @@
 # (MIT License)
 
 authorization_header: "Bearer {{ token }}"
-master_ncns:
-  - ncn-m001
-  - ncn-m002
-  - ncn-m003
+
+kubeadm_config_location: "/etc/cray/kubernetes/kubeadm.yaml"
+join_command_location: "/etc/cray/kubernetes/join-command"
+join_control_plane_command_location: "/etc/cray/kubernetes/join-command-control-plane"
+certificate_key_location: "/etc/cray/kubernetes/certificate-key"

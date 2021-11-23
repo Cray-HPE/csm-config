@@ -22,3 +22,6 @@
 
 
 authorization_header: "Bearer {{ token }}"
+
+wait_for_retries: 200
+wait_for_delay: 5
