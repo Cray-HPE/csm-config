@@ -21,7 +21,7 @@
 #
 # (MIT License)
 
-- hosts: all
+- hosts: Management
   gather_facts: no
   any_errors_fatal: true
   remote_user: root

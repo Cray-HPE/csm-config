@@ -53,7 +53,7 @@
   set_fact:
     bootscript_first_access: "{{ starting_access_times.json | json_query(bootscript_json_query) | first | default(0) }}"
 
-- name: Register fist user-data access time
+- name: Register first user-data access time
   set_fact:
     userdata_first_access: "{{ starting_access_times.json | json_query(userdata_json_query) | first | default(0) }}"
 
@@ -66,8 +66,8 @@
   register: latest_access_times
   until: (latest_access_times.json | json_query(bootscript_json_query) | first | default(0) | int) >
     (bootscript_first_access | int)
-  retries: 200
-  delay: 5
+  retries: "{{ wait_for_retries }}"
+  delay: "{{ wait_for_delay }}"
 
 - name: Wait for {{ target_hostname }} to request cloud-init user-data
   delegate_to: localhost
@@ -78,8 +78,8 @@
   register: latest_access_times
   until: (latest_access_times.json | json_query(userdata_json_query) | first | default(0) | int) >
     (userdata_first_access | int)
-  retries: 200
-  delay: 5
+  retries: "{{ wait_for_retries }}"
+  delay: "{{ wait_for_delay }}"
 
 - name: Wait for {{ target_hostname }} to be a member in Kubernetes
   delegate_to: localhost
@@ -93,8 +93,8 @@
   register: is_member_output
   until:
     - is_member_output.rc == 0
-  retries: 200
-  delay: 5
+  retries: "{{ wait_for_retries }}"
+  delay: "{{ wait_for_delay }}"
 
 - name: Wait for baremetal etcd to be healthy
   delegate_to: localhost
@@ -107,8 +107,8 @@
   register: etcd_health_output
   until:
     - etcd_health_output.rc == 0
-  retries: 20
-  delay: 5
+  retries: "{{ wait_for_retries }}"
+  delay: "{{ wait_for_delay }}"
 
 - name: Set BSS meta-data for {{ target_hostname }} to disable disk wiping
   delegate_to: localhost
