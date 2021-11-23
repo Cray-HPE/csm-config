@@ -25,8 +25,21 @@
     name: csm.ncn.download_utils
 - include_role:
     name: csm.ncn.standardize_hostnames
+- include_role:
+    name: csm.ncn.validate_plan
+
+- name: Get master NCN payload from HSM
+  run_once: true
+  delegate_to: localhost
+  uri:
+    url: "{{ hsm_url }}/hsm/v2/State/Components?role=Management&subrole=Master"
+    body_format: json
+    headers:
+      Authorization: "{{ authorization_header }}"
+  register: master_ncns_payload
 
 - name: Get BSS Global cloud-init payload
+  run_once: true
   delegate_to: localhost
   uri:
     url: "{{ bss_url }}/boot/v1/bootparameters"
@@ -39,18 +52,41 @@
   register: global_payload
 
 - name: Get first master hostname
+  run_once: true
+  delegate_to: localhost
   set_fact:
     first_master_hostname: "{{ global_payload.json | first | json_query(json_query) }}"
   vars:
     json_query: '"cloud-init"."meta-data"."first-master-hostname"'
 
+- name: Get master NCN xnames
+  run_once: true
+  delegate_to: localhost
+  set_fact:
+    master_ncn_xnames: "{{ master_ncns_payload.json | json_query(json_query) }}"
+  vars:
+    json_query: 'Components[*].ID'
+
+- name: Translate master xnames to NCN names
+  run_once: true
+  delegate_to: localhost
+  environment:
+    SLS_BASE_URL: "{{ sls_url }}"
+    BSS_BASE_URL: "{{ bss_url }}"
+    HSM_BASE_URL: "{{ hsm_url }}"
+    TOKEN: "{{ token }}"
+  command: csi automate ncn preflight --action standardize-hostname --hostnames {{ master_ncn_xnames | join(',') }}
+    --kubeconfig "{{ kubeconfig_file }}"
+  register: master_ncn_names
+
 - name: Pick new first master
+  run_once: true
   when:
     - first_master_hostname == target_hostname
   delegate_to: localhost
   set_fact:
     new_first_master_hostname: "{{ item }}"
-  with_random_choice: "{{ master_ncns | reject('search', target_hostname) | list }}"
+  with_random_choice: "{{ master_ncn_names.stdout.split(',') | reject('search', target_hostname) | list }}"
 
 - name: Get certificate key
   when:
@@ -78,9 +114,9 @@
   when:
     - first_master_hostname == target_hostname
   delegate_to: "{{ new_first_master_hostname }}"
-  copy:
-    src: "files/token-certs-refresh.sh"
-    dest: "/srv/cray/scripts/kubernetes/"
+  template:
+    src: "templates/token-certs-refresh.sh.j2"
+    dest: "/srv/cray/scripts/kubernetes/token-certs-refresh.sh"
     mode: 0755
 
 - name: Run token certs refresh script
@@ -100,16 +136,15 @@
     job: "/srv/cray/scripts/kubernetes/token-certs-refresh.sh >> /var/log/cray/cron.log 2>&1"
     cron_file: cray-k8s-token-certs-refresh
 
-- name: Set new first master in BSS global cloud-init metadata
-  when:
-    - first_master_hostname == target_hostname
-  delegate_to: localhost
-  environment:
-    SLS_BASE_URL: "{{ sls_url }}"
-    BSS_BASE_URL: "{{ bss_url }}"
-    HSM_BASE_URL: "{{ hsm_url }}"
-    TOKEN: "{{ token }}"
-  command: csi handoff bss-update-cloud-init --set
-    meta-data.first-master-hostname="{{ new_first_master_hostname }}" --limit Global
-  register: is_member_output
-  ignore_errors: true
+#- name: Set new first master in BSS global cloud-init metadata
+#  when:
+#    - first_master_hostname == target_hostname
+#  delegate_to: localhost
+#  environment:
+#    SLS_BASE_URL: "{{ sls_url }}"
+#    BSS_BASE_URL: "{{ bss_url }}"
+#    HSM_BASE_URL: "{{ hsm_url }}"
+#    TOKEN: "{{ token }}"
+#  command: csi handoff bss-update-cloud-init --set
+#    meta-data.first-master-hostname="{{ new_first_master_hostname }}" --limit Global
+#  register: is_member_output
