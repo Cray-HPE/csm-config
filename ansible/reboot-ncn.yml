@@ -22,7 +22,7 @@
 # (MIT License)
 
 # These roles must be executed serially for each of the NCNs that is getting rebooted!
-- hosts: all
+- hosts: Management
   gather_facts: yes
   any_errors_fatal: true
   remote_user: root
@@ -37,7 +37,7 @@
 
 # These next set of roles can be done in parallel as effectively these nodes have been completely removed by this
 # point, so they can do everything else they need at whatever pace they please.
-- hosts: all
+- hosts: Management
   any_errors_fatal: true
   remote_user: root
   vars_files:
