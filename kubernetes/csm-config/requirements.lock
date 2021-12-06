@@ -1,6 +1,0 @@
-dependencies:
-- name: cray-import-config
-  repository: https://artifactory.algol60.net/artifactory/csm-helm-charts/
-  version: 1.0.0
-digest: sha256:4815ba1dbed7b7e20561c32d3c704322fb1d3a811e782936497728882e832bf4
-generated: "2021-09-14T16:01:25.29864334-05:00"

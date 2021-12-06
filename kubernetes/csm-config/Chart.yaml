@@ -1,18 +1,25 @@
-apiVersion: v1
-description: "Kubernetes resources for csm-config"
+apiVersion: v2
 name: "csm-config"
-home: "scms/csm-config"
-version: @chart_version@
-appVersion: @product_version@
+version: 0.0.0-chart
+description: "Kubernetes resources for csm-config"
 keywords:
   - csm
   - cfs
-  - ansible
+home: https://github.com/Cray-HPE/csm-config
 sources:
   - "https://github.com/Cray-HPE/csm-config"
+dependencies:
+- name: cray-import-config
+  version: ^2.0.0
+  repository: https://artifactory.algol60.net/artifactory/csm-helm-charts/
 maintainers:
-  - name: jsl
+  - name: jsl-hpe
     email: joel.landsteiner@hpe.com
-  - name: rkleinman
+  - name: rkleinman-hpe
     email: randy.kleinman@hpe.com
-
+appVersion: 0.0.0-image
+annotations:
+  artifacthub.io/images: |
+    - name: csm-config
+      image: artifactory.algol60.net/csm-docker/stable/csm-config:0.0.0-image
+  artifacthub.io/license: MIT

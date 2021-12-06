@@ -1,0 +1,5 @@
+chart-dirs:
+  - kubernetes
+chart-repos:
+  - csm-algol60=https://artifactory.algol60.net/artifactory/csm-helm-charts/
+all: true
