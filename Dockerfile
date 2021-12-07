@@ -59,7 +59,7 @@ ARG ARCH=x86_64
 
 # Install csm-ssh-keys-roles RPM, and lock the version, just to be certain it is not
 # upgraded inadvertently somehow later
-RUN zypper ar --no-gpgcheck https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/ csm && \
+RUN zypper ar --no-gpgcheck https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp2/ csm && \
     zypper refresh && \
 	zypper in -f --no-confirm csm-ssh-keys-roles-${CSM_SSH_KEYS_VERSION} && \
 	zypper al csm-ssh-keys-roles
