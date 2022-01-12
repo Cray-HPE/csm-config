@@ -88,20 +88,53 @@
     new_first_master_hostname: "{{ item }}"
   with_random_choice: "{{ master_ncn_names.stdout.split(',') | reject('search', target_hostname) | list }}"
 
-- name: Copy promote master script to new first master
+- name: Get certificate key
+  when:
+    - first_master_hostname == target_hostname
+  delegate_to: "{{ new_first_master_hostname }}"
+  shell: kubeadm init phase upload-certs --upload-certs 2>&1 | tail -1 | tee {{ certificate_key_location }}
+  register: certificate_key
+
+- name: Build kubeadm config builder script
   when:
     - first_master_hostname == target_hostname
   delegate_to: "{{ new_first_master_hostname }}"
   template:
-    src: "templates/promote-first-master.sh.j2"
-    dest: "/tmp/promote-first-master.sh"
+    src: "templates/build-kubeadm.sh.j2"
+    dest: "/tmp/build-kubeadm.sh"
     mode: 0755
 
-- name: Run promote first master script
+- name: Generate kubeadm config using script
   when:
     - first_master_hostname == target_hostname
   delegate_to: "{{ new_first_master_hostname }}"
-  shell: /tmp/promote-first-master.sh
+  shell: /tmp/build-kubeadm.sh
+
+- name: Copy token certs refresh script to new first master
+  when:
+    - first_master_hostname == target_hostname
+  delegate_to: "{{ new_first_master_hostname }}"
+  template:
+    src: "templates/token-certs-refresh.sh.j2"
+    dest: "/srv/cray/scripts/kubernetes/token-certs-refresh.sh"
+    mode: 0755
+
+- name: Run token certs refresh script
+  when:
+    - first_master_hostname == target_hostname
+  delegate_to: "{{ new_first_master_hostname }}"
+  shell: /srv/cray/scripts/kubernetes/token-certs-refresh.sh
+
+- name: Setup cron to run refresh script
+  when:
+    - first_master_hostname == target_hostname
+  delegate_to: "{{ new_first_master_hostname }}"
+  cron:
+    name: cray-k8s-token-certs-refresh
+    special_time: hourly
+    user: root
+    job: "/srv/cray/scripts/kubernetes/token-certs-refresh.sh >> /var/log/cray/cron.log 2>&1"
+    cron_file: cray-k8s-token-certs-refresh
 
 - name: Set new first master in BSS global cloud-init metadata
   when:
