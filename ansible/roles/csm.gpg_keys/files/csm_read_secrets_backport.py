@@ -1,4 +1,4 @@
-# Copyright 2021-2022 Hewlett Packard Enterprise Development LP
+# Copyright 2022 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -20,28 +20,19 @@
 #
 # (MIT License)
 
-# Tasks for the csm.gpg_keys role
-- name: Fetch the HPE GPG Signing Key from the K8S secret
-  no_log: true
-  script: csm_read_secrets_backport.py
-  args:
-    executable: /usr/bin/python3
-  delegate_to: localhost
-  run_once: true
-  register: hpe_gpg_pubkey
+import base64
 
-- name: Create a temporary file to store the key content
-  tempfile:
-    state: file
-    suffix: key
-  register: temp_key_file
+from kubernetes import client, config
+from kubernetes.client.rest import ApiException
 
-- name: Copy the key content to a temporary file
-  copy:
-    content: "{{ hpe_gpg_pubkey.stdout }}"
-    dest: "{{ temp_key_file.path }}"
+config.load_incluster_config()
 
-- name: Install the HPE Signing Key
-  rpm_key:
-    state: present
-    key: "{{ temp_key_file.path }}"
+def main():
+    core_client = client.CoreV1Api()
+    response = core_client.read_namespaced_secret(name="hpe-signing-key", namespace="services")
+    return_value = response.data['gpg-pubkey']
+    return_value = base64.b64decode(return_value).decode('utf-8')
+    print(return_value)
+
+if __name__ == "__main__":
+    main()
