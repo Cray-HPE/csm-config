@@ -101,7 +101,39 @@
   when:
     - first_master_hostname == target_hostname
   delegate_to: "{{ new_first_master_hostname }}"
-  shell: /tmp/promote-first-master.sh
+  shell: /tmp/build-kubeadm.sh
+
+- name: Create folder for token certs refresh script
+  when:
+    - first_master_hostname == target_hostname
+  delegate_to: "{{ new_first_master_hostname }}"
+  shell: mkdir -p /srv/cray/scripts/kubernetes
+
+- name: Copy token certs refresh script to new first master
+  when:
+    - first_master_hostname == target_hostname
+  delegate_to: "{{ new_first_master_hostname }}"
+  template:
+    src: "templates/token-certs-refresh.sh.j2"
+    dest: "/srv/cray/scripts/kubernetes/token-certs-refresh.sh"
+    mode: 0755
+
+- name: Run token certs refresh script
+  when:
+    - first_master_hostname == target_hostname
+  delegate_to: "{{ new_first_master_hostname }}"
+  shell: /srv/cray/scripts/kubernetes/token-certs-refresh.sh
+
+- name: Setup cron to run refresh script
+  when:
+    - first_master_hostname == target_hostname
+  delegate_to: "{{ new_first_master_hostname }}"
+  cron:
+    name: cray-k8s-token-certs-refresh
+    special_time: hourly
+    user: root
+    job: "/srv/cray/scripts/kubernetes/token-certs-refresh.sh >> /var/log/cray/cron.log 2>&1"
+    cron_file: cray-k8s-token-certs-refresh
 
 - name: Set new first master in BSS global cloud-init metadata
   when:
