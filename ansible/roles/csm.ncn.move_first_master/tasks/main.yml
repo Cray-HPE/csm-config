@@ -88,63 +88,30 @@
     new_first_master_hostname: "{{ item }}"
   with_random_choice: "{{ master_ncn_names.stdout.split(',') | reject('search', target_hostname) | list }}"
 
-- name: Get certificate key
-  when:
-    - first_master_hostname == target_hostname
-  delegate_to: "{{ new_first_master_hostname }}"
-  shell: kubeadm init phase upload-certs --upload-certs 2>&1 | tail -1
-  register: certificate_key
-
-- name: Build kubeadm config builder script
+- name: Copy promote master script to new first master
   when:
     - first_master_hostname == target_hostname
   delegate_to: "{{ new_first_master_hostname }}"
   template:
-    src: "templates/build-kubeadm.sh.j2"
-    dest: "/tmp/build-kubeadm.sh"
+    src: "templates/promote-first-master.sh.j2"
+    dest: "/tmp/promote-first-master.sh"
     mode: 0755
 
-- name: Generate kubeadm config using script
+- name: Run promote first master script
   when:
     - first_master_hostname == target_hostname
   delegate_to: "{{ new_first_master_hostname }}"
-  shell: /tmp/build-kubeadm.sh
+  shell: /tmp/promote-first-master.sh
 
-- name: Copy token certs refresh script to new first master
+- name: Set new first master in BSS global cloud-init metadata
   when:
     - first_master_hostname == target_hostname
-  delegate_to: "{{ new_first_master_hostname }}"
-  template:
-    src: "templates/token-certs-refresh.sh.j2"
-    dest: "/srv/cray/scripts/kubernetes/token-certs-refresh.sh"
-    mode: 0755
-
-- name: Run token certs refresh script
-  when:
-    - first_master_hostname == target_hostname
-  delegate_to: "{{ new_first_master_hostname }}"
-  shell: /srv/cray/scripts/kubernetes/token-certs-refresh.sh
-
-- name: Setup cron to run refresh script
-  when:
-    - first_master_hostname == target_hostname
-  delegate_to: "{{ new_first_master_hostname }}"
-  cron:
-    name: cray-k8s-token-certs-refresh
-    special_time: hourly
-    user: root
-    job: "/srv/cray/scripts/kubernetes/token-certs-refresh.sh >> /var/log/cray/cron.log 2>&1"
-    cron_file: cray-k8s-token-certs-refresh
-
-#- name: Set new first master in BSS global cloud-init metadata
-#  when:
-#    - first_master_hostname == target_hostname
-#  delegate_to: localhost
-#  environment:
-#    SLS_BASE_URL: "{{ sls_url }}"
-#    BSS_BASE_URL: "{{ bss_url }}"
-#    HSM_BASE_URL: "{{ hsm_url }}"
-#    TOKEN: "{{ token }}"
-#  command: csi handoff bss-update-cloud-init --set
-#    meta-data.first-master-hostname="{{ new_first_master_hostname }}" --limit Global
-#  register: is_member_output
+  delegate_to: localhost
+  environment:
+    SLS_BASE_URL: "{{ sls_url }}"
+    BSS_BASE_URL: "{{ bss_url }}"
+    HSM_BASE_URL: "{{ hsm_url }}"
+    TOKEN: "{{ token }}"
+  command: csi handoff bss-update-cloud-init --set
+    meta-data.first-master-hostname="{{ new_first_master_hostname }}" --limit Global
+  register: is_member_output
