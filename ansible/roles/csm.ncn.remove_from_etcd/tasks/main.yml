@@ -38,13 +38,6 @@
   register: is_member_output
   ignore_errors: true
 
-- name: Stop baremetal etcd service on target NCN
-  when:
-    - is_member_output.rc == 0
-  service:
-    name: etcd
-    state: stopped
-
 - name: Remove NCN from baremetal etcd cluster
   when:
     - is_member_output.rc == 0
@@ -55,4 +48,23 @@
     HSM_BASE_URL: "{{ hsm_url }}"
     TOKEN: "{{ token }}"
   command: csi automate ncn etcd --action remove-member --ncn "{{ target_hostname }}"
+    --kubeconfig "{{ kubeconfig_file }}"
+
+- name: Stop baremetal etcd service on target NCN
+  when:
+    - is_member_output.rc == 0
+  service:
+    name: etcd
+    state: stopped
+
+- name: Add NCN back to baremetal etcd cluster
+  when:
+    - is_member_output.rc == 0
+  delegate_to: localhost
+  environment:
+    SLS_BASE_URL: "{{ sls_url }}"
+    BSS_BASE_URL: "{{ bss_url }}"
+    HSM_BASE_URL: "{{ hsm_url }}"
+    TOKEN: "{{ token }}"
+  command: csi automate ncn etcd --action add-member --ncn "{{ target_hostname }}"
     --kubeconfig "{{ kubeconfig_file }}"
