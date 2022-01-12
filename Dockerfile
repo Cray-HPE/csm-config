@@ -61,7 +61,7 @@ ARG ARCH=x86_64
 # upgraded inadvertently somehow later
 RUN zypper ar --no-gpgcheck https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp2/ csm && \
     zypper refresh && \
-	zypper in -f --no-confirm csm-ssh-keys-roles-${CSM_SSH_KEYS_VERSION} && \
+	zypper in -f --no-confirm csm-ssh-keys-roles-1.1.9-1 && \
 	zypper al csm-ssh-keys-roles
 
 # Apply security patches
