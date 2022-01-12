@@ -110,6 +110,12 @@
   delegate_to: "{{ new_first_master_hostname }}"
   shell: /tmp/build-kubeadm.sh
 
+- name: Create folder for token certs refresh script
+  when:
+    - first_master_hostname == target_hostname
+  delegate_to: "{{ new_first_master_hostname }}"
+  shell: mkdir -p /srv/cray/scripts/kubernetes
+
 - name: Copy token certs refresh script to new first master
   when:
     - first_master_hostname == target_hostname
