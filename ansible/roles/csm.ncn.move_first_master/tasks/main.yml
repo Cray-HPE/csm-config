@@ -136,6 +136,28 @@
     job: "/srv/cray/scripts/kubernetes/token-certs-refresh.sh >> /var/log/cray/cron.log 2>&1"
     cron_file: cray-k8s-token-certs-refresh
 
+- name: Copy the cronjob kicker script into /usr/bin
+  when:
+    - first_master_hostname == target_hostname
+  delegate_to: "{{ new_first_master_hostname }}"
+  copy:
+    remote_src: yes
+    src: /srv/cray/resources/common/cronjob_kicker.py
+    dest: /usr/bin/cronjob_kicker.py
+    mode: 0755
+
+- name: Setup cron to run cronjob kicker script
+  when:
+    - first_master_hostname == target_hostname
+  delegate_to: "{{ new_first_master_hostname }}"
+  cron:
+    name: cray-k8s-cronjob-kicker
+    minute: 0
+    hour: "*/2"
+    user: root
+    job: "KUBECONFIG=/etc/kubernetes/admin.conf /usr/bin/cronjob_kicker.py"
+    cron_file: cray-k8s-cronjob-kicker
+
 #- name: Set new first master in BSS global cloud-init metadata
 #  when:
 #    - first_master_hostname == target_hostname
