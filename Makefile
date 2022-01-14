@@ -1,4 +1,4 @@
-# Copyright 2021 Hewlett Packard Enterprise Development LP
+# Copyright 2021-2022 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -33,7 +33,7 @@ CHART_PATH ?= kubernetes
 CHART_NAME ?= $(NAME)
 
 CONFIG_IMAGE_NAME ?= $(NAME)
-CONFIG_IMAGE_TAG ?= $(CHART_VERSION)
+CONFIG_IMAGE_TAG ?= $(DOCKER_VERSION)
 
 HELM_UNITTEST_IMAGE ?= quintush/helm-unittest:3.3.0-0.2.5
 
