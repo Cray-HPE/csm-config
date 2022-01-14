@@ -1,5 +1,4 @@
-#!/usr/bin/env ansible-playbook
-# Copyright 2020-2021 Hewlett Packard Enterprise Development LP
+# Copyright 2021 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -20,8 +19,18 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 # (MIT License)
+---
+dependencies:
+  - csm.gpg_keys
 
-# Top-level site.yml for CSM Deployed Environments (NCNs, except for UANs)
-- import_playbook: ncn-master_nodes.yml
-- import_playbook: ncn-worker_nodes.yml
-- import_playbook: ncn-storage_nodes.yml
+galaxy_info:
+  role_name: csm.packages
+  author: randy.kleinman@hpe.com
+  description: Cray System Management (CSM) RPM Repository Setup and Package Installation
+  company: "Hewlett Packard Enterprise Development LP"
+  license: "MIT"
+  min_ansible_version: 2.9
+  platforms: []
+  galaxy_tags:
+    - system
+    - hpc

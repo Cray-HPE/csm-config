@@ -1,5 +1,4 @@
-#!/usr/bin/env ansible-playbook
-# Copyright 2020-2021 Hewlett Packard Enterprise Development LP
+# Copyright 2022 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -21,7 +20,19 @@
 #
 # (MIT License)
 
-# Top-level site.yml for CSM Deployed Environments (NCNs, except for UANs)
-- import_playbook: ncn-master_nodes.yml
-- import_playbook: ncn-worker_nodes.yml
-- import_playbook: ncn-storage_nodes.yml
+import base64
+
+from kubernetes import client, config
+from kubernetes.client.rest import ApiException
+
+config.load_incluster_config()
+
+def main():
+    core_client = client.CoreV1Api()
+    response = core_client.read_namespaced_secret(name="hpe-signing-key", namespace="services")
+    return_value = response.data['gpg-pubkey']
+    return_value = base64.b64decode(return_value).decode('utf-8')
+    print(return_value)
+
+if __name__ == "__main__":
+    main()

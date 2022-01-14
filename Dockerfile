@@ -61,7 +61,7 @@ ARG ARCH=x86_64
 # upgraded inadvertently somehow later
 RUN zypper ar --no-gpgcheck https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp2/ csm && \
     zypper refresh && \
-	zypper in -f --no-confirm csm-ssh-keys-roles-${CSM_SSH_KEYS_VERSION} && \
+	zypper in -f --no-confirm csm-ssh-keys-roles-1.1.18-1 && \
 	zypper al csm-ssh-keys-roles
 
 # Apply security patches
@@ -77,9 +77,9 @@ ADD .version /product_version
 
 # Copy in dependencies' Ansible content
 COPY --from=product-content-base /opt/cray/ansible/roles/      /content/roles/
-#COPY --from=product-content-base /opt/cray/ansible/playbooks/ /content/playbooks/
 
 # Copy in CSM Ansible content
 COPY ansible/ /content/
 
 # Base image entrypoint takes it from here
+
