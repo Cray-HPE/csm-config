@@ -35,3 +35,5 @@ csm_sles_packages:
   - hms-scsd-ct-test
   - hms-sls-ct-test
   - hms-smd-ct-test
+  - loftsman
+
