@@ -32,7 +32,6 @@
   roles:
     - role: csm.ncn.validate_plan
     - role: csm.ncn.move_first_master
-    - role: csm.ncn.failover_postgres
     - role: csm.ncn.remove_from_etcd
     - role: csm.ncn.remove_from_kubernetes
     - role: csm.ncn.wipe_disks
