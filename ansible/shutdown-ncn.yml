@@ -32,7 +32,6 @@
   roles:
     - role: csm.ncn.validate_plan
     - role: csm.ncn.move_first_master
-    - role: csm.ncn.failover_postgres
 
 
 # These next set of roles can be done in parallel as effectively these nodes have been completely removed by this
