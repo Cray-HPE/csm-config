@@ -1,4 +1,7 @@
-# Copyright 2021 Hewlett Packard Enterprise Development LP
+#
+# MIT License
+#
+# (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -12,13 +15,12 @@
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
 # THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
 # OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# (MIT License)
 
 # Tasks for the csm.ssh_keys role
 - name: Get vault token
@@ -87,9 +89,15 @@
     state: present
   when: ssh_pub_key != ''
 
+# A newline is appended to the file contents for both files. If the file does not end with a newline, SSH considers
+# it to be in an invalid format. Additional superfluous newlines do not cause a problem. Therefore, we append a newline
+# to both SSH key files, because:
+# 1. There is no reason an administrator would want to populate their SSH key files with an invalid format, and
+# 2. We have seen cases where users accidentally omit the trailing newline when putting these values in Vault.
+
 - name: Copy the public key
   copy:
-    content: "{{ ssh_pub_key }}"
+    content: "{{ ssh_pub_key }}\n"
     dest: "{{ user_registered.home }}/.ssh/id_{{ ssh_keys_keytype }}.pub"
     mode: 0644
   become: true
@@ -99,7 +107,7 @@
 - name: Copy the private key
   no_log: true
   copy:
-    content: "{{ ssh_priv_key }}"
+    content: "{{ ssh_priv_key }}\n"
     dest: "{{ user_registered.home }}/.ssh/id_{{ ssh_keys_keytype }}"
     mode: 0600
   become: true
