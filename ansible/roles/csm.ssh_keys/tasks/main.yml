@@ -88,9 +88,15 @@
     state: present
   when: ssh_pub_key != ''
 
+# A newline is appended to the file contents for both files. If the file does not end with a newline, SSH considers
+# it to be in an invalid format. Additional superfluous newlines do not cause a problem. Therefore, we append a newline
+# to both SSH key files, because:
+# 1. There is no reason an administrator would want to populate their SSH key files with an invalid format, and
+# 2. We have seen cases where users accidentally omit the trailing newline when putting these values in Vault.
+
 - name: Copy the public key
   copy:
-    content: "{{ ssh_pub_key }}"
+    content: "{{ ssh_pub_key }}\n"
     dest: "{{ user_registered.home }}/.ssh/id_{{ ssh_keys_keytype }}.pub"
     mode: 0644
   become: true
@@ -100,7 +106,7 @@
 - name: Copy the private key
   no_log: true
   copy:
-    content: "{{ ssh_priv_key }}"
+    content: "{{ ssh_priv_key }}\n"
     dest: "{{ user_registered.home }}/.ssh/id_{{ ssh_keys_keytype }}"
     mode: 0600
   become: true
