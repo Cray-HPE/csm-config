@@ -75,11 +75,12 @@
   - name: Determine if {{ chn_interface }} device exists
     shell: "ip -o link list | cut -f 2 -d ':' | tr -d ' ' | grep '{{ chn_interface }}'"
     register: chn_device
+    ignore_errors: true
 
   - name: FAIL if {{ chn_interface }} is not found
     fail:
       msg: "Interface {{ chn_interface }} not found."
-    when: (chn_device.stdout_lines | length) < 1
+    when: "(chn_device.stdout_lines | length) < 1 or chn_device.rc != 0"
 
   - name: "Configure CHN IP address on interface {{ chn_interface }}"
     shell: "ip address add {{ chn_ip }}/{{ chn_prefix }} dev {{ chn_interface }}"
