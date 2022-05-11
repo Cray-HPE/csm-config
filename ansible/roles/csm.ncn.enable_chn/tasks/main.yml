@@ -1,0 +1,98 @@
+#
+# MIT License
+#
+# (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+---
+- name: "Get BICAN info from SLS"
+  local_action:
+    module: uri
+    url: "http://cray-sls/v1/search/networks?name=BICAN"
+    method: GET
+  register: sls_bican
+
+- name: "Get SystemDefaultRoute from SLS."
+  set_fact:
+    bican_network: "{{ item.ExtraProperties.SystemDefaultRoute }}"
+  loop: "{{ sls_bican.json }}"
+  when: sls_bican.status == 200
+
+- name: "Configure NCN CHN IP addresses"
+  block:
+
+  - name: "Get CHN info from SLS"
+    local_action:
+      module: uri
+      url: "http://cray-sls/v1/search/networks?name=CHN"
+      method: GET
+    register: sls_chn
+
+  - name: "Get CHN Subnets"
+    set_fact:
+      chn_subnets: "{{ item.ExtraProperties.Subnets }}"
+    loop: "{{ sls_chn.json }}"
+
+  - name: "Get CHN data from SLS"
+    set_fact:
+      customer_highspeed_ips: "{{ item.IPReservations }}"
+      customer_highspeed_network: "{{ item.CIDR }}"
+    loop: "{{ chn_subnets }}"
+    when: (sls_bican.status == 200) and (item.Name == "bootstrap_dhcp")
+
+  - name: "Get CHN IP from SLS"
+    set_fact:
+      chn_ip: "{{ item.IPAddress }}"
+    loop: "{{ customer_highspeed_ips }}"
+    when: (sls_bican.status == 200) and (item.Name == ansible_hostname)
+
+  - name: "FAIL if CHN IP is not defined"
+    fail:
+      msg: "CHN IP is not defined for {{ ansible_hostname }}"
+    when: chn_ip is not defined
+
+  - name: "Get CHN Prefix"
+    set_fact:
+      chn_prefix: "{{ customer_highspeed_network | ipaddr('prefix') }}"
+
+  - name: Determine if {{ chn_interface }} device exists
+    shell: "ip -o link list | cut -f 2 -d ':' | tr -d ' ' | grep '{{ chn_interface }}'"
+    register: chn_device
+    ignore_errors: true
+
+  - name: FAIL if {{ chn_interface }} is not found
+    fail:
+      msg: "Interface {{ chn_interface }} not found."
+    when: "(chn_device.stdout_lines | length) < 1 or chn_device.rc != 0"
+
+  - name: "Configure CHN IP address on interface {{ chn_interface }}"
+    shell: "ip address add {{ chn_ip }}/{{ chn_prefix }} dev {{ chn_interface }}"
+    failed_when: "result.rc != 0 and 'RTNETLINK answers: File exists' not in result.stderr"
+    register: result
+    when: chn_ip is defined
+
+  - name: "Check that the {{ chn_interface }} interface has the expected IP"
+    shell: "ip addr show {{ chn_interface }} | grep -q {{ chn_ip }}/{{ chn_prefix }}"
+    failed_when: result.rc != 0
+    register: result
+    when: chn_ip is defined
+
+  when:
+    - bican_network == "CHN"
