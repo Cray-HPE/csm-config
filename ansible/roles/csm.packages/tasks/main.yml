@@ -29,7 +29,6 @@
     repo: "{{ item.repo }}"
     state: present
     disable_gpg_check: "{{ item.disable_gpg_check | default('no') }}"
-  when: ansible_os_family == "SLE_HPC"
   loop: "{{ csm_sles_repositories }}"
 
 # CSM repos are generated during the release distribution creation and
@@ -40,12 +39,9 @@
   args:
     warn: no  # Ansible's Zypper module does not provide this feature
   loop: "{{ csm_sles_repositories }}"
-  when: ansible_os_family == "SLE_HPC"
 
 - name: Install RPMs (SLES-based)
   zypper:
-    name: "{{ csm_sles_packages }}"
+    name: "{{ packages }}"
     state: latest
     update_cache: yes
-  when: ansible_os_family == "SLE_HPC"
-

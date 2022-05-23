@@ -39,6 +39,9 @@
 
     # Install CSM repositories and packages
     - role: csm.packages
+      vars:
+        packages: "{{ ncn_csm_sles_packages }}"
+      when: ansible_os_family == "SLE_HPC"
 
     # Set the root password from the value stored in cray-vault
     - role: csm.password
