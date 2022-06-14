@@ -1,7 +1,8 @@
+#!/usr/bin/env ansible-playbook
 #
 # MIT License
 #
-# (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2022 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -21,23 +22,27 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-ncn_csm_sles_packages:
-  - cray-cmstools-crayctldeploy
-  - hms-bss-ct-test
-  - hms-capmc-ct-test
-  - hms-ct-test-base
-  - hms-fas-ct-test
-  - hms-hmcollector-ct-test
-  - hms-hbtd-ct-test
-  - hms-hmnfd-ct-test
-  - hms-meds-ct-test
-  - hms-reds-ct-test
-  - hms-rts-ct-test
-  - hms-scsd-ct-test
-  - hms-sls-ct-test
-  - hms-smd-ct-test
-  - loftsman
+# Compute Nodes Play
+- hosts: Compute
+  gather_facts: yes
+  any_errors_fatal: true
+  remote_user: root
+  vars_files:
+    - vars/csm_repos.yml
+    - vars/csm_packages.yml
 
-compute_csm_sles_packages:
-  - bos-reporter
-  - cfs-state-reporter
+  roles:
+    # Install CSM repositories and packages
+    - role: csm.packages
+      vars:
+        packages: "{{ compute_csm_sles_packages }}"
+      when: ansible_distribution == "SLES"
+
+  tasks:
+    - name: Add reporters to presets file
+      blockinfile:
+        path: "/usr/lib/systemd/system-preset/89-cray-default.preset"
+        block: |
+          # More Cray services
+          enable bos-reporter.service
+          enable cfs-state-reporter.service
