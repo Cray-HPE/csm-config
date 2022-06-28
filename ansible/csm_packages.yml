@@ -23,7 +23,7 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 # Compute Nodes Play
-- hosts: Compute
+- hosts: Compute,Application
   gather_facts: yes
   any_errors_fatal: true
   remote_user: root
@@ -35,7 +35,7 @@
     # Install CSM repositories and packages
     - role: csm.packages
       vars:
-        packages: "{{ compute_csm_sles_packages }}"
+        packages: "{{ general_csm_sles_packages }}"
       when: ansible_distribution == "SLES"
 
   tasks:
