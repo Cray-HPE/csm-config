@@ -1,4 +1,3 @@
-#!/usr/bin/env ansible-playbook
 #
 # MIT License
 #
@@ -22,34 +21,6 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# NCN Worker Nodes Play
-- hosts: Management_Worker
-  gather_facts: yes
-  any_errors_fatal: true
-  remote_user: root
-  vars_files:
-    - vars/csm_repos.yml
-    - vars/csm_packages.yml
+# Defaults for the csm.ncn.enable_chn role. See the README.md for information.
 
-  roles:
-    # Allow trust of CSM generated keys for elective passwordless SSH;
-    # Enables both passwordless ssh from, and to, all nodes.
-    - role: trust-csm-ssh-keys
-    - role: passwordless-ssh
-
-    # Install CSM repositories and packages
-    - role: csm.packages
-      vars:
-        packages: "{{ ncn_csm_sles_packages }}"
-      when: ansible_os_family == "SLE_HPC"
-
-    # Set the root password from the value stored in cray-vault
-    - role: csm.password
-      vars:
-        password_username: 'root'
-
-    # Distribute SSH keys for the root user
-    - role: csm.ssh_keys
-      vars:
-        ssh_keys_username: 'root'
-
+chn_interface: hsn0

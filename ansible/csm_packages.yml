@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2022 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -22,8 +22,8 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# NCN Worker Nodes Play
-- hosts: Management_Worker
+# Compute Nodes Play
+- hosts: Compute,Application
   gather_facts: yes
   any_errors_fatal: true
   remote_user: root
@@ -32,24 +32,17 @@
     - vars/csm_packages.yml
 
   roles:
-    # Allow trust of CSM generated keys for elective passwordless SSH;
-    # Enables both passwordless ssh from, and to, all nodes.
-    - role: trust-csm-ssh-keys
-    - role: passwordless-ssh
-
     # Install CSM repositories and packages
     - role: csm.packages
       vars:
-        packages: "{{ ncn_csm_sles_packages }}"
-      when: ansible_os_family == "SLE_HPC"
+        packages: "{{ general_csm_sles_packages }}"
+      when: ansible_distribution == "SLES"
 
-    # Set the root password from the value stored in cray-vault
-    - role: csm.password
-      vars:
-        password_username: 'root'
-
-    # Distribute SSH keys for the root user
-    - role: csm.ssh_keys
-      vars:
-        ssh_keys_username: 'root'
-
+  tasks:
+    - name: Add reporters to presets file
+      blockinfile:
+        path: "/usr/lib/systemd/system-preset/89-cray-default.preset"
+        block: |
+          # More Cray services
+          enable bos-reporter.service
+          enable cfs-state-reporter.service

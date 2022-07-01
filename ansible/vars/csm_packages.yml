@@ -21,7 +21,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-csm_sles_packages:
+ncn_csm_sles_packages:
   - cray-cmstools-crayctldeploy
   - hms-bss-ct-test
   - hms-capmc-ct-test
@@ -38,3 +38,6 @@ csm_sles_packages:
   - hms-smd-ct-test
   - loftsman
 
+general_csm_sles_packages:
+  - bos-reporter
+  - cfs-state-reporter
