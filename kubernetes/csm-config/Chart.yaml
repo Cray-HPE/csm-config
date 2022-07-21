@@ -38,11 +38,11 @@ dependencies:
 maintainers:
   - name: jsl-hpe
     email: joel.landsteiner@hpe.com
-  - name: rkleinman-hpe
-    email: randy.kleinman@hpe.com
+  - name: mharding-hpe
+    email: mitchell.harding@hpe.com
 appVersion: 0.0.0-image
 annotations:
   artifacthub.io/images: |
     - name: csm-config
-      image: artifactory.algol60.net/csm-docker/stable/csm-config:0.0.0-image
+      image: artifactory.algol60.net/csm-docker/S-T-A-B-L-E/csm-config:0.0.0-image
   artifacthub.io/license: MIT
