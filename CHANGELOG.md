@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Removed leftover build files from old dynamic versioning system
-- Removed Randy Kleinman as a maintaner
+- Removed Randy Kleinman as a maintainer
 
 ## [1.10.0] - 2022-07-05
 ### Changed
