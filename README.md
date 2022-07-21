@@ -46,9 +46,6 @@ builds a docker image), and .chart_version (if this repo builds a helm chart) fi
 on github, this is done by the setVersionFiles() function.
 
 ## Versioning
-The version of this repo is generated dynamically at build time by running the version.py script in 
-cms-meta-tools. The version is included near the very beginning of the github build output. 
-
 In order to make it easier to go from an artifact back to the source code that produced that artifact,
 a text file named gitInfo.txt is added to Docker images built from this repo. For Docker images,
 it can be found in the / folder. This file contains the branch from which it was built and the most
@@ -60,8 +57,7 @@ For RPMs, a changelog entry is added with similar information.
 
 ## New Release Branches
 When making a new release branch:
-    * Be sure to set the `.x` and `.y` files to the desired major and minor version number for this repo for this release. 
-    * If an `update_external_versions.conf` file exists in this repo, be sure to update that as well, if needed.
+    * If an `update_external_versions.conf` file exists in this repo, be sure to update that, if needed.
 
 ## Copyright and License
 This project is copyrighted by Hewlett Packard Enterprise Development LP and is

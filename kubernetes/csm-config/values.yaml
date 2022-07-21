@@ -28,7 +28,7 @@
 cray-import-config:
   config_image:
     image:
-      repository: artifactory.algol60.net/csm-docker/stable/csm-config
+      repository: artifactory.algol60.net/csm-docker/S-T-A-B-L-E/csm-config
       tag: 0.0.0-image
 
   import_job:
