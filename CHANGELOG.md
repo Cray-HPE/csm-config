@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Modified build to create valid unstable charts
 - Added Mitch Harding as a maintainer
+- Update minor version number used for csm-ssh-keys and cf-gitea-import
 
 ### Removed
 
