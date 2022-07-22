@@ -23,19 +23,6 @@
 #
 ncn_csm_sles_packages:
   - cray-cmstools-crayctldeploy
-  - hms-bss-ct-test
-  - hms-capmc-ct-test
-  - hms-ct-test-base
-  - hms-fas-ct-test
-  - hms-hmcollector-ct-test
-  - hms-hbtd-ct-test
-  - hms-hmnfd-ct-test
-  - hms-meds-ct-test
-  - hms-reds-ct-test
-  - hms-rts-ct-test
-  - hms-scsd-ct-test
-  - hms-sls-ct-test
-  - hms-smd-ct-test
   - loftsman
 
 general_csm_sles_packages:
