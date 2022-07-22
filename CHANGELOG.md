@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Removed HMS test RPMs from CSM packages list, as they are no longer used as of CSM 1.3
+
 ## [1.10.1] - 2022-07-21
 
 ### Added
