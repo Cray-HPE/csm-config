@@ -35,7 +35,8 @@
 - name: Update the certificate
   command: update-ca-certificates
   when: >
-    ansible_distribution == "SLES" and
+    (ansible_distribution == "SLES" or 
+    ansible_distribution == "SLE_HPC") and
     ansible_distribution_version == "15.2"
 
 # In SLES 15 SP3/SP4, run the certificate update scripts directly
@@ -48,7 +49,8 @@
     - '*.run'
   register: ca_scripts
   when: >
-    ansible_distribution == "SLES" and
+    (ansible_distribution == "SLES" or 
+    ansible_distribution == "SLE_HPC") and
     ansible_distribution_version != "15.2"
 
 
@@ -56,5 +58,6 @@
   command: "{{ item.path }}"
   loop: "{{ ca_scripts.files }}"
   when: >
-    ansible_distribution == "SLES" and
+    (ansible_distribution == "SLES" or 
+    ansible_distribution == "SLE_HPC") and
     ansible_distribution_version != "15.2"
