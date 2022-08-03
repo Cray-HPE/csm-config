@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- added csm.ncn.ca_cert role to install platform cert
+
 ### Removed
 
 - Removed HMS test RPMs from CSM packages list, as they are no longer used as of CSM 1.3

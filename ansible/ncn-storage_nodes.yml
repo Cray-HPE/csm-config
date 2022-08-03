@@ -37,6 +37,9 @@
     - role: trust-csm-ssh-keys
     - role: passwordless-ssh
 
+    # Install the platform certificate
+    - role: csm.ncn.ca_cert
+
     # Install CSM repositories and packages
     - role: csm.packages
       vars:
