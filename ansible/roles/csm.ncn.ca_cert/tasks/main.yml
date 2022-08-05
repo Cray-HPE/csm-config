@@ -24,11 +24,17 @@
 ---
 # Install a Cray CA certificate onto a SLES system.
 
+- name: Check for the existence of certificate_authority.crt
+  stat:
+    path: "{{ ca_cert_file }}"
+  register: cert_file
+
 - name: Copy CA certificate to the canonical location
   copy:
     src: "{{ ca_cert_file }}"
     dest: "{{ ca_cert_dest_dir }}"
     remote_src: yes
+  when: cert_file.stat.exists
 
 # NOTE: Only run this in SLES 15 SP2, since the version in SLES 15 SP3
 # doesn't work in a chrooted environment.
@@ -37,7 +43,9 @@
   when: >
     (ansible_distribution == "SLES" or
     ansible_distribution == "SLE_HPC") and
-    ansible_distribution_version == "15.2"
+    ansible_distribution_version == "15.2" and
+    cert_file.stat.exists
+
 
 # In SLES 15 SP3/SP4, run the certificate update scripts directly
 - name: Find certificate update scripts
@@ -51,7 +59,8 @@
   when: >
     (ansible_distribution == "SLES" or
     ansible_distribution == "SLE_HPC") and
-    ansible_distribution_version != "15.2"
+    ansible_distribution_version != "15.2" and
+    cert_file.stat.exists
 
 
 - name: Run certificate update scripts
@@ -60,4 +69,5 @@
   when: >
     (ansible_distribution == "SLES" or
     ansible_distribution == "SLE_HPC") and
-    ansible_distribution_version != "15.2"
+    ansible_distribution_version != "15.2" and
+    cert_file.stat.exists
