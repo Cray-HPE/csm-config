@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- added conditional to csm.ncn.ca_cert checks for the existence of certificate_authority.crt before proceeding
+
+### Added
+
 - added csm.ncn.ca_cert role to install platform cert
 
 ### Removed
