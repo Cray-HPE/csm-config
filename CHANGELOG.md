@@ -7,12 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0] - 2022-08-01
 ### Added
 
 - added conditional to csm.ncn.ca_cert checks for the existence of certificate_authority.crt before proceeding
-
-### Added
-
 - added csm.ncn.ca_cert role to install platform cert
 
 ### Removed
@@ -45,3 +43,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.11.0...HEAD
+
+[1.11.0]: https://github.com/Cray-HPE/csm-config/compare/1.10.1...HEAD
