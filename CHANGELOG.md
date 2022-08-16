@@ -7,14 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.0] - 2022-08-16
+### Changed
+- make Dockerfile update base image with security patches
+
 ## [1.11.0] - 2022-08-01
 ### Added
-
 - added conditional to csm.ncn.ca_cert checks for the existence of certificate_authority.crt before proceeding
 - added csm.ncn.ca_cert role to install platform cert
 
 ### Removed
-
 - Removed HMS test RPMs from CSM packages list, as they are no longer used as of CSM 1.3
 
 ## [1.10.1] - 2022-07-21
@@ -42,7 +44,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
-
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.11.0...HEAD
-
-[1.11.0]: https://github.com/Cray-HPE/csm-config/compare/1.10.1...HEAD
