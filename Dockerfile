@@ -72,6 +72,15 @@ COPY zypper-refresh-patch-clean.sh /
 RUN /zypper-refresh-patch-clean.sh && rm /zypper-refresh-patch-clean.sh
 
 FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:@CF_GITEA_IMPORT_VERSION@ as cf-gitea-import-base
+
+# apply security patches to the cf-gitea-import base image
+#  NOTE: do this here in case base image isn't being updated regularly
+USER root:root
+RUN apk update && \
+    apk add --upgrade apk-tools &&  \
+    apk -U upgrade && \
+    rm -rf /var/cache/apk/*
+
 USER nobody:nobody
 WORKDIR /
 ENV CF_IMPORT_PRODUCT_NAME=csm
