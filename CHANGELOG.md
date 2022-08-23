@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.13.0] - 2022-08-23
+### Changed
+- enabling the embedded repos on the ncns
+
 ## [1.12.0] - 2022-08-16
 ### Changed
 - make Dockerfile update base image with security patches
