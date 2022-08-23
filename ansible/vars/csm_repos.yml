@@ -28,3 +28,7 @@ csm_sles_repositories:
 - name: csm-sle-15sp3
   description: "CSM SLE 15 SP3 Packages (added by Ansible)"
   repo: https://packages.local/repository/csm-sle-15sp3
+- name: csm-embedded
+  description: "CSM SLE Embedded Packages (added by Ansible)"
+  repo: https://packages.local/repository/csm-embedded
+
