@@ -23,7 +23,7 @@
 #
 # Dockerfile for importing CSM content into gitea, to be used with CFS
 
-FROM artifactory.algol60.net/registry.suse.com/suse/sle15:15.3 as product-content-base
+FROM artifactory.algol60.net/registry.suse.com/suse/sle15:15.4 as product-content-base
 WORKDIR /
 
 # Pin the version of csm-ssh-keys being installed. The actual version is substituted by
@@ -34,35 +34,35 @@ ARG SLES_MIRROR=https://slemaster.us.cray.com/SUSE
 ARG ARCH=x86_64
 RUN \
   zypper --non-interactive rr --all &&\
-  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Basesystem/15-SP3/${ARCH}/product/ sles15sp3-Module-Basesystem-product &&\
-  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Basesystem/15-SP3/${ARCH}/update/ sles15sp3-Module-Basesystem-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Development-Tools/15-SP3/${ARCH}/product/ sles15sp3-Module-Development-Tools-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Development-Tools/15-SP3/${ARCH}/update/ sles15sp3-Module-Development-Tools-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Containers/15-SP3/${ARCH}/product/ sles15sp3-Module-Containers-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Containers/15-SP3/${ARCH}/update/ sles15sp3-Module-Containers-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Desktop-Applications/15-SP3/${ARCH}/product/ sles15sp3-Module-Desktop-Applications-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Desktop-Applications/15-SP3/${ARCH}/update/ sles15sp3-Module-Desktop-Applications-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-HPC/15-SP3/${ARCH}/product/ sles15sp3-Module-HPC-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-HPC/15-SP3/${ARCH}/update/ sles15sp3-Module-HPC-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Legacy/15-SP3/${ARCH}/product/ sles15sp3-Module-Legacy-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Legacy/15-SP3/${ARCH}/update/ sles15sp3-Module-Legacy-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Public-Cloud/15-SP3/${ARCH}/product/ sles15sp3-Module-Public-Cloud-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Public-Cloud/15-SP3/${ARCH}/update/ sles15sp3-Module-Public-Cloud-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Python2/15-SP3/${ARCH}/product/ sles15sp3-Module-Python2-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Python2/15-SP3/${ARCH}/update/ sles15sp3-Module-Python2-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Server-Applications/15-SP3/${ARCH}/product/ sles15sp3-Module-Server-Applications-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Server-Applications/15-SP3/${ARCH}/update/ sles15sp3-Module-Server-Applications-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Web-Scripting/15-SP3/${ARCH}/product/ sles15sp3-Module-Web-Scripting-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Web-Scripting/15-SP3/${ARCH}/update/ sles15sp3-Module-Web-Scripting-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Product-SLES/15-SP3/${ARCH}/product/ sles15sp3-Product-SLES-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Product-SLES/15-SP3/${ARCH}/update/ sles15sp3-Product-SLES-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-INSTALLER/15-SP3/${ARCH}/update/ sles15sp3-SLE-INSTALLER-update &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Basesystem/15-SP4/${ARCH}/product/ sles15sp4-Module-Basesystem-product &&\
+  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Basesystem/15-SP4/${ARCH}/update/ sles15sp4-Module-Basesystem-update &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Development-Tools/15-SP4/${ARCH}/product/ sles15sp4-Module-Development-Tools-product &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Development-Tools/15-SP4/${ARCH}/update/ sles15sp4-Module-Development-Tools-update &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Containers/15-SP4/${ARCH}/product/ sles15sp4-Module-Containers-product &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Containers/15-SP4/${ARCH}/update/ sles15sp4-Module-Containers-update &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Desktop-Applications/15-SP4/${ARCH}/product/ sles15sp4-Module-Desktop-Applications-product &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Desktop-Applications/15-SP4/${ARCH}/update/ sles15sp4-Module-Desktop-Applications-update &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-HPC/15-SP4/${ARCH}/product/ sles15sp4-Module-HPC-product &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-HPC/15-SP4/${ARCH}/update/ sles15sp4-Module-HPC-update &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Legacy/15-SP4/${ARCH}/product/ sles15sp4-Module-Legacy-product &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Legacy/15-SP4/${ARCH}/update/ sles15sp4-Module-Legacy-update &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Public-Cloud/15-SP4/${ARCH}/product/ sles15sp4-Module-Public-Cloud-product &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Public-Cloud/15-SP4/${ARCH}/update/ sles15sp4-Module-Public-Cloud-update &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Python2/15-SP4/${ARCH}/product/ sles15sp4-Module-Python2-product &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Python2/15-SP4/${ARCH}/update/ sles15sp4-Module-Python2-update &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Server-Applications/15-SP4/${ARCH}/product/ sles15sp4-Module-Server-Applications-product &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Server-Applications/15-SP4/${ARCH}/update/ sles15sp4-Module-Server-Applications-update &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Web-Scripting/15-SP4/${ARCH}/product/ sles15sp4-Module-Web-Scripting-product &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Web-Scripting/15-SP4/${ARCH}/update/ sles15sp4-Module-Web-Scripting-update &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Product-SLES/15-SP4/${ARCH}/product/ sles15sp4-Product-SLES-product &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Product-SLES/15-SP4/${ARCH}/update/ sles15sp4-Product-SLES-update &&\
+#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-INSTALLER/15-SP4/${ARCH}/update/ sles15sp4-SLE-INSTALLER-update &&\
   zypper --non-interactive clean &&\
   zypper --non-interactive --gpg-auto-import-keys refresh
 
 # Install csm-ssh-keys-roles RPM, and lock the version, just to be certain it is not
 # upgraded inadvertently somehow later
-RUN zypper ar --no-gpgcheck https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp3/ csm && \
+RUN zypper ar --no-gpgcheck https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp4/ csm && \
     zypper refresh && \
     zypper in -f --no-confirm csm-ssh-keys-roles-${CSM_SSH_KEYS_VERSION} && \
     zypper al csm-ssh-keys-roles
