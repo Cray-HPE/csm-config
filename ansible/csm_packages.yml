@@ -23,7 +23,7 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 # Compute Nodes Play
-- hosts: Compute,Application
+- hosts: Compute&cfs_image,Application&cfs_image
   gather_facts: yes
   any_errors_fatal: true
   remote_user: root
