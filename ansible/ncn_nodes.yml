@@ -22,18 +22,14 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# Deprecation Notice: These top level playbooks are replaced by ncn_nodes.yml
-- hosts: all
-  gather_facts: no
-  tasks:
-    - name: DEPRECATION NOTICE
-      debug:
-        msg: "This playbook is marked for deprecation, please use the unified ncn_nodes.yml playbook instead."
-      run_once: true
-      delegate_to: localhost
-
-# NCN Master Nodes Plays, and plays intended for the Management Master Node and associated image
-- hosts: Management_Master
+# This is a top level play for all NCN nodes that encorporates all 3 kinds of
+# NCN node (management, storage, worker) as well as their Image counterparts.
+# The three sepearate top level plays are marked for deprecation via a debug
+# notice.
+- hosts:
+   - Management_Master
+   - Management_Worker
+   - Management_Storage
   gather_facts: yes
   any_errors_fatal: true
   remote_user: root
@@ -49,7 +45,7 @@
       when: ansible_os_family == "SLE_HPC"
 
 # NCN Master Nodes Plays that should never be run in a CFS Image Environment for reasons of security
-- hosts: Management_Master:!cfs_image
+- hosts: "Management_Master:Management_Worker:Management_Storage:!cfs_image"
   gather_facts: yes
   any_errors_fatal: true
   remote_user: root
