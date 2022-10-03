@@ -26,4 +26,4 @@
 
 - name: Create NCN initrd
   command: /srv/cray/scripts/common/create-ims-initrd.sh
-  when: cray_cfs_image|default(false)|bool
+

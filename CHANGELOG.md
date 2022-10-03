@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - CASMCMS-8241: Added unified csm management node playbook ncn_nodes.yml
 ### Changed
+- CASMCMS-8242: Converted ncn-initrd.yml over to new cfs_image host protocol invocation
 - CASMCMS-8241: Broke ncn-(master,storage,worker)_nodes.yml into node and node+image specific playbooks
 - CASMCMS-8240: Allow packages to be installed during image customization
 
