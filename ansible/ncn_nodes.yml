@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -22,25 +22,38 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# Compute Nodes Play
-- hosts: Compute:Application
-  gather_facts: no
+# This is a top level play for all NCN nodes that encorporates all 3 kinds of
+# NCN node (management, storage, worker) as well as their Image counterparts.
+# The three seperate top level plays are marked for deprecation via a debug
+# notice.
+- hosts:
+   - Management_Master
+   - Management_Worker
+   - Management_Storage
+  gather_facts: yes
   any_errors_fatal: true
   remote_user: root
   vars_files:
     - vars/csm_repos.yml
     - vars/csm_packages.yml
   roles:
-    # Install CSM repositories and packages
+    - role: trust-csm-ssh-keys
+    - role: csm.ncn.ca_cert
     - role: csm.packages
       vars:
-        packages: "{{ general_csm_sles_packages }}"
-      when: ansible_distribution == "SLES"
-  tasks:
-    - name: Add reporters to presets file
-      blockinfile:
-        path: "/usr/lib/systemd/system-preset/89-cray-default.preset"
-        block: |
-          # More Cray services
-          enable bos-reporter.service
-          enable cfs-state-reporter.service
+        packages: "{{ ncn_csm_sles_packages }}"
+      when: ansible_os_family == "SLE_HPC"
+
+# NCN Master Nodes Plays that should never be run in a CFS Image Environment for reasons of security
+- hosts: "Management_Master:Management_Worker:Management_Storage:!cfs_image"
+  gather_facts: yes
+  any_errors_fatal: true
+  remote_user: root
+  roles:
+    - role: passwordless-ssh
+    - role: csm.password
+      vars:
+        password_username: 'root'
+    - role: csm.ssh_keys
+      vars:
+        ssh_keys_username: 'root'

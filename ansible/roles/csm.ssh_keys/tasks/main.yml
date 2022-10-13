@@ -85,7 +85,6 @@
     state: present
     user: "{{ ssh_keys_username }}"
     key: "{{ ssh_pub_key }}"
-    state: present
   when: ssh_pub_key != ''
 
 # A newline is appended to the file contents for both files. If the file does not end with a newline, SSH considers
