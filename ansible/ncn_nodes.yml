@@ -24,7 +24,7 @@
 #
 # This is a top level play for all NCN nodes that encorporates all 3 kinds of
 # NCN node (management, storage, worker) as well as their Image counterparts.
-# The three sepearate top level plays are marked for deprecation via a debug
+# The three seperate top level plays are marked for deprecation via a debug
 # notice.
 - hosts:
    - Management_Master
