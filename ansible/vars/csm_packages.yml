@@ -24,6 +24,7 @@
 ncn_csm_sles_packages:
   - cray-cmstools-crayctldeploy
   - loftsman
+  - cfs-debugger
 
 general_csm_sles_packages:
   - bos-reporter
