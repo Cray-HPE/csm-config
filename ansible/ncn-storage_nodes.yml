@@ -21,8 +21,18 @@
 # OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
-#
-# NCN Storage Nodes Play
+
+# Deprecation Notice: These top level playbooks are replaced by ncn_nodes.yml
+- hosts: all
+  gather_facts: no
+  tasks:
+    - name: DEPRECATION NOTICE
+      debug:
+        msg: "This playbook is marked for deprecation, please use the unified ncn_nodes.yml playbook instead."
+      run_once: true
+      delegate_to: localhost
+
+# NCN Storage Nodes Play, and NCN Storage Images
 - hosts: Management_Storage
   gather_facts: yes
   any_errors_fatal: true
@@ -30,26 +40,27 @@
   vars_files:
     - vars/csm_repos.yml
     - vars/csm_packages.yml
-
   roles:
-    # Allow trust of CSM generated keys for elective passwordless SSH;
-    # Enables both passwordless ssh from, and to, all nodes.
     - role: trust-csm-ssh-keys
-    - role: passwordless-ssh
-
-    # Install the platform certificate
     - role: csm.ncn.ca_cert
-
-    # Install CSM repositories and packages
     - role: csm.packages
       vars:
         packages: "{{ ncn_csm_sles_packages }}"
       when: ansible_os_family == "SLE_HPC"
 
-    # Set the root password from the value stored in cray-vault
+# NCN Storage Nodes Plays that should never be run in a CFS Image Environment for reasons of security
+- hosts: Management_Storage:!cfs_image
+  gather_facts: yes
+  any_errors_fatal: true
+  remote_user: root
+  roles:
+    - role: passwordless-ssh
     - role: csm.password
       vars:
         password_username: 'root'
+    - role: csm.ssh_keys
+      vars:
+        ssh_keys_username: 'root'
 
     # Distribute SSH keys for the root user
     - role: csm.ssh_keys

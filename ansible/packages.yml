@@ -32,7 +32,6 @@
     - vars/csm_packages.yml
 
   roles:
-
     # Install CSM repositories and packages
     - role: csm.packages
       vars:
