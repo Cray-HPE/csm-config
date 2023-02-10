@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CASMCMS-8241: Broke ncn-(master,storage,worker)_nodes.yml into node and node+image specific playbooks
 - CASMCMS-8240: Allow packages to be installed during image customization
 
+## [1.15.2] - 2023-02-10
+### Added
+- Two packages craycli and cray-uai-util to compute and application playbook
+
 ## [1.15.1] - 2022-12-20
 ### Added
 - Add Artifactory authentication to Jenkinsfile
