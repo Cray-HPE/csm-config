@@ -5,9 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.15.2] - 2023-02-10
+## [1.15.3] - 2023-02-10 
 ### Added
+- CONTRIBUTING.md file
+- CASMCMS-8241: Added unified csm management node playbook ncn_nodes.yml
+- CASMCMS-5516: Added cfs-debugger to ncn packages
 - Two packages craycli and cray-uai-util to compute and application playbook
+### Changed
+- CASMCMS-8242: Converted ncn-initrd.yml over to new cfs_image host protocol invocation
+- CASMCMS-8241: Broke ncn-(master,storage,worker)_nodes.yml into node and node+image specific playbooks
+- CASMCMS-8240: Allow packages to be installed during image customization
 
 ## [1.15.1] - 2022-12-20
 ### Added

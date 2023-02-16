@@ -4,4 +4,4 @@
 # the repo. Unless a later match takes precedence, the
 # owners listed in this stanza will be requested for review
 # when someone opens a pull request.
-*       @Cray-HPE/CMS-core-CSM-product
+*	@Cray-HPE/Cray-Management-Systems
