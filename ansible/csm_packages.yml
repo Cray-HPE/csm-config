@@ -36,7 +36,9 @@
     - role: csm.packages
       vars:
         packages: "{{ general_csm_sles_packages }}"
-      when: ansible_distribution == "SLES"
+      when:
+        - ansible_distribution == "SLES"
+        - cray_cfs_image|default(false)|bool
 
   tasks:
     - name: Add reporters to presets file
