@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.15.6] - 2023-03-08
 
+## [1.15.6] - 2023-03-07
+### Changed
+- CASMINST-6051: added embedded CSM repo
+
 ### Changed
 
 - CASMCMS-8441: Use csm-rpms/csm-docker mirrors when building image; remove old commented lines from Dockerfile
