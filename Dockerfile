@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2020-2023 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -36,33 +36,12 @@ RUN \
   zypper --non-interactive rr --all &&\
   zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Basesystem/15-SP3/${ARCH}/product/ sles15sp3-Module-Basesystem-product &&\
   zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Basesystem/15-SP3/${ARCH}/update/ sles15sp3-Module-Basesystem-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Development-Tools/15-SP3/${ARCH}/product/ sles15sp3-Module-Development-Tools-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Development-Tools/15-SP3/${ARCH}/update/ sles15sp3-Module-Development-Tools-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Containers/15-SP3/${ARCH}/product/ sles15sp3-Module-Containers-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Containers/15-SP3/${ARCH}/update/ sles15sp3-Module-Containers-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Desktop-Applications/15-SP3/${ARCH}/product/ sles15sp3-Module-Desktop-Applications-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Desktop-Applications/15-SP3/${ARCH}/update/ sles15sp3-Module-Desktop-Applications-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-HPC/15-SP3/${ARCH}/product/ sles15sp3-Module-HPC-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-HPC/15-SP3/${ARCH}/update/ sles15sp3-Module-HPC-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Legacy/15-SP3/${ARCH}/product/ sles15sp3-Module-Legacy-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Legacy/15-SP3/${ARCH}/update/ sles15sp3-Module-Legacy-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Public-Cloud/15-SP3/${ARCH}/product/ sles15sp3-Module-Public-Cloud-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Public-Cloud/15-SP3/${ARCH}/update/ sles15sp3-Module-Public-Cloud-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Python2/15-SP3/${ARCH}/product/ sles15sp3-Module-Python2-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Python2/15-SP3/${ARCH}/update/ sles15sp3-Module-Python2-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Server-Applications/15-SP3/${ARCH}/product/ sles15sp3-Module-Server-Applications-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Server-Applications/15-SP3/${ARCH}/update/ sles15sp3-Module-Server-Applications-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Web-Scripting/15-SP3/${ARCH}/product/ sles15sp3-Module-Web-Scripting-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Web-Scripting/15-SP3/${ARCH}/update/ sles15sp3-Module-Web-Scripting-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Product-SLES/15-SP3/${ARCH}/product/ sles15sp3-Product-SLES-product &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Product-SLES/15-SP3/${ARCH}/update/ sles15sp3-Product-SLES-update &&\
-#  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-INSTALLER/15-SP3/${ARCH}/update/ sles15sp3-SLE-INSTALLER-update &&\
   zypper --non-interactive clean &&\
   zypper --non-interactive --gpg-auto-import-keys refresh
 
 # Install csm-ssh-keys-roles RPM, and lock the version, just to be certain it is not
 # upgraded inadvertently somehow later
-RUN zypper ar --no-gpgcheck https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp3/ csm && \
+RUN zypper ar --no-gpgcheck https://arti.hpc.amslabs.hpecorp.net/artifactory/csm-rpms-remote/hpe/stable/sle-15sp3/ csm && \
     zypper refresh && \
     zypper in -f --no-confirm csm-ssh-keys-roles-${CSM_SSH_KEYS_VERSION} && \
     zypper al csm-ssh-keys-roles
@@ -71,7 +50,7 @@ RUN zypper ar --no-gpgcheck https://artifactory.algol60.net/artifactory/csm-rpms
 COPY zypper-refresh-patch-clean.sh /
 RUN /zypper-refresh-patch-clean.sh && rm /zypper-refresh-patch-clean.sh
 
-FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:@CF_GITEA_IMPORT_VERSION@ as cf-gitea-import-base
+FROM arti.hpc.amslabs.hpecorp.net/csm-docker-remote/stable/cf-gitea-import:@CF_GITEA_IMPORT_VERSION@ as cf-gitea-import-base
 
 # apply security patches to the cf-gitea-import base image
 #  NOTE: do this here in case base image isn't being updated regularly
