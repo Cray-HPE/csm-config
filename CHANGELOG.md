@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.15.8] - 2023-03-08
+
+### Changed
+
+- CASMINST-6051: added embedded CSM repo
+
 ## [1.15.7] - 2023-03-08
 
 ### Changed
@@ -93,6 +99,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
+
+[1.15.8]: https://github.com/Cray-HPE/csm-config/compare/1.15.7...1.15.8
 
 [1.15.7]: https://github.com/Cray-HPE/csm-config/compare/1.15.6...1.15.7
 
