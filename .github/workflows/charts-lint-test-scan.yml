@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -32,10 +32,11 @@ on:
   workflow_dispatch:
 jobs:
   lint-test-scan:
-    uses: Cray-HPE/.github/.github/workflows/charts-lint-test-scan.yml@main
+    uses: Cray-HPE/hms-build-chart-workflows/.github/workflows/charts_lint_test_scan.yaml@v2
     with:
       lint-charts: ${{ github.event_name == 'pull_request' }}
+      test-charts: false
       scan-images: false
       scan-charts: false
-    secrets:
-      snyk-token: ${{ secrets.SNYK_TOKEN }}
+      ct-yaml: ct.yaml
+    secrets: inherit
