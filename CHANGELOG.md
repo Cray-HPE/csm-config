@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- CASMCMS-8441: Use csm-rpms/csm-docker mirrors when building image; remove old commented lines from Dockerfile
+
 ## [1.15.4] - 2023-03-01
 ### Changed
 - CASMTRIAGE-5003: Package installation for Compute nodes will only run during image customization
@@ -78,7 +84,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.14.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.4...HEAD
+
+[1.15.4]: https://github.com/Cray-HPE/csm-config/compare/1.15.3...1.15.4
+
+[1.15.3]: https://github.com/Cray-HPE/csm-config/compare/1.15.2...1.15.3
+
+[1.15.2]: https://github.com/Cray-HPE/csm-config/compare/1.15.1...1.15.2
+
+[1.15.1]: https://github.com/Cray-HPE/csm-config/compare/1.15.0...1.15.1
+
+[1.15.0]: https://github.com/Cray-HPE/csm-config/compare/1.14.0...1.15.0
 
 [1.14.0]: https://github.com/Cray-HPE/csm-config/compare/1.13.0...1.14.0
 
