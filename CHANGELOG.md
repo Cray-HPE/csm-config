@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- CASMINST-6051: added embedded CSM repo
+
 ## [1.15.7] - 2023-03-08
 
 ### Changed
