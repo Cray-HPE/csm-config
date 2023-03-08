@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - CASMCMS-8441: Use csm-rpms/csm-docker mirrors when building image; remove old commented lines from Dockerfile
 
+## [1.15.5] - 2023-03-03
+### Changed
+- CASMINST-6041: allow ncn-initrd.yml to be used with all image types
+
 ## [1.15.4] - 2023-03-01
 ### Changed
 - CASMTRIAGE-5003: Package installation for Compute nodes will only run during image customization
@@ -84,7 +88,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.4...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.5...HEAD
+
+[1.15.5]: https://github.com/Cray-HPE/csm-config/compare/1.15.4...1.15.5
 
 [1.15.4]: https://github.com/Cray-HPE/csm-config/compare/1.15.3...1.15.4
 
