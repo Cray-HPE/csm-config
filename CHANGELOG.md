@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.7] - 2023-03-08
+
 ### Changed
 
 - CASMCMS-8441: Use csm-helm-charts mirror in ct.yaml checks
@@ -94,7 +96,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.6...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.7...HEAD
+
+[1.15.7]: https://github.com/Cray-HPE/csm-config/compare/1.15.6...1.15.7
 
 [1.15.6]: https://github.com/Cray-HPE/csm-config/compare/1.15.5...1.15.6
 
