@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2022-2023 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -22,16 +22,15 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 ---
-dependencies: []
+- name: Ensure our file limits are set
+  copy:
+    src: files/limits.conf
+    dest: /etc/security/limits.conf
+    owner: root
+    group: root
+    mode: 0644
 
-galaxy_info:
-  role_name: csm.gpg_key
-  author: randy.kleinman@hpe.com
-  description: Cray System Management (CSM) GPG Key Setup
-  company: "Hewlett Packard Enterprise Development LP"
-  license: "MIT"
-  min_ansible_version: 2.9
-  platforms: []
-  galaxy_tags:
-    - system
-    - hpc
+- name: Ensure our process limits are set
+  file:
+    path: /etc/security/limits.d/90-nproc.conf
+    state: absent

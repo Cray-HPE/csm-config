@@ -1,0 +1,6 @@
+*.* action(
+  type="omfwd"    target="{{ rsyslog_target }}"
+  port="{{ rsyslog_target_port }}"
+  protocol="tcp"
+  template="RSYSLOG_SyslogProtocol23Format"
+)
