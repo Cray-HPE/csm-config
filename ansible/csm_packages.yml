@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2022-2023 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -24,7 +24,12 @@
 #
 # Compute Nodes Play
 - hosts: Compute:Application:&cfs_image
-  gather_facts: no
+  gather_facts: yes
+  # Gather the minimum that gets the ansible_distribution variable set
+  gather_subset:
+    - '!all'
+    - '!min'
+    - distribution
   any_errors_fatal: true
   remote_user: root
   vars_files:
