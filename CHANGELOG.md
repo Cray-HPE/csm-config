@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - CASMTRIAGE-5050: Enable targeted fact-gathering in [`csm_packages.yml`](ansible/csm_packages.yml) to ensure that the `ansible_distribution` variable is set
+- CASMCMS-8461: Use cf-gitea-import version 1.9
+
+### Removed
+
+- CASMCMS-8461: Removed vestigial file leftover from former dynamic versioning system.
 
 ## [1.15.8] - 2023-03-08
 
