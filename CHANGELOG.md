@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.9] - 2023-03-14
+
 ### Changed
 
 - CASMTRIAGE-5050: Enable targeted fact-gathering in [`csm_packages.yml`](ansible/csm_packages.yml) to ensure that the `ansible_distribution` variable is set
@@ -111,7 +113,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.8...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.9...HEAD
+
+[1.15.9]: https://github.com/Cray-HPE/csm-config/compare/1.15.8...1.15.9
 
 [1.15.8]: https://github.com/Cray-HPE/csm-config/compare/1.15.7...1.15.8
 
