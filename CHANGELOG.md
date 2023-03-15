@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Changed
+- CASMCMS-8470: Use artifactory authentication instead of building from unauthenticated artifactory mirrors
 - CASMCMS-8441: Use csm-rpms/csm-docker mirrors when building image; remove old commented lines from Dockerfile
 
 ## [1.14.2] - 2023-03-01
