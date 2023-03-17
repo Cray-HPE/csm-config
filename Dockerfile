@@ -26,31 +26,23 @@
 FROM artifactory.algol60.net/registry.suse.com/suse/sle15:15.4 as product-content-base
 WORKDIR /
 
+ARG SP=4
+ARG SLES_MIRROR=https://slemaster.us.cray.com/SUSE
+ARG ARCH=x86_64
+
 # Pin the version of csm-ssh-keys being installed. The actual version is substituted by
 # the runBuildPrep script at build time
 ARG CSM_SSH_KEYS_VERSION=@RPM_VERSION@
 
-ARG SLES_MIRROR=https://slemaster.us.cray.com/SUSE
-ARG ARCH=x86_64
-RUN \
-  zypper --non-interactive rr --all &&\
-  zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Basesystem/15-SP4/${ARCH}/product/ sles15sp4-Module-Basesystem-product &&\
-  zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Basesystem/15-SP4/${ARCH}/update/ sles15sp4-Module-Basesystem-update &&\
-  zypper --non-interactive clean &&\
-  zypper --non-interactive --gpg-auto-import-keys refresh
-
-# Install csm-ssh-keys-roles RPM, and lock the version, just to be certain it is not
-# upgraded inadvertently somehow later
-RUN zypper ar --no-gpgcheck https://arti.hpc.amslabs.hpecorp.net/artifactory/csm-rpms-remote/hpe/stable/sle-15sp4/ csm && \
-    zypper refresh && \
-    zypper in -f --no-confirm csm-ssh-keys-roles-${CSM_SSH_KEYS_VERSION} && \
-    zypper al csm-ssh-keys-roles
-
-# Apply security patches
+# Do zypper operations using a wrapper script, to isolate the necessary artifactory authentication
+COPY zypper-docker-build.sh /
+# The above script calls the following script, so we need to copy it as well
 COPY zypper-refresh-patch-clean.sh /
-RUN /zypper-refresh-patch-clean.sh && rm /zypper-refresh-patch-clean.sh
+RUN --mount=type=secret,id=ARTIFACTORY_READONLY_USER --mount=type=secret,id=ARTIFACTORY_READONLY_TOKEN \
+    ./zypper-docker-build.sh && \
+    rm /zypper-docker-build.sh /zypper-refresh-patch-clean.sh
 
-FROM arti.hpc.amslabs.hpecorp.net/csm-docker-remote/stable/cf-gitea-import:@CF_GITEA_IMPORT_VERSION@ as cf-gitea-import-base
+FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:@CF_GITEA_IMPORT_VERSION@ as cf-gitea-import-base
 
 # apply security patches to the cf-gitea-import base image
 #  NOTE: do this here in case base image isn't being updated regularly
@@ -72,4 +64,3 @@ COPY --chown=nobody:nobody --from=product-content-base /opt/cray/ansible/roles/ 
 COPY --chown=nobody:nobody ansible/ /content/
 
 # Base image entrypoint takes it from here
-
