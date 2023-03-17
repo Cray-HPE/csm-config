@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- CASMCMS-8470: Use artifactory authentication instead of building from unauthenticated artifactory mirrors
+
 ## [1.15.9] - 2023-03-14
 
 ### Changed
