@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.10] - 2023-03-17
+
 ### Changed
 
 - CASMCMS-8470: Use artifactory authentication instead of building from unauthenticated artifactory mirrors
@@ -117,7 +119,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.9...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.10...HEAD
+
+[1.15.10]: https://github.com/Cray-HPE/csm-config/compare/1.15.9...1.15.10
 
 [1.15.9]: https://github.com/Cray-HPE/csm-config/compare/1.15.8...1.15.9
 
