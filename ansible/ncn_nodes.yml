@@ -37,7 +37,6 @@
     - vars/csm_repos.yml
     - vars/csm_packages.yml
   roles:
-    - role: trust-csm-ssh-keys
     - role: csm.ca_cert
     - role: csm.packages
       vars:

@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.15.11] - 2023-03-22
 
 ### Changed
-
+- CASMCMS-8483: Deprecate unused ansible role from ncn playbooks
 - CASM-3071: Add ansible code for the csm-compute image
 
 ## [1.15.10] - 2023-03-17
