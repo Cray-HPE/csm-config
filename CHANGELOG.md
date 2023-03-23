@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- MTL-2014: Include `spire-agent` in `csm-packages`
+- MTL-2025: Include `csm-node-identity` in `csm-packages`
+
 ## [1.15.11] - 2023-03-22
 
 ### Changed

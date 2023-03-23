@@ -31,3 +31,5 @@ general_csm_sles_packages:
   - cfs-state-reporter
   - craycli
   - cray-uai-util
+  - csm-node-identity
+  - spire-agent
