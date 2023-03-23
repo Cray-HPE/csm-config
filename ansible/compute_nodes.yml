@@ -1,0 +1,55 @@
+#!/usr/bin/env ansible-playbook
+#
+# MIT License
+#
+# (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+# stock SLES compute node playbook
+
+---
+- hosts: Application
+  gather_subset:
+    - '!all'
+    - '!min'
+    - distribution
+  any_errors_fatal: true
+  remote_user: root
+  roles:
+    - role: csm.ca_cert
+    - role: csm.password
+    - role: csm.gpg_keys
+    - role: csm.ssh_keys
+    - role: csm.cn.exclude-module
+
+- hosts: Application:&cfs_image
+  gather_subset:
+    - '!all'
+    - '!min'
+    - distribution
+  any_errors_fatal: true
+  remote_user: root
+  roles:
+    - role: csm.cn.limits
+    - role: csm.cn.ntp
+    - role: csm.cn.localtime
+    - role: csm.cn.dns-resolver
+    - role: csm.cn.rsyslog
+    - role: csm.rebuild-initrd

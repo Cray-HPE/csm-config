@@ -24,7 +24,7 @@ Example Playbook
 ```yaml
 - hosts: Management_Worker
   roles:
-     - role: csm.ncn.ca_cert
+     - role: csm.ca_cert
 ```
 
 License
@@ -35,4 +35,4 @@ MIT
 Author Information
 ------------------
 
-Copyright 2022 Hewlett Packard Enterprise Development LP
+Copyright 2022-2023 Hewlett Packard Enterprise Development LP

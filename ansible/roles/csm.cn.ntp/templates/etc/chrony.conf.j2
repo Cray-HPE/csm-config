@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -21,17 +21,24 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
----
-dependencies: []
 
-galaxy_info:
-  role_name: csm.password
-  author: randy.kleinman@hpe.com
-  description: Password management for CSM users
-  company: "Hewlett Packard Enterprise Development LP"
-  license: "MIT"
-  min_ansible_version: 2.9
-  platforms: []
-  galaxy_tags:
-    - system
-    - hpc
+server {{ ntp_server }} iburst
+
+# Record the rate at which the system clock gains/loses time.
+driftfile /var/lib/chrony/drift
+
+# Allow the system clock to be stepped at any time
+# if its offset is larger than 5 seconds.
+makestep 5.0 -1
+
+# Enable kernel synchronization of the real-time clock (RTC).
+rtcsync
+
+# Specify file containing keys for NTP authentication.
+#keyfile /etc/chrony.keys
+
+# Specify directory for log files.
+logdir /var/log/chrony
+
+# Select which information is logged.
+#log measurements statistics tracking
