@@ -7,14 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- MTL-2014: Include `spire-agent` in `csm-packages`
-- MTL-2025: Include `csm-node-identity` in `csm-packages`
-
-## [1.15.11] - 2023-03-22
+## [1.16.0] - 2023-03-23
 
 ### Changed
 
-- CASM-3071: Add ansible code for the csm-compute image
+- MTL-2014: Include `spire-agent` in `csm-packages`
+- MTL-2025: Include `csm-node-identity` in `csm-packages`
+- CASM-3071/MTL-2021: Add ansible code for the csm-compute image
 
 ## [1.15.10] - 2023-03-17
 
@@ -128,7 +127,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.10...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.0...HEAD
+
+[1.16.0]: https://github.com/Cray-HPE/csm-config/compare/1.15.10...1.16.0
 
 [1.15.10]: https://github.com/Cray-HPE/csm-config/compare/1.15.9...1.15.10
 
