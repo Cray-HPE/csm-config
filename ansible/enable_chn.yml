@@ -22,7 +22,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-- hosts: Management_Worker
+- hosts: Management_Worker:!cfs_image
   gather_facts: yes
   any_errors_fatal: true
   remote_user: root
