@@ -47,22 +47,10 @@
       vars:
         packages: "{{ ncn_csm_sles_packages }}"
       when: ansible_os_family == "SLE_HPC"
-
-# NCN Storage Nodes Plays that should never be run in a CFS Image Environment for reasons of security
-- hosts: Management_Storage:!cfs_image
-  gather_facts: yes
-  any_errors_fatal: true
-  remote_user: root
-  roles:
     - role: passwordless-ssh
     - role: csm.password
       vars:
         password_username: 'root'
-    - role: csm.ssh_keys
-      vars:
-        ssh_keys_username: 'root'
-
-    # Distribute SSH keys for the root user
     - role: csm.ssh_keys
       vars:
         ssh_keys_username: 'root'
