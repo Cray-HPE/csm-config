@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
 - CASMNET-2085: Allow `enable-chn.yml` to be a no-op during Image Customization
 
 ## [1.15.10] - 2023-03-17
