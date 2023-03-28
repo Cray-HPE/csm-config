@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.1] - 2023-03-28
+
+### Changed
+
+- CASMNET-2085: Allow `enable-chn.yml` to be a no-op during Image Customization
+
 ## [1.16.0] - 2023-03-23
 
 ### Changed
@@ -127,7 +133,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.1...HEAD
+
+[1.16.1]: https://github.com/Cray-HPE/csm-config/compare/1.16.0...1.16.1
 
 [1.16.0]: https://github.com/Cray-HPE/csm-config/compare/1.15.10...1.16.0
 
