@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- CASMINST-6131: Allow CFS to set credentials in NCN images
+- CASMINST-6131: Allow CFS to set credentials in NCN images; remove duplicate call to set SSH keys on storage nodes
 
 ## [1.15.11] - 2023-03-28
 
