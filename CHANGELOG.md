@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.12] - 2023-03-29
+
 ### Changed
 
 - CASMINST-6131: Allow CFS to set credentials in NCN images; remove duplicate call to set SSH keys on storage nodes
@@ -129,7 +131,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.11...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.12...HEAD
+
+[1.15.12]: https://github.com/Cray-HPE/csm-config/compare/1.15.11...1.15.12
 
 [1.15.11]: https://github.com/Cray-HPE/csm-config/compare/1.15.10...1.15.11
 
