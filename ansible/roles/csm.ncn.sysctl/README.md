@@ -13,14 +13,18 @@ Framework Service (CFS) in its Ansible Execution Environment (AEE).
 Role Variables
 --------------
 
-Available variables are listed below, along with default values (located in
+Available variables are listed below, along with example values (located in
 `defaults/main.yml` and `vars/main.yml`):
 
-    sysctl_config: 'dict'
+```yaml
+sysctl_config: 'dict'
+```
 
-The dict of the sysctl parameters and their values.
+The dictionary of the sysctl parameters and their values.
 
-    sysctl_set: false
+```yaml
+sysctl_set: false
+```
 
 Whether to apply this in a running system and reload the values.
 
@@ -32,11 +36,11 @@ None
 Example Playbook
 ----------------
 
-This role sets the kernel parameters in /etc/sysctl.conf. If `sysctl_set` is `true`,
-then the role also ensures the written directly to the system with systctl -w.
+This role sets the kernel parameters in `/etc/sysctl.conf`. If `sysctl_set` is `true`, then
+the role also ensures the parameters are written directly to the system with `systctl -w`.
 Note that the playbook will not work with `sysctl_set` set to `true` if the system
 is not running.
-
+```yaml
     - hosts: Management
       roles:
         - role: csm.ncn.sysctl
@@ -45,7 +49,7 @@ is not running.
             sysctl_config:
               - name: net.ipv4.conf.all.accept_local
                 value: 1
-
+```
 License
 -------
 

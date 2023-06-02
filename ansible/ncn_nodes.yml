@@ -22,8 +22,8 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# This is a top level play for all NCN nodes that encorporates all 3 kinds of
-# NCN node (management, storage, worker) as well as their Image counterparts.
+# This is a top level play for all NCNs that incorporates all 3 kinds of
+# NCN (management, storage, worker) as well as their corresponding images.
 # The three seperate top level plays are marked for deprecation via a debug
 # notice.
 - hosts:

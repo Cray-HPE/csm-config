@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2022-2023 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2023 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -22,8 +22,8 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# This is a top level play for all NCN nodes that encorporates all 3 kinds of
-# NCN node (management, storage, worker) as well as their Image counterparts.
+# This is a top level play for all NCNs that incorporates all 3 kinds of
+# NCN (management, storage, worker) as well as their corresponding images.
 # The play runs csm.ncn.sysctl which sets kernel parameters
 - hosts: "Management_Master:Management_Worker:Management_Storage:!cfs_image"
   any_errors_fatal: true
