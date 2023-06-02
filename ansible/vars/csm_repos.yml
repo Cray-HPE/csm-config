@@ -31,6 +31,9 @@ csm_sles_repositories:
 - name: csm-sle-15sp4
   description: "CSM SLE 15 SP4 Packages (added by Ansible)"
   repo: https://packages.local/repository/csm-sle-15sp4
+- name: csm-noos
+  description: "CSM No-OS Packages (added by Ansible)"
+  repo: https://packages.local/repository/csm-noos
 - name: csm-embedded
   description: "CSM Embedded NCN Packages (added by Ansible)"
   repo: https://packages.local/repository/csm-embedded
