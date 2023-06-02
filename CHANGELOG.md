@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.5] - 2023-06-22
+
+### Added
+
+- CASM-4085: Add sysctl role for modifying kernel parameters
+
 ## [1.16.4] - 2023-06-22
 
 ### Added
@@ -179,7 +185,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.4...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.5...HEAD
+
+[1.16.5]: https://github.com/Cray-HPE/csm-config/compare/1.16.4...1.16.5
+
+[1.16.4]: https://github.com/Cray-HPE/csm-config/compare/1.16.3...1.16.4
 
 [1.16.4]: https://github.com/Cray-HPE/csm-config/compare/1.16.3...1.16.4
 
