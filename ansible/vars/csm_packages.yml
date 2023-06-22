@@ -27,10 +27,12 @@ ncn_csm_sles_packages:
   - cfs-debugger
 
 general_csm_sles_packages:
+  - acpid
   - bos-reporter
   - cfs-state-reporter
   - craycli
   - cray-uai-util
   - csm-auth-utils
+  - csm-node-heartbeat
   - csm-node-identity
   - spire-agent
