@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.4] - 2023-06-22
+
+### Added
+- MTL-2018: Include `acpid`
+- MTL-2019: Include `csm-node-heartbeat`
+
 ## [1.16.3] - 2023-06-02
 
 ### Added
@@ -173,7 +179,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.3...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.4...HEAD
+
+[1.16.4]: https://github.com/Cray-HPE/csm-config/compare/1.16.3...1.16.4
 
 [1.16.3]: https://github.com/Cray-HPE/csm-config/compare/1.16.2...1.16.3
 
