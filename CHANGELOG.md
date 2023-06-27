@@ -191,8 +191,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [1.16.4]: https://github.com/Cray-HPE/csm-config/compare/1.16.3...1.16.4
 
-[1.16.4]: https://github.com/Cray-HPE/csm-config/compare/1.16.3...1.16.4
-
 [1.16.3]: https://github.com/Cray-HPE/csm-config/compare/1.16.2...1.16.3
 
 [1.16.2]: https://github.com/Cray-HPE/csm-config/compare/1.16.1...1.16.2
