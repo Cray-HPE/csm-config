@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2023 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -24,29 +24,19 @@
 #
 # This is a top level play for all NCNs that incorporates all 3 kinds of
 # NCN (management, storage, worker) as well as their corresponding images.
-# The three seperate top level plays are marked for deprecation via a debug
-# notice.
-- hosts:
-   - Management_Master
-   - Management_Worker
-   - Management_Storage
-  gather_facts: yes
+# The play runs csm.ncn.sysctl which sets kernel parameters
+- hosts: "Management_Master:Management_Worker:Management_Storage:!cfs_image"
   any_errors_fatal: true
   remote_user: root
-  vars_files:
-    - vars/csm_repos.yml
-    - vars/csm_packages.yml
   roles:
-    - role: trust-csm-ssh-keys
-    - role: csm.ca_cert
-    - role: csm.packages
+    - role: csm.ncn.sysctl
       vars:
-        packages: "{{ ncn_csm_sles_packages }}"
-      when: ansible_os_family == "SLE_HPC"
-    - role: passwordless-ssh
-    - role: csm.password
+        sysctl_set: true
+
+- hosts: &cfs_image
+  any_errors_fatal: true
+  remote_user: root
+  roles:
+    - role: csm.ncn.sysctl
       vars:
-        password_username: 'root'
-    - role: csm.ssh_keys
-      vars:
-        ssh_keys_username: 'root'
+        sysctl_set: false
