@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.6] 2023-06-28
+### Added
+- CASMCMS-8537: Documentation and sample role for IMS passthrough variables
+
 ## [1.16.5] - 2023-06-26
 
 ### Added

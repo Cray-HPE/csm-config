@@ -1,2 +1,3 @@
 ansible/inventories
 ansible/vars.json
+ansible/*.retry
