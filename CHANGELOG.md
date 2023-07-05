@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CASMINST-6532: Add the following packages to the list that are installed/updated on Compute nodes in `csm_packages`:
   - `csm-node-identity`
 
+### Fixed
+
+- CASMINST-6532: Ansible role `csm.packages`: Corrected default value for repository list to be an empty list, not an empty dictionary.
+
 ## [1.15.12] - 2023-03-29
 
 ### Changed
