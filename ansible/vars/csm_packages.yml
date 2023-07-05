@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -21,13 +21,27 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-ncn_csm_sles_packages:
-  - cray-cmstools-crayctldeploy
-  - loftsman
-  - cfs-debugger
 
+# List of packages to be installed/updated from Nexus on all Management NCNs
+ncn_csm_sles_packages:
+  - cfs-debugger
+  - cfs-state-reporter
+  - cfs-trust
+  - craycli
+  - cray-cmstools-crayctldeploy
+  - csm-node-identity
+  - csm-testing
+  - goss-servers
+  - hpe-csm-goss-package
+  - hpe-csm-scripts
+  - hpe-csm-yq-package
+  - loftsman
+  - manifestgen
+
+# List of packages to be installed/updated from Nexus on all Compute nodes
 general_csm_sles_packages:
   - bos-reporter
   - cfs-state-reporter
   - craycli
   - cray-uai-util
+  - csm-node-identity
