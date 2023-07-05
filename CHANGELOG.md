@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.13] - 2023-07-05
+
+### Changed
+
+- CASMINST-6532: Add the following packages to the list that are installed/updated on NCNs in `csm_packages`:
+  - `cfs-state-reporter`
+  - `cfs-trust`
+  - `craycli`
+  - `csm-node-identity`
+  - `csm-testing`
+  - `goss-servers`
+  - `hpe-csm-goss-package`
+  - `hpe-csm-scripts`
+  - `hpe-csm-yq-package`
+  - `manifestgen`
+- CASMINST-6532: Add the following packages to the list that are installed/updated on Compute nodes in `csm_packages`:
+  - `csm-node-identity`
+
 ## [1.15.12] - 2023-03-29
 
 ### Changed
@@ -131,7 +149,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.12...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.13...HEAD
+
+[1.15.13]: https://github.com/Cray-HPE/csm-config/compare/1.15.12...1.15.13
 
 [1.15.12]: https://github.com/Cray-HPE/csm-config/compare/1.15.11...1.15.12
 
