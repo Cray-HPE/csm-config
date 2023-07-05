@@ -15,14 +15,18 @@ Role Variables
 Available variables are listed below, along with default values (located in
 `defaults/main.yml`):
 
-    csm_sles_repositories: {}
+```yaml
+    csm_sles_repositories: []
+```
 
 List of SUSE Linux Enterprise Server repositories to install. See example below
 for mapping keys. These keys are directly used with the Ansible `zypper_repository`
 module. The `name`, `description`, `repo`, and `disable_gpg_check` fields are
 supported.
 
+```yaml
     csm_sles_packages: []
+```
 
 List of packages to install.
 
@@ -36,6 +40,7 @@ default, i.e. `disable_gpg_check: no`).
 Example Playbook
 ----------------
 
+```yaml
     - hosts: Management_Master
       roles:
          - role: csm.packages
@@ -48,6 +53,7 @@ Example Playbook
                  description: CSM SUSE Linux Enterprise 15 SP2 Packages
                  repo: https://packages.local/repositories/csm-sle-15sp2
                  disable_gpg_check: no
+```
 
 License
 -------

@@ -23,5 +23,5 @@
 #
 # Defaults for the csm.packages role. See the README.md for information.
 csm_sles_packages: []
-csm_sles_repositories: {}
+csm_sles_repositories: []
 
