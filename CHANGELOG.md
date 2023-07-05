@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.7] - 2023-07-05
+
 ### Changed
 
 - CASMINST-6532: Split the `csm_packages` lists into `common_csm_sles_packages` (installed on all SLES nodes),
@@ -219,7 +221,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.6...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.7...HEAD
+
+[1.16.7]: https://github.com/Cray-HPE/csm-config/compare/1.16.6...1.16.7
 
 [1.16.6]: https://github.com/Cray-HPE/csm-config/compare/1.16.5...1.16.6
 
