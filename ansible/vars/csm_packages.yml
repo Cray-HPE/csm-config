@@ -21,18 +21,35 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-ncn_csm_sles_packages:
-  - cray-cmstools-crayctldeploy
-  - loftsman
-  - cfs-debugger
 
-general_csm_sles_packages:
-  - acpid
-  - bos-reporter
+# List of packages to be installed/updated from Nexus on all nodes
+# (Management NCNs, Application nodes, and Compute nodes)
+common_csm_sles_packages:
   - cfs-state-reporter
   - craycli
-  - cray-uai-util
   - csm-auth-utils
   - csm-node-heartbeat
   - csm-node-identity
   - spire-agent
+
+# List of packages to be installed/updated from Nexus on all Management NCNs
+ncn_csm_sles_packages:
+  - cfs-debugger
+  - cfs-trust
+  - csm-testing
+  - goss-servers
+  - hpe-csm-goss-package
+  - hpe-csm-scripts
+  - hpe-yq
+  - loftsman
+  - manifestgen
+
+# List of packages to be installed/updated from Nexus on all Kubernetes NCNs
+k8s_ncn_csm_sles_packages:
+  - cray-cmstools-crayctldeploy
+
+# List of packages to be installed/updated from Nexus on all Application and Compute nodes
+compute_csm_sles_packages:
+  - acpid
+  - bos-reporter
+  - cray-uai-util

@@ -41,7 +41,7 @@
     - role: csm.ca_cert
     - role: csm.packages
       vars:
-        packages: "{{ ncn_csm_sles_packages }}"
+        packages: "{{ common_csm_sles_packages + ncn_csm_sles_packages }}"
       when: ansible_os_family == "SLE_HPC"
     - role: passwordless-ssh
     - role: csm.password
@@ -50,3 +50,18 @@
     - role: csm.ssh_keys
       vars:
         ssh_keys_username: 'root'
+
+# Roles specific to Kubernetes NCNs (masters and workers)
+- hosts:
+   - Management_Master
+   - Management_Worker
+  gather_facts: yes
+  any_errors_fatal: true
+  remote_user: root
+  vars_files:
+    - vars/csm_packages.yml
+  roles:
+    - role: csm.packages
+      vars:
+        packages: "{{ k8s_ncn_csm_sles_packages }}"
+      when: ansible_os_family == "SLE_HPC"

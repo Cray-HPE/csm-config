@@ -45,7 +45,7 @@
     - role: csm.ca_cert
     - role: csm.packages
       vars:
-        packages: "{{ ncn_csm_sles_packages }}"
+        packages: "{{ common_csm_sles_packages + ncn_csm_sles_packages + k8s_ncn_csm_sles_packages }}"
       when: ansible_os_family == "SLE_HPC"
     - role: passwordless-ssh
     - role: csm.password
