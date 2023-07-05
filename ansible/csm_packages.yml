@@ -39,7 +39,7 @@
     # Install CSM repositories and packages
     - role: csm.packages
       vars:
-        packages: "{{ general_csm_sles_packages }}"
+        packages: "{{ common_csm_sles_packages + compute_csm_sles_packages }}"
       when: ansible_distribution == "SLES"
   tasks:
     - name: Add reporters to presets file

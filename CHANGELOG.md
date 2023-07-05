@@ -7,8 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- CASMINST-6532: Split the `csm_packages` lists into `common_csm_sles_packages` (installed on all SLES nodes),
+  `ncn_csm_sles_packages` (installed on all management NCNs), `k8s_ncn_csm_sles_packages` (installed on all
+  master/worker NCNs), and `compute_csm_sles_packages` (installed on all SLES application and compute nodes).
+  Modified the plays accordingly.
+- CASMINST-6532: Added some RPMs that were missing from the NCN list:
+  - `cfs-state-reporter`
+  - `cfs-trust`
+  - `craycli`
+  - `csm-auth-utils`
+  - `csm-node-heartbeat`
+  - `csm-node-identity`
+  - `csm-testing`
+  - `goss-servers`
+  - `hpe-csm-goss-package`
+  - `hpe-csm-scripts`
+  - `hpe-yq`
+  - `manifestgen`
+  - `spire-agent`
+- CASMINST-6532: Moved `cmstools` to the `k8s_ncn_csm_sles_packages` list so that it would not be installed on
+  storage NCNs, where it does not work.
+
 ## [1.16.6] - 2023-06-28
+
 ### Added
+
 - CASMCMS-8537: Documentation and sample role for IMS passthrough variables
 
 ## [1.16.5] - 2023-06-26
@@ -20,6 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.16.4] - 2023-06-22
 
 ### Added
+
 - MTL-2018: Include `acpid`
 - MTL-2019: Include `csm-node-heartbeat`
 
@@ -189,7 +215,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.5...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.6...HEAD
+
+[1.16.6]: https://github.com/Cray-HPE/csm-config/compare/1.16.5...1.16.6
 
 [1.16.5]: https://github.com/Cray-HPE/csm-config/compare/1.16.4...1.16.5
 
