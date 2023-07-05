@@ -30,6 +30,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CASMINST-6532: Moved `cmstools` to the `k8s_ncn_csm_sles_packages` list so that it would not be installed on
   storage NCNs, where it does not work.
 
+### Fixed
+
+- CASMINST-6532: Ansible role `csm.packages`: Corrected default value for repository list to be an empty list, not an empty dictionary.
+
 ## [1.16.6] - 2023-06-28
 
 ### Added
