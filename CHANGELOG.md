@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.8] - 2023-07-06
+
+### Changed
+
+- CASMINST-6535
+  - Reorganize the plays in [`ncn_nodes.yml`](ansible/ncn_nodes.yml) to take advantage of Ansible package install optimizations.
+  - [`csm_packages.yml`](ansible/vars/csm_packages.yml): Rename `ncn_csm_sles_packages` to `common_mgmt_ncn_csm_sles_packages`
+  - [`csm_packages.yml`](ansible/vars/csm_packages.yml): Rename `k8s_ncn_csm_sles_packages` to `k8s_mgmt_ncn_csm_sles_packages`
+
 ## [1.16.7] - 2023-07-05
 
 ### Changed
@@ -221,7 +230,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.7...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.8...HEAD
+
+[1.16.8]: https://github.com/Cray-HPE/csm-config/compare/1.16.7...1.16.8
 
 [1.16.7]: https://github.com/Cray-HPE/csm-config/compare/1.16.6...1.16.7
 
