@@ -33,7 +33,8 @@ common_csm_sles_packages:
   - spire-agent
 
 # List of packages to be installed/updated from Nexus on all Management NCNs
-ncn_csm_sles_packages:
+# (master, storage, and worker)
+common_mgmt_ncn_csm_sles_packages:
   - cfs-debugger
   - cfs-trust
   - csm-testing
@@ -44,8 +45,9 @@ ncn_csm_sles_packages:
   - loftsman
   - manifestgen
 
-# List of packages to be installed/updated from Nexus on all Kubernetes NCNs
-k8s_ncn_csm_sles_packages:
+# List of packages to be installed/updated from Nexus on all Kubernetes Management NCNs
+# (master and worker)
+k8s_mgmt_ncn_csm_sles_packages:
   - cray-cmstools-crayctldeploy
 
 # List of packages to be installed/updated from Nexus on all Application and Compute nodes

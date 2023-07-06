@@ -33,16 +33,9 @@
   gather_facts: yes
   any_errors_fatal: true
   remote_user: root
-  vars_files:
-    - vars/csm_repos.yml
-    - vars/csm_packages.yml
   roles:
     - role: trust-csm-ssh-keys
     - role: csm.ca_cert
-    - role: csm.packages
-      vars:
-        packages: "{{ common_csm_sles_packages + ncn_csm_sles_packages }}"
-      when: ansible_os_family == "SLE_HPC"
     - role: passwordless-ssh
     - role: csm.password
       vars:
@@ -51,7 +44,7 @@
       vars:
         ssh_keys_username: 'root'
 
-# Roles specific to Kubernetes NCNs (masters and workers)
+# Install packages on Kubernetes NCNs (masters and workers)
 - hosts:
    - Management_Master
    - Management_Worker
@@ -59,9 +52,25 @@
   any_errors_fatal: true
   remote_user: root
   vars_files:
+    - vars/csm_repos.yml
     - vars/csm_packages.yml
   roles:
     - role: csm.packages
       vars:
-        packages: "{{ k8s_ncn_csm_sles_packages }}"
+        packages: "{{ common_csm_sles_packages + common_mgmt_ncn_csm_sles_packages + k8s_mgmt_ncn_csm_sles_packages }}"
+      when: ansible_os_family == "SLE_HPC"
+
+# Install packages on storage NCNs
+- hosts:
+   - Management_Storage
+  gather_facts: yes
+  any_errors_fatal: true
+  remote_user: root
+  vars_files:
+    - vars/csm_repos.yml
+    - vars/csm_packages.yml
+  roles:
+    - role: csm.packages
+      vars:
+        packages: "{{ common_csm_sles_packages + common_mgmt_ncn_csm_sles_packages }}"
       when: ansible_os_family == "SLE_HPC"
