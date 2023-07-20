@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.9] - 2023-07-20
+
+### Changed
+
+- MTL-2000/CASMINST-3431: Modify [`csm_repos.yml`](ansible/vars/csm_repos.yml) so that instead of adding Zypper repos for
+  every SLE version, it only adds the Zypper repository for the SLE version where the play is being run; the `csm-noos`
+  repo is always still added.
+
 ## [1.16.8] - 2023-07-06
 
 ### Changed
@@ -230,7 +238,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.8...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.9...HEAD
+
+[1.16.9]: https://github.com/Cray-HPE/csm-config/compare/1.16.8...1.16.9
 
 [1.16.8]: https://github.com/Cray-HPE/csm-config/compare/1.16.7...1.16.8
 
