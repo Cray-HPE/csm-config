@@ -55,3 +55,7 @@ compute_csm_sles_packages:
   - acpid
   - bos-reporter
   - cray-uai-util
+
+# List of packages to be installed/updated from Nexus on all storage Management NCNs
+storage_mgmt_ncn_csm_sles_packages:
+  - smart-mon

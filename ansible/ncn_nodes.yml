@@ -72,5 +72,8 @@
   roles:
     - role: csm.packages
       vars:
-        packages: "{{ common_csm_sles_packages + common_mgmt_ncn_csm_sles_packages }}"
+        packages: "{{ common_csm_sles_packages + common_mgmt_ncn_csm_sles_packages + storage_mgmt_ncn_csm_sles_packages }}"
       when: ansible_os_family == "SLE_HPC"
+
+    - role: csm.storage.smartmon
+      

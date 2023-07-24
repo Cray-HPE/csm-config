@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.10] - 2023-07-28
+
+### Added
+
+- CASMMON-333
+  -  New package `storage_mgmt_ncn_csm_sles_packages` for including new `smart-mon` rpm.
+  -  New role `csm.storage.smartmon` to start smart service, reconfigure and redeploy node_exporter.
+
 ### Changed
 
 - Modified `compute_nodes.yml` top-level play to actually include compute nodes (instead of just application nodes)
