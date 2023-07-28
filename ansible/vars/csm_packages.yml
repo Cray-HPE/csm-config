@@ -22,8 +22,9 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 
-# List of packages to be installed/updated from Nexus on all nodes
-# (Management NCNs, Application nodes, and Compute nodes)
+# Lists of packages to be installed/updated from Nexus on nodes of different types
+
+# All nodes (Management NCNs, Application nodes, and Compute nodes)
 common_csm_sles_packages:
   - cfs-state-reporter
   - craycli
@@ -32,8 +33,7 @@ common_csm_sles_packages:
   - csm-node-identity
   - spire-agent
 
-# List of packages to be installed/updated from Nexus on all Management NCNs
-# (master, storage, and worker)
+# All Management NCNs (master, storage, and worker)
 common_mgmt_ncn_csm_sles_packages:
   - cfs-debugger
   - cfs-trust
@@ -45,17 +45,16 @@ common_mgmt_ncn_csm_sles_packages:
   - loftsman
   - manifestgen
 
-# List of packages to be installed/updated from Nexus on all Kubernetes Management NCNs
-# (master and worker)
+# All Kubernetes Management NCNs (master and worker)
 k8s_mgmt_ncn_csm_sles_packages:
   - cray-cmstools-crayctldeploy
 
-# List of packages to be installed/updated from Nexus on all Application and Compute nodes
+# All storage Management NCNs
+storage_mgmt_ncn_csm_sles_packages:
+  - smart-mon
+
+# All Application and Compute nodes
 compute_csm_sles_packages:
   - acpid
   - bos-reporter
   - cray-uai-util
-
-# List of packages to be installed/updated from Nexus on all storage Management NCNs
-storage_mgmt_ncn_csm_sles_packages:
-  - smart-mon

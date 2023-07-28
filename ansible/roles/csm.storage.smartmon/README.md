@@ -1,7 +1,7 @@
 csm.storage.smartmon
 =========
 
-Start the smart service, reconfigure and redeploy node_exporter.
+Start the SMART service; reconfigure and redeploy `node-exporter`.
 
 Requirements
 ------------
@@ -21,13 +21,17 @@ None
 Example Playbook
 ----------------
 
-This role starts the smart service on all the storage nodes and reconfigures and redeploys the running node_exporter with new applied configurations. 
+This role runs on all the storage NCNs. It starts the SMART service, and reconfigures and redeploys
+the running `node-exporter` (to use changed configurations, if any).
 
 ```yaml
-- hosts: Management
+- hosts: Management_Storage
+  any_errors_fatal: true
+  remote_user: root
   roles:
      - role: csm.storage.smartmon
 ```
+
 License
 -------
 
