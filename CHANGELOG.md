@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.10] - 2023-07-28
+
+### Added
+
+- CASMMON-333
+  -  New package `storage_mgmt_ncn_csm_sles_packages` for including new `smart-mon` RPM.
+  -  New role `csm.storage.smartmon` to start the SMART service; reconfigure and redeploy `node-exporter`.
+
+### Changed
+
+- Modified `compute_nodes.yml` top-level play to actually include compute nodes (instead of just application nodes)
+
 ## [1.16.9] - 2023-07-20
 
 ### Changed
@@ -238,7 +250,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.9...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.10...HEAD
+
+[1.16.10]: https://github.com/Cray-HPE/csm-config/compare/1.16.9...1.16.10
 
 [1.16.9]: https://github.com/Cray-HPE/csm-config/compare/1.16.8...1.16.9
 

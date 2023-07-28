@@ -45,7 +45,7 @@
     - role: csm.ca_cert
     - role: csm.packages
       vars:
-        packages: "{{ common_csm_sles_packages + common_mgmt_ncn_csm_sles_packages }}"
+        packages: "{{ common_csm_sles_packages + common_mgmt_ncn_csm_sles_packages + storage_mgmt_ncn_csm_sles_packages }}"
       when: ansible_os_family == "SLE_HPC"
     - role: passwordless-ssh
     - role: csm.password
@@ -54,4 +54,4 @@
     - role: csm.ssh_keys
       vars:
         ssh_keys_username: 'root'
-
+    - role: csm.storage.smartmon

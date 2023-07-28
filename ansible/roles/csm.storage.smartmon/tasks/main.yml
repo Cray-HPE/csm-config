@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2023 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -21,40 +21,17 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
+# Tasks for the csm.storage.smartmon role
+- name: Start SMART service
+  become: true
+  systemd:
+    name: smart
+    enabled: yes
+    state: started
 
-# Lists of packages to be installed/updated from Nexus on nodes of different types
-
-# All nodes (Management NCNs, Application nodes, and Compute nodes)
-common_csm_sles_packages:
-  - cfs-state-reporter
-  - craycli
-  - csm-auth-utils
-  - csm-node-heartbeat
-  - csm-node-identity
-  - spire-agent
-
-# All Management NCNs (master, storage, and worker)
-common_mgmt_ncn_csm_sles_packages:
-  - cfs-debugger
-  - cfs-trust
-  - csm-testing
-  - goss-servers
-  - hpe-csm-goss-package
-  - hpe-csm-scripts
-  - hpe-yq
-  - loftsman
-  - manifestgen
-
-# All Kubernetes Management NCNs (master and worker)
-k8s_mgmt_ncn_csm_sles_packages:
-  - cray-cmstools-crayctldeploy
-
-# All storage Management NCNs
-storage_mgmt_ncn_csm_sles_packages:
-  - smart-mon
-
-# All Application and Compute nodes
-compute_csm_sles_packages:
-  - acpid
-  - bos-reporter
-  - cray-uai-util
+- name: Redeploy node-exporter
+  command: "ceph orch {{ item }} "
+  with_items:
+  - apply -i /etc/cray/ceph/node-exporter.yaml
+  - reconfig node-exporter
+  - redeploy node-exporter
