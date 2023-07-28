@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Modified `compute_nodes.yml` top-level play to actually include compute nodes (instead of just application nodes)
+
 ## [1.16.9] - 2023-07-20
 
 ### Changed

@@ -22,10 +22,10 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# stock SLES compute node playbook
+# stock SLES application/compute node playbook
 
 ---
-- hosts: Application
+- hosts: Application:Compute
   gather_subset:
     - '!all'
     - '!min'
@@ -39,7 +39,7 @@
     - role: csm.ssh_keys
     - role: csm.cn.exclude-module
 
-- hosts: Application:&cfs_image
+- hosts: Application:Compute:&cfs_image
   gather_subset:
     - '!all'
     - '!min'
