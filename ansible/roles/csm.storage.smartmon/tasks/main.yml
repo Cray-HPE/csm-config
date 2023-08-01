@@ -32,6 +32,6 @@
 - name: Redeploy node-exporter
   command: "ceph orch {{ item }} "
   with_items:
-  - apply -i /etc/cray/ceph/node-exporter.yaml
+  - apply -i /etc/cray/ceph/node-exporter.yml
   - reconfig node-exporter
   - redeploy node-exporter
