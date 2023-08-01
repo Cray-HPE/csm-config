@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.11] - 2023-08-01
+
+### Added
+
+- CASMTRIAGE-5793
+  -  Fix `node-exporter` filename extension in [`ansible/roles/csm.storage.smartmon/tasks/main.yml`](ansible/roles/csm.storage.smartmon/tasks/main.yml)
+
 ## [1.16.10] - 2023-07-28
 
 ### Added
@@ -250,7 +257,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.10...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.11...HEAD
+
+[1.16.11]: https://github.com/Cray-HPE/csm-config/compare/1.16.10...1.16.11
 
 [1.16.10]: https://github.com/Cray-HPE/csm-config/compare/1.16.9...1.16.10
 
