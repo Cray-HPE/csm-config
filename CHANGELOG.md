@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.14] - 2023-08-03
+
+### Added
+
+- CASMTRIAGE-5788
+  -  Use `sysctl` defaults removed by MTL-1974 to [`ansible/roles/csm.ncn.sysctl/vars/main.yml`](ansible/roles/csm.ncn.sysctl/vars/main.yml)
+  - Invoke `csm.ncn.sysctl` in `ncn_nodes.yml` as well as all three playbooks invoked by `site.yml`
+
+### Changed
+
+- Replace all `ansible_os_family` and `ansible_distribution` conditionals for `SLE_HPC` with `ansible_distribution_file_variety == "SUSE"` to be
+  agnostic to the SUSE product line (enabling usage on GCP images in vshastav1 and vshastav-future once we moved to hypervisors)
+
 ## [1.15.13] - 2023-07-05
 
 ### Changed

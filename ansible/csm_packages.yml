@@ -40,7 +40,7 @@
     - role: csm.packages
       vars:
         packages: "{{ general_csm_sles_packages }}"
-      when: ansible_distribution == "SLES"
+      when: ansible_distribution_file_variety == "SUSE"
   tasks:
     - name: Add reporters to presets file
       blockinfile:
