@@ -34,6 +34,9 @@
   any_errors_fatal: true
   remote_user: root
   roles:
+    - role: csm.ncn.sysctl
+      vars:
+        sysctl_set: true
     - role: trust-csm-ssh-keys
     - role: csm.ca_cert
     - role: passwordless-ssh
@@ -58,7 +61,7 @@
     - role: csm.packages
       vars:
         packages: "{{ common_csm_sles_packages + common_mgmt_ncn_csm_sles_packages + k8s_mgmt_ncn_csm_sles_packages }}"
-      when: ansible_os_family == "SLE_HPC"
+      when: ansible_distribution_file_variety == "SUSE"
 
 # Install packages on storage NCNs
 - hosts:
@@ -73,5 +76,5 @@
     - role: csm.packages
       vars:
         packages: "{{ common_csm_sles_packages + common_mgmt_ncn_csm_sles_packages + storage_mgmt_ncn_csm_sles_packages }}"
-      when: ansible_os_family == "SLE_HPC"
+      when: ansible_distribution_file_variety == "SUSE"
     - role: csm.storage.smartmon

@@ -22,7 +22,7 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 ---
-- name: Rebuild initrd SLE_HPC
+- name: Rebuild initrd SUSE
   command: sh /srv/cray/scripts/common/create-ims-initrd.sh
   when:
-    - ansible_distribution == "SLE_HPC"
+    - ansible_distribution_file_variety == "SUSE"
