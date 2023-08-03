@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Invoke `csm.ncn.sysctl` in `ncn_nodes.yml`, and all three playbooks invoked by `site.yml`
     - Rename `ncn-sysctl.yml` to `ncn_sysctl.yml` to follow the implicit naming convention in the repo 
 - Replace all `ansible_os_family` and `ansible_distribution` conditionals for `SLE_HPC` with `ansible_distribution_file_variety == "SUSE"` to be
-  agnostic to the SUSE product line (enabling usage on GCP images in vshastav1 and vshastav-future once we moved to hypervisors)
+  agnostic to the SUSE product line (enabling usage on GCP images in `vshastav1` and `vshastav-future` once we move to hypervisors)
 
 ## [1.16.12] - 2023-08-03
 
@@ -274,7 +274,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.12...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.13...HEAD
+
+[1.16.13]: https://github.com/Cray-HPE/csm-config/compare/1.16.12...1.16.13
 
 [1.16.12]: https://github.com/Cray-HPE/csm-config/compare/1.16.11...1.16.12
 
