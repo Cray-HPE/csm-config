@@ -38,10 +38,10 @@ sysctl_config:
   - name: net.ipv4.neigh.default.gc_interval
     value: 30
   - name: net.ipv4.neigh.default.gc_stale_time
-    value: 60
+    value: 240
   - name: net.ipv4.neigh.default.gc_thresh1
-    value: 128
+    value: 2048
   - name: net.ipv4.neigh.default.gc_thresh2
-    value: 512
+    value: 4096
   - name: net.ipv4.neigh.default.gc_thresh3
-    value: 1024
+    value: 8192
