@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Replace all `ansible_os_family` and `ansible_distribution` conditionals for `SLE_HPC` with `ansible_distribution_file_variety == "SUSE"` to be
-  agnostic to the SUSE product line (enabling usage on GCP images in vshastav1 and vshastav-future once we moved to hypervisors)
+  agnostic to the SUSE product line (enabling usage on GCP images in `vshastav1` and `vshastav-future` once we move to hypervisors)
 
 ## [1.15.13] - 2023-07-05
 
@@ -166,7 +166,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.13...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.14...HEAD
+
+[1.15.14]: https://github.com/Cray-HPE/csm-config/compare/1.15.13...1.15.14
 
 [1.15.13]: https://github.com/Cray-HPE/csm-config/compare/1.15.12...1.15.13
 
