@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.12] - 2023-08-03
+
+### Added
+
+- CASMTRIAGE-5788
+  -  Use `sysctl` defaults removed by MTL-1974 to [`ansible/roles/csm.ncn.sysctl/vars/main.yml`](ansible/roles/csm.ncn.sysctl/vars/main.yml)
+
 ## [1.16.11] - 2023-08-01
 
 ### Added
@@ -257,7 +264,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.11...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.12...HEAD
+
+[1.16.12]: https://github.com/Cray-HPE/csm-config/compare/1.16.11...1.16.12
 
 [1.16.11]: https://github.com/Cray-HPE/csm-config/compare/1.16.10...1.16.11
 
