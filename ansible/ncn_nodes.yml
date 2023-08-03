@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -37,12 +37,15 @@
     - vars/csm_repos.yml
     - vars/csm_packages.yml
   roles:
+    - role: csm.ncn.sysctl
+      vars:
+        sysctl_set: true
     - role: trust-csm-ssh-keys
     - role: csm.ncn.ca_cert
     - role: csm.packages
       vars:
         packages: "{{ ncn_csm_sles_packages }}"
-      when: ansible_os_family == "SLE_HPC"
+      when: ansible_distribution_file_variety == "SUSE"
     - role: passwordless-ssh
     - role: csm.password
       vars:

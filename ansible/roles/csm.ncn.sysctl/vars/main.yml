@@ -1,8 +1,7 @@
-#!/usr/bin/env ansible-playbook
 #
 # MIT License
 #
-# (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2023 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -22,18 +21,27 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# CSM Repositories and Packages top-level Play
-- hosts: Management
-  gather_facts: yes
-  any_errors_fatal: true
-  remote_user: root
-  vars_files:
-    - vars/csm_repos.yml
-    - vars/csm_packages.yml
-
-  roles:
-    # Install CSM repositories and packages
-    - role: csm.packages
-      vars:
-        packages: "{{ ncn_csm_sles_packages }}"
-      when: ansible_distribution_file_variety == "SUSE"
+# Vars for the csm.ncn.sysctl role. See the README.md for information.
+sysctl_config:
+  - name: net.ipv4.conf.all.accept_local
+    value: 0
+  - name: net.ipv4.conf.all.arp_accept
+    value: 0
+  - name: net.ipv4.conf.all.arp_ignore
+    value: 1
+  - name: net.ipv4.conf.all.arp_filter
+    value: 0
+  - name: net.ipv4.conf.all.arp_announce
+    value: 2
+  - name: net.ipv4.conf.all.rp_filter
+    value: 2
+  - name: net.ipv4.neigh.default.gc_interval
+    value: 30
+  - name: net.ipv4.neigh.default.gc_stale_time
+    value: 240
+  - name: net.ipv4.neigh.default.gc_thresh1
+    value: 2048
+  - name: net.ipv4.neigh.default.gc_thresh2
+    value: 4096
+  - name: net.ipv4.neigh.default.gc_thresh3
+    value: 8192
