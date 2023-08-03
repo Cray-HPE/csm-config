@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.12] - 2023-08-03
+
+### Added
+
+- CASMTRIAGE-5788
+  -  Use `sysctl` defaults removed by MTL-1974 to [`ansible/roles/csm.ncn.sysctl/vars/main.yml`](ansible/roles/csm.ncn.sysctl/vars/main.yml)
+
 ## [1.16.11] - 2023-08-01
 
 ### Added
