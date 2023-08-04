@@ -41,12 +41,15 @@
     - vars/csm_repos.yml
     - vars/csm_packages.yml
   roles:
+    - role: csm.ncn.sysctl
+      vars:
+        sysctl_set: true
     - role: trust-csm-ssh-keys
     - role: csm.ca_cert
     - role: csm.packages
       vars:
         packages: "{{ common_csm_sles_packages + common_mgmt_ncn_csm_sles_packages + k8s_mgmt_ncn_csm_sles_packages }}"
-      when: ansible_os_family == "SLE_HPC"
+      when: ansible_distribution_file_variety == "SUSE"
     - role: passwordless-ssh
     - role: csm.password
       vars:
