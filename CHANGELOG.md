@@ -280,7 +280,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.13...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.14...HEAD
+
+[1.16.14]: https://github.com/Cray-HPE/csm-config/compare/1.16.13...1.16.14
 
 [1.16.13]: https://github.com/Cray-HPE/csm-config/compare/1.16.12...1.16.13
 
