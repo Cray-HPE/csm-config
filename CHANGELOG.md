@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.15] - 2023-08-08
+
+### Removed
+
+- CASMTRIAGE-5817: Removed `csm-node-identity` from NCN and Compute node package lists in `csm_packages`.
+
 ## [1.15.14] - 2023-08-03
 
 ### Added
@@ -166,7 +172,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.14...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.15...HEAD
+
+[1.15.15]: https://github.com/Cray-HPE/csm-config/compare/1.15.14...1.15.15
 
 [1.15.14]: https://github.com/Cray-HPE/csm-config/compare/1.15.13...1.15.14
 

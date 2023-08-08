@@ -29,7 +29,6 @@ ncn_csm_sles_packages:
   - cfs-trust
   - craycli
   - cray-cmstools-crayctldeploy
-  - csm-node-identity
   - csm-testing
   - goss-servers
   - hpe-csm-goss-package
@@ -44,4 +43,3 @@ general_csm_sles_packages:
   - cfs-state-reporter
   - craycli
   - cray-uai-util
-  - csm-node-identity
