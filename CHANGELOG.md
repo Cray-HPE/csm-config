@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.16] - 2023-08-08
+
+### Changed
+
+- CASMTRIAGE-5788: Fixed `ncn_sysctl.yml` with the correct content from #163 and the fixes from #168
+
 ## [1.15.15] - 2023-08-08
 
 ### Removed
