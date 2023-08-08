@@ -33,7 +33,7 @@
       vars:
         sysctl_set: true
 
-- hosts: &cfs_image
+- hosts: "Management_Master:Management_Worker:Management_Storage:&cfs_image"
   any_errors_fatal: true
   remote_user: root
   roles:
