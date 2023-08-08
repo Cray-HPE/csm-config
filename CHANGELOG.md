@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.14] - 2023-08-08
+
+### Changed
+
+- CASMTRIAGE-5788: Prevents YAML interpolation of `hosts: &cfs_image` in `ncn_sysctl.yml`, allowing the playbook to run.
+
 ## [1.16.13] - 2023-08-03
 
 ### Changed
