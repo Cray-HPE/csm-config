@@ -26,35 +26,45 @@
 
 # All nodes (Management NCNs, Application nodes, and Compute nodes)
 common_csm_sles_packages:
+  - cfs-debugger
   - cfs-state-reporter
+  - cfs-trust
   - craycli
   - csm-auth-utils
   - csm-node-heartbeat
   - csm-node-identity
+  - hpe-yq
   - spire-agent
 
 # All Management NCNs (master, storage, and worker)
 common_mgmt_ncn_csm_sles_packages:
-  - cfs-debugger
-  - cfs-trust
+  - cray-kubectl-hns-plugin
+  - cray-kubectl-kubelogin-plugin
   - csm-testing
+  - dracut-metal-mdsquash
   - goss-servers
   - hpe-csm-goss-package
   - hpe-csm-scripts
-  - hpe-yq
+  - ipmitool
   - loftsman
   - manifestgen
 
 # All Kubernetes Management NCNs (master and worker)
 k8s_mgmt_ncn_csm_sles_packages:
   - cray-cmstools-crayctldeploy
+  - dracut-metal-dmk8s
+  - dracut-metal-luksetcd
 
 # All storage Management NCNs
 storage_mgmt_ncn_csm_sles_packages:
   - smart-mon
 
-# All Application and Compute nodes
+# All Application nodes
+application_csm_sles_packages:
+  - bos-reporter
+  - cray-uai-util
+
+# All Compute nodes
 compute_csm_sles_packages:
   - acpid
   - bos-reporter
-  - cray-uai-util
