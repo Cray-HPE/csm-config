@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.15] - 2023-08-09
+
+### Changed
+
+- CASMCMS-8758: Add more RPMs to CSM packages lists; split out Application and Compute node package lists
+
 ## [1.16.14] - 2023-08-08
 
 ### Changed
@@ -280,7 +286,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.14...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.15...HEAD
+
+[1.16.15]: https://github.com/Cray-HPE/csm-config/compare/1.16.14...1.16.15
 
 [1.16.14]: https://github.com/Cray-HPE/csm-config/compare/1.16.13...1.16.14
 
