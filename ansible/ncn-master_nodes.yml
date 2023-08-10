@@ -23,6 +23,7 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 # Deprecation Notice: These top level playbooks are replaced by ncn_nodes.yml
+---
 - hosts: all
   gather_facts: no
   tasks:
@@ -43,7 +44,7 @@
   roles:
     - role: csm.ncn.sysctl
       vars:
-        sysctl_set: true
+        sysctl_set: "{{ false if cray_cfs_image else true|default(false)|bool }}"
     - role: trust-csm-ssh-keys
     - role: csm.ca_cert
     - role: csm.packages
