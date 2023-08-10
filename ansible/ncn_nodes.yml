@@ -26,10 +26,22 @@
 # NCN (management, storage, worker) as well as their corresponding images.
 # The three seperate top level plays are marked for deprecation via a debug
 # notice.
+---
+- name: setup cfs_image host group
+  gather_facts: false
+  hosts: all
+  tasks:
+    - name: Add image customization hosts to the cfs_image host group.
+      add_host:
+        name: '{{ inventory_hostname }}'
+        groups: cfs_image
+      when: cray_cfs_image
+
+# Does not include images
 - hosts:
-   - Management_Master
-   - Management_Worker
-   - Management_Storage
+   - Management_Master:!cfs_image
+   - Management_Worker:!cfs_image
+   - Management_Storage:!cfs_image
   gather_facts: yes
   any_errors_fatal: true
   remote_user: root
@@ -37,6 +49,28 @@
     - role: csm.ncn.sysctl
       vars:
         sysctl_set: true
+    - role: trust-csm-ssh-keys
+    - role: csm.ca_cert
+    - role: passwordless-ssh
+    - role: csm.password
+      vars:
+        password_username: 'root'
+    - role: csm.ssh_keys
+      vars:
+        ssh_keys_username: 'root'
+
+# Includes images
+- hosts:
+    - Management_Master:&cfs_image
+    - Management_Worker:&cfs_image
+    - Management_Storage:&cfs_image
+  gather_facts: yes
+  any_errors_fatal: true
+  remote_user: root
+  roles:
+    - role: csm.ncn.sysctl
+      vars:
+        sysctl_set: false
     - role: trust-csm-ssh-keys
     - role: csm.ca_cert
     - role: passwordless-ssh

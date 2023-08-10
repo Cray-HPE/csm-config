@@ -23,6 +23,17 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 # Deprecation Notice: These top level playbooks are replaced by ncn_nodes.yml
+---
+- name: setup cfs_image host group
+  gather_facts: false
+  hosts: all
+  tasks:
+    - name: Add image customization hosts to the cfs_image host group.
+      add_host:
+        name: '{{ inventory_hostname }}'
+        groups: cfs_image
+      when: cray_cfs_image
+
 - hosts: all
   gather_facts: no
   tasks:
@@ -33,7 +44,8 @@
       delegate_to: localhost
 
 # NCN Storage Nodes Play, and NCN Storage Images
-- hosts: Management_Storage
+# Does not include images
+- hosts: Management_Storage:!cfs_image
   gather_facts: yes
   any_errors_fatal: true
   remote_user: root
@@ -44,6 +56,34 @@
     - role: csm.ncn.sysctl
       vars:
         sysctl_set: true
+    - role: trust-csm-ssh-keys
+    - role: csm.ca_cert
+    - role: csm.packages
+      vars:
+        packages: "{{ common_csm_sles_packages + common_mgmt_ncn_csm_sles_packages + storage_mgmt_ncn_csm_sles_packages }}"
+      when: ansible_distribution_file_variety == "SUSE"
+    - role: passwordless-ssh
+    - role: csm.password
+      vars:
+        password_username: 'root'
+    - role: csm.ssh_keys
+      vars:
+        ssh_keys_username: 'root'
+    - role: csm.storage.smartmon
+
+# NCN Storage Nodes Play, and NCN Storage Images
+# Includes images
+- hosts: Management_Storage:&cfs_image
+  gather_facts: yes
+  any_errors_fatal: true
+  remote_user: root
+  vars_files:
+    - vars/csm_repos.yml
+    - vars/csm_packages.yml
+  roles:
+    - role: csm.ncn.sysctl
+      vars:
+        sysctl_set: false
     - role: trust-csm-ssh-keys
     - role: csm.ca_cert
     - role: csm.packages
