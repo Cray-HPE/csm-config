@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.17] - 2023-08-14
+
+### Changed
+
+= CASMCMS-8691: Update Docker file to account for changed RPM locations
+
 ## [1.15.16] - 2023-08-08
 
 ### Changed
@@ -178,7 +184,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.16...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.17...HEAD
+
+[1.15.17]: https://github.com/Cray-HPE/csm-config/compare/1.15.16...1.15.17
 
 [1.15.16]: https://github.com/Cray-HPE/csm-config/compare/1.15.15...1.15.16
 
