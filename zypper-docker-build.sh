@@ -42,13 +42,15 @@ ARTIFACTORY_PASSWORD=$(test -f /run/secrets/ARTIFACTORY_READONLY_TOKEN && cat /r
 CREDS=${ARTIFACTORY_USERNAME:-}
 # Append ":<password>" to credentials variable, if a password is set
 [[ -z ${ARTIFACTORY_PASSWORD} ]] || CREDS="${CREDS}:${ARTIFACTORY_PASSWORD}"
-CSM_REPO_URI="https://${CREDS}@artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp${SP}?auth=basic"
+CSM_SLES_REPO_URI="https://${CREDS}@artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp${SP}?auth=basic"
+CSM_NOOS_REPO_URI="https://${CREDS}@artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/noos?auth=basic"
 
 zypper --non-interactive rr --all
 zypper --non-interactive clean -a
 zypper --non-interactive ar "${SLES_MIRROR}/Products/SLE-Module-Basesystem/15-SP${SP}/${ARCH}/product/" "sles15sp${SP}-Module-Basesystem-product"
 zypper --non-interactive ar "${SLES_MIRROR}/Updates/SLE-Module-Basesystem/15-SP${SP}/${ARCH}/update/" "sles15sp${SP}-Module-Basesystem-update"
-zypper --non-interactive ar --no-gpgcheck "${CSM_REPO_URI}" csm
+zypper --non-interactive ar --no-gpgcheck "${CSM_SLES_REPO_URI}" csm-sles
+zypper --non-interactive ar --no-gpgcheck "${CSM_NOOS_REPO_URI}" csm-noos
 zypper --non-interactive --gpg-auto-import-keys refresh
 zypper --non-interactive in -f --no-confirm csm-ssh-keys-roles-${CSM_SSH_KEYS_VERSION}
 # Lock the version of csm-ssh-keys-roles, just to be certain it is not upgraded inadvertently somehow later
