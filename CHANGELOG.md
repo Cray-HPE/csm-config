@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Disabled concurrent Jenkins builds on same branch/commit
+- Added build timeout to avoid hung builds
+
 ## [1.15.17] - 2023-08-14
 
 ### Changed
