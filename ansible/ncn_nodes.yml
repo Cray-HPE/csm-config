@@ -26,6 +26,7 @@
 # NCN (management, storage, worker) as well as their corresponding images.
 # The three seperate top level plays are marked for deprecation via a debug
 # notice.
+---
 - hosts:
    - Management_Master
    - Management_Worker
@@ -36,7 +37,7 @@
   roles:
     - role: csm.ncn.sysctl
       vars:
-        sysctl_set: true
+        sysctl_set: "{{ false if cray_cfs_image else true|default(false)|bool }}"
     - role: trust-csm-ssh-keys
     - role: csm.ca_cert
     - role: passwordless-ssh

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.17] - 2023-08-16
+
+### Changed
+
+- CASMTRIAGE-5846: Change `sysctl_set` to be dynamic to prevent failure when building images
+- Disabled concurrent Jenkins builds on same branch/commit
+- Added build timeout to avoid hung builds
+
 ## [1.16.16] - 2023-08-14
 
 ### Changed
@@ -294,7 +302,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.16...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.17...HEAD
+
+[1.16.17]: https://github.com/Cray-HPE/csm-config/compare/1.16.16...1.16.17
 
 [1.16.16]: https://github.com/Cray-HPE/csm-config/compare/1.16.15...1.16.16
 
