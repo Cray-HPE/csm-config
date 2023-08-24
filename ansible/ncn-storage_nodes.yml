@@ -59,7 +59,8 @@
       vars:
         ssh_keys_username: 'root'
 
-# This role runs on all the storage NCNs. It starts the SMART service, and reconfigures and redeploys the running node-exporter
+# This role runs on all the storage NCNs, but not their images.
+# It starts the SMART service, and reconfigures and redeploys the running node-exporter
 - hosts:
    - "Management_Storage:!cfs_image"
   gather_facts: yes

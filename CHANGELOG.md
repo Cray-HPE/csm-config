@@ -6,7 +6,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-	
 
 ## [1.16.18] - 2023-08-24
 
@@ -304,8 +303,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Convert to gitflo
-## [1.16.17] - 2023-08-16
+- Convert to gitflow/gitversion.
+
+### Added
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
