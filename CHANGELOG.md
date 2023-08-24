@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- CASMMON-337:Smartmon role should not run during image customization, only on live storage NCNs.
+- CASMMON-337: Smartmon role should not run during image customization, only on live storage NCNs.
 
 ## [1.16.17] - 2023-08-16
 
