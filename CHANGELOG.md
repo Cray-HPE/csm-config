@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.18] - 2023-08-24
+
+### Changed
+
+- CASMMON-337: Smartmon role should not run during image customization, only on live storage NCNs.
+
 ## [1.16.17] - 2023-08-16
 
 ### Changed
@@ -302,7 +308,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.17...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.18...HEAD
+
+[1.16.18]: https://github.com/Cray-HPE/csm-config/compare/1.16.17...1.16.18
 
 [1.16.17]: https://github.com/Cray-HPE/csm-config/compare/1.16.16...1.16.17
 

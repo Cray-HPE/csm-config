@@ -78,4 +78,14 @@
       vars:
         packages: "{{ common_csm_sles_packages + common_mgmt_ncn_csm_sles_packages + storage_mgmt_ncn_csm_sles_packages }}"
       when: ansible_distribution_file_variety == "SUSE"
+
+# This role runs on all the storage NCNs, but not their images.
+# It starts the SMART service, and reconfigures and redeploys the running node-exporter
+- hosts:
+   - "Management_Storage:!cfs_image"
+  gather_facts: yes
+  any_errors_fatal: true
+  remote_user: root
+  roles:
     - role: csm.storage.smartmon
+
