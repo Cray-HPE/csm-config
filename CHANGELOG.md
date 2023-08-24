@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.16.17] - 2023-08-16
 
+### Changed
+
 - CASMTRIAGE-5846: Change `sysctl_set` to be dynamic to prevent failure when building images
 - Disabled concurrent Jenkins builds on same branch/commit
 - Added build timeout to avoid hung builds
