@@ -6,10 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+	
 
-## [1.16.17] - 2023-08-16
+## [1.16.18] - 2023-08-24
 
 ### Changed
+
+- CASMMON-337:Smartmon role should not run during image customization
+- isolate the play to only node personalization is to use hosts: Management_Storage:!cfs_image 
+
+### Changed
+
+## [1.16.17] - 2023-08-16
 
 - CASMTRIAGE-5846: Change `sysctl_set` to be dynamic to prevent failure when building images
 - Disabled concurrent Jenkins builds on same branch/commit
@@ -296,13 +304,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Convert to gitflow/gitversion.
-
-### Added
+- Convert to gitflo
+## [1.16.17] - 2023-08-16
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.17...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.18...HEAD
+
+[1.16.18]: https://github.com/Cray-HPE/csm-config/compare/1.16.17...1.16.18
 
 [1.16.17]: https://github.com/Cray-HPE/csm-config/compare/1.16.16...1.16.17
 
