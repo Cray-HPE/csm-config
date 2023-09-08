@@ -28,3 +28,9 @@ ncn_csm_sles_packages:
 general_csm_sles_packages:
   - bos-reporter
   - cfs-state-reporter
+
+# All Application nodes
+application_csm_sles_packages:
+  - cray-node-exporter
+  - smart-mon
+  - smartmontools
