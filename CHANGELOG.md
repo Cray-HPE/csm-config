@@ -5,8 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## Unreleased
+
+## [1.14.3] - 2023-09-08
 ### Changed
+- CASMINST-6624: Provide RPMs needed for enabling SMART data on UAN
 - Disabled concurrent Jenkins builds on same branch/commit
 - Added build timeout to avoid hung builds
 - CASMCMS-8691: Update Docker file to account for changed RPM locations
@@ -67,7 +70,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.14.2...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.14.3...HEAD
+
+[1.14.3]: https://github.com/Cray-HPE/csm-config/compare/1.14.2...1.14.3
 
 [1.14.2]: https://github.com/Cray-HPE/csm-config/compare/1.14.1...1.14.2
 
