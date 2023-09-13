@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.19] - 2023-09-12
+
+### Changed
+
+- CASMINST-6624: Provide RPMs needed for enabling SMART data on UAN
+
 ### Dependencies
 - Bump `actions/checkout` from 3 to 4 ([#187](https://github.com/Cray-HPE/csm-config/pull/187))
 
@@ -317,7 +323,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.18...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.19...HEAD
+
+[1.16.19]: https://github.com/Cray-HPE/csm-config/compare/1.16.18...1.16.19
 
 [1.16.18]: https://github.com/Cray-HPE/csm-config/compare/1.16.17...1.16.18
 

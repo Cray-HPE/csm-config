@@ -62,7 +62,10 @@ storage_mgmt_ncn_csm_sles_packages:
 # All Application nodes
 application_csm_sles_packages:
   - bos-reporter
+  - cray-node-exporter
   - cray-uai-util
+  - smart-mon
+  - smartmontools
 
 # All Compute nodes
 compute_csm_sles_packages:
