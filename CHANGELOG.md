@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.13.4] - 2023-09-14
+### Changed
+- MTL-2216: add role to apply CVE migitations
+
 ## [1.14.3] - 2023-09-08
 ### Changed
 - CASMINST-6624: Provide RPMs needed for enabling SMART data on UAN
