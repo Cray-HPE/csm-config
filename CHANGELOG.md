@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.19] - 2023-09-14
+
+### Changed
+
+- MTL-2216: add role to apply CVE migitations
+
 ## [1.15.18] - 2023-08-16
 
 ### Changed
