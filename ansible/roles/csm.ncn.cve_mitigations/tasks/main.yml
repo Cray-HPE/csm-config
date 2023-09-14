@@ -23,7 +23,7 @@
 #
 ---
 - name: Count AMD CPUs
-  ansible.builtin.shell: grep -c "$MODEL_PTN" /proc/cpuinfo
+  ansible.builtin.shell: grep -c "^model name.*AMD EPYC 7..2" /proc/cpuinfo
   args:
     executable: /bin/bash
   register: matching_cpus
