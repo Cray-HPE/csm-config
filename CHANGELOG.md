@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Dependencies
 - Bump `actions/checkout` from 3 to 4 ([#187](https://github.com/Cray-HPE/csm-config/pull/187))
 
+## [1.16.19] - 2023-09-14
+
+### Changed
+
+- CASMCMS-8696: Create an ansible play that configure a compute image for IMS builds.
+
 ## [1.16.18] - 2023-08-24
 
 ### Changed
