@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.21] - 2023-09-21
+
+### Changed
+
+- CASMINST-6624: Provide RPMs needed for enabling SMART data on UAN.
+
 ## [1.15.20] - 2023-09-14
 
 ### Changed
@@ -204,7 +210,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.18...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.21...HEAD
+
+[1.15.21]: https://github.com/Cray-HPE/csm-config/compare/1.15.20...1.15.21
+
+[1.15.20]: https://github.com/Cray-HPE/csm-config/compare/1.15.19...1.15.20
+
+[1.15.19]: https://github.com/Cray-HPE/csm-config/compare/1.15.18...1.15.19
 
 [1.15.18]: https://github.com/Cray-HPE/csm-config/compare/1.15.17...1.15.18
 
