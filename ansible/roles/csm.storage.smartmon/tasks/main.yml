@@ -30,6 +30,10 @@
     state: started
 
 - name: Redeploy node-exporter
+  when:
+    - groups['mons'] is defined
+  delegate_to: "{{ groups['mons'][0] }}"
+  run_once: true
   command: "ceph orch {{ item }} "
   with_items:
   - apply -i /etc/cray/ceph/node-exporter.yml
