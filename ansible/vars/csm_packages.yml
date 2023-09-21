@@ -43,3 +43,9 @@ general_csm_sles_packages:
   - cfs-state-reporter
   - craycli
   - cray-uai-util
+
+# All Application nodes
+application_csm_sles_packages:
+  - cray-node-exporter
+  - smart-mon
+  - smartmontools
