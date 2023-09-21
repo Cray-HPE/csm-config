@@ -22,7 +22,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# Compute Nodes Play
+# Compute and Application nodes play
 - hosts: Compute,Application
   gather_facts: yes
   any_errors_fatal: true
@@ -30,7 +30,12 @@
   vars_files:
     - vars/csm_repos.yml
     - vars/csm_packages.yml
-
+  vars:
+    csm_services:
+      - bos-reporter
+      - cfs-state-reporter
+      - cray-heartbeat
+      - csm-node-identity
   roles:
     # Install CSM repositories and packages
     - role: csm.packages
@@ -41,10 +46,13 @@
         - cray_cfs_image|default(false)|bool
 
   tasks:
-    - name: Add reporters to presets file
-      blockinfile:
+    - name: Add CSM services to presets file
+      loop: "{{ csm_services }}"
+      lineinfile:
         path: "/usr/lib/systemd/system-preset/89-cray-default.preset"
-        block: |
-          # More Cray services
-          enable bos-reporter.service
-          enable cfs-state-reporter.service
+        create: true
+        state: present
+        line: "enable {{item}}.service"
+    - name: Apply presets for CSM services
+      loop: "{{ csm_services }}"
+      command: systemctl preset "{{item}}.service"
