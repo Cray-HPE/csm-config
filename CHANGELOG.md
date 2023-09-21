@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- CASMINST-6667: Include cray-uai-util package in compute nodes
+### Added
+
+- CASMINST-6667: Include `cray-uai-util` package in compute nodes
 
 ## [1.16.19] - 2023-09-12
 
