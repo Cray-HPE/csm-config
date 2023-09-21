@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.23] - 2023-10-06
+
+### Added
+
+- CASMINST-6662: Enable `cray-heartbeat` and `csm-node-identity` services on compute and
+  application nodes in `csm_packages.yml`.
+
+### Changed
+
+- CASMINST-6662: Ensure that `systemd` preset changes are applied after preset file is updated
+  in `csm_packages.yml`.
+
 ## [1.15.22] - 2023-09-22
 
 ### Changed
@@ -216,7 +228,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.21...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.23...HEAD
+
+[1.15.23]: https://github.com/Cray-HPE/csm-config/compare/1.15.22...1.15.23
+
+[1.15.22]: https://github.com/Cray-HPE/csm-config/compare/1.15.21...1.15.22
 
 [1.15.21]: https://github.com/Cray-HPE/csm-config/compare/1.15.20...1.15.21
 

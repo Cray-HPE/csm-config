@@ -22,7 +22,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# Compute Nodes Play
+# Compute and Application nodes play
 - hosts: Compute:Application:&cfs_image
   gather_facts: yes
   # Gather the minimum that gets the ansible_distribution variable set
@@ -35,6 +35,12 @@
   vars_files:
     - vars/csm_repos.yml
     - vars/csm_packages.yml
+  vars:
+    csm_services:
+      - bos-reporter
+      - cfs-state-reporter
+      - cray-heartbeat
+      - csm-node-identity
   roles:
     # Install CSM repositories and packages
     - role: csm.packages
@@ -42,15 +48,18 @@
         packages: "{{ general_csm_sles_packages }}"
       when: ansible_distribution_file_variety == "SUSE"
   tasks:
-    - name: Add reporters to presets file
-      blockinfile:
+    - name: Add CSM services to presets file
+      loop: "{{ csm_services }}"
+      lineinfile:
         path: "/usr/lib/systemd/system-preset/89-cray-default.preset"
-        block: |
-          # More Cray services
-          enable bos-reporter.service
-          enable cfs-state-reporter.service
+        create: true
+        state: present
+        line: "enable {{item}}.service"
+    - name: Apply presets for CSM services
+      loop: "{{ csm_services }}"
+      command: systemctl preset "{{item}}.service"
 
-# Application-nodes only play
+# Application-nodes only play, excluding images
 - hosts: Application:!cfs_image
   gather_facts: yes
   # Gather the minimum that gets the ansible_distribution variable set
