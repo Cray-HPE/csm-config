@@ -71,3 +71,4 @@ application_csm_sles_packages:
 compute_csm_sles_packages:
   - acpid
   - bos-reporter
+  - cray-uai-util
