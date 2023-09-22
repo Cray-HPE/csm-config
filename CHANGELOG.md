@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.14.7] - 2023-09-22
+### Reverted
+- CASMINST-6624: Provide RPMs needed for enabling SMART data on UAN
+
 ## [1.14.6] - 2023-09-22
 ### Changed
 - MTL-2281: don't use FQCNs; older CSM ansible versions have bugs
@@ -83,7 +87,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.14.5...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.14.7...HEAD
+
+[1.14.7]: https://github.com/Cray-HPE/csm-config/compare/1.14.6...1.14.7
+
+[1.14.6]: https://github.com/Cray-HPE/csm-config/compare/1.14.5...1.14.6
 
 [1.14.5]: https://github.com/Cray-HPE/csm-config/compare/1.14.4...1.14.5
 
