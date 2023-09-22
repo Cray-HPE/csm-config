@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.22] - 2023-09-22
+
+### Changed
+
+- MTL-2281: don't use FQCNs; older CSM ansible versions have bugs
+
 ## [1.15.21] - 2023-09-21
 
 ### Changed
