@@ -48,31 +48,3 @@
           # More Cray services
           enable bos-reporter.service
           enable cfs-state-reporter.service
-
-# Application Nodes Play  
-- hosts: Application:!cray_cfs_image
-  gather_facts: yes
-  any_errors_fatal: true
-  remote_user: root
-  vars_files:
-    - vars/csm_repos.yml
-    - vars/csm_packages.yml
-
-  roles:
-    # Install CSM repositories and packages
-    - role: csm.packages
-      vars:
-        packages: "{{ application_csm_sles_packages }}"
-      when:
-        - ansible_distribution == "SLES"
-  tasks:
-    - name: Enable smart service
-      systemd:
-        name: smart
-        state: started
-        enabled: true
-    - name: Enable cray-node-exporter service
-      systemd:
-        name: cray-node-exporter
-        state: started
-        enabled: true
