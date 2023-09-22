@@ -23,26 +23,27 @@
 #
 ---
 - name: Count AMD CPUs
-  ansible.builtin.shell: grep -c "^model name.*AMD EPYC 7..2" /proc/cpuinfo
+  shell: grep -c "^model name.*AMD EPYC 7..2" /proc/cpuinfo
   args:
     executable: /bin/bash
   register: matching_cpus
+  ignore_errors: true
   changed_when: false
 
 - name: Install msr-tools
-  community.general.zypper:
+  zypper:
     name: msr-tools
     state: present
   when: matching_cpus.stdout|int > 0
 
 - name: Load msr kernel module
-  community.general.modprobe:
+  modprobe:
     name: msr
     state: present
   when: matching_cpus.stdout|int > 0
 
 - name: Apply Zenbleed mitigation
-  ansible.builtin.shell: wrmsr -a 0xc0011029 $(($(rdmsr -c 0xc0011029) | (1<<9)))
+  shell: wrmsr -a 0xc0011029 $(($(rdmsr -c 0xc0011029) | (1<<9)))
   args:
     executable: /bin/bash
   when: matching_cpus.stdout|int > 0
