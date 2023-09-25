@@ -25,10 +25,4 @@
 
 builder_architecture: "x86_64"
 kata_version: "2.5.1"
-ims_remote_packages:
-  - podman
-  - containerd
-  - containerd.ctr
-  - cni
-  - cni.plugins
-  - podman-cni-config
+
