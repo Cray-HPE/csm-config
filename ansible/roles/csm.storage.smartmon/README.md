@@ -22,8 +22,7 @@ Example Playbook
 ----------------
 
 This role runs on all the storage NCNs. It starts the SMART service. It reconfigures and redeploys
-the running `node-exporter` only on `mon[0]` which is `ncn-s001` (to use changed configurations,
-if any). The ceph command to redeploy `node-exporter` can only be run from `ncn-s00[1-3]`.
+the running `node-exporter` if running from a node that has the ceph admin keyring which are nodes `ncn-s00[1-3]`.
 
 ```yaml
 - hosts: Management_Storage
