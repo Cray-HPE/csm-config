@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.21] - 2023-09-22
+
+### Changed
+
+- CASMCMS-8696: Create an Ansible play that configures a compute image for IMS builds.
+
 ## [1.16.20] - 2023-09-21
 
 ### Added
@@ -27,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CASMINST-6624: Provide RPMs needed for enabling SMART data on UAN
 
 ### Dependencies
+
 - Bump `actions/checkout` from 3 to 4 ([#187](https://github.com/Cray-HPE/csm-config/pull/187))
 
 ## [1.16.18] - 2023-08-24
@@ -330,7 +337,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.20...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.21...HEAD
+
+[1.16.21]: https://github.com/Cray-HPE/csm-config/compare/1.16.20...1.16.21
 
 [1.16.20]: https://github.com/Cray-HPE/csm-config/compare/1.16.19...1.16.20
 

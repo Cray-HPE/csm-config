@@ -72,3 +72,7 @@ compute_csm_sles_packages:
   - acpid
   - bos-reporter
   - cray-uai-util
+
+# IMS Remote Compute Nodes:
+ims_compute_sles_packages:
+  - podman
