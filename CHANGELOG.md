@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.22] - 2023-09-26
+
+### Changed
+
+- CASMINST-6666: Change the csm.storage.smartmon play so it only redeploys node-exporter if the ceph admin keyring exists.
+
 ## [1.16.21] - 2023-09-22
 
 ### Changed
