@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- CASMINST-6666: Change the csm.storage.smartmon play so it only redeploys node-exporter if the ceph admin keyring exists.
+- CASMINST-6666: Change the `csm.storage.smartmon` play so it only redeploys `node-exporter` if the ceph admin keyring exists.
 
 ## [1.16.21] - 2023-09-22
 
@@ -343,7 +343,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.21...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.22...HEAD
+
+[1.16.22]: https://github.com/Cray-HPE/csm-config/compare/1.16.21...1.16.22
 
 [1.16.21]: https://github.com/Cray-HPE/csm-config/compare/1.16.20...1.16.21
 
