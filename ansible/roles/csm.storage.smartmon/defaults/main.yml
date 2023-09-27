@@ -21,24 +21,5 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# Tasks for the csm.storage.smartmon role
-- name: Start SMART service
-  become: true
-  systemd:
-    name: smart
-    enabled: yes
-    state: started
-
-- name: Check if ceph.client.admin.keyring exists on node
-  stat:
-    path: "{{ ceph_admin_keyring_path }}"
-  register: admin_keyring
-
-- name: Redeploy node-exporter
-  when:
-    - admin_keyring.stat.exists
-  command: "ceph orch {{ item }} "
-  with_items:
-  - apply -i /etc/cray/ceph/node-exporter.yml
-  - reconfig node-exporter
-  - redeploy node-exporter
+# Defaults for the csm.storage.smartmon role. See the README.md for information.
+ceph_admin_keyring_path: '/etc/ceph/ceph.client.admin.keyring'
