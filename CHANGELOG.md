@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- CASMPET-6814: Add `cray-spire-dracut>=2.0.0`, `spire-agent>=1.5.0`, and `tpm-provisioner` to allow for a TPM enabled spire.
+
 ## [1.16.24] - 2023-12-05
 
 ### Changed
@@ -94,7 +98,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - CASMTRIAGE-5788
     - Invoke `csm.ncn.sysctl` in `ncn_nodes.yml`, and all three playbooks invoked by `site.yml`
-    - Rename `ncn-sysctl.yml` to `ncn_sysctl.yml` to follow the implicit naming convention in the repo 
+    - Rename `ncn-sysctl.yml` to `ncn_sysctl.yml` to follow the implicit naming convention in the repo
 - Replace all `ansible_os_family` and `ansible_distribution` conditionals for `SLE_HPC` with `ansible_distribution_file_variety == "SUSE"` to be
   agnostic to the SUSE product line (enabling usage on GCP images in `vshastav1` and `vshastav-future` once we move to hypervisors)
 
@@ -263,7 +267,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - CASMTRIAGE-5003: Package installation for Compute nodes will only run during image customization
 
-## [1.15.3] - 2023-02-10 
+## [1.15.3] - 2023-02-10
 
 ### Added
 
