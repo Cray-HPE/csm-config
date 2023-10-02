@@ -35,7 +35,7 @@ common_csm_sles_packages:
   - csm-node-identity
   - hpe-yq
   - spire-agent>=1.5.0
-  - tpm-provisioner
+  - tpm-provisioner-client
 
 # All Management NCNs (master, storage, and worker)
 common_mgmt_ncn_csm_sles_packages:
