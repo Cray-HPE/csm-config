@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- CASMPET-6814: Add `cray-spire-dracut>=2.0.0`, `spire-agent>=1.5.0`, and `tpm-provisioner` to allow for a TPM enabled spire.
+### Added
+
+- CASMPET-6814: `vars/csm_packages.yml`: Add `cray-spire-dracut>=2.0.0`, `spire-agent>=1.5.0`, and `tpm-provisioner` to allow for a TPM-enabled Spire.
 
 ## [1.16.22] - 2023-09-26
 
