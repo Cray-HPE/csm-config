@@ -48,7 +48,7 @@
       vars:
         ssh_keys_username: 'root'
 
-# Install packages on Kubernetes NCNs (masters and workers)
+# Install packages and configure SAT on Kubernetes NCNs (masters and workers)
 - hosts:
    - Management_Master
    - Management_Worker
@@ -63,6 +63,7 @@
       vars:
         packages: "{{ common_csm_sles_packages + common_mgmt_ncn_csm_sles_packages + k8s_mgmt_ncn_csm_sles_packages }}"
       when: ansible_distribution_file_variety == "SUSE"
+    - role: csm.ncn.sat
 
 # Install packages on storage NCNs
 - hosts:
