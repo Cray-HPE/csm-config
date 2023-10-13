@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.23] - 2023-10-13
+
+### Changed
+
+- CASMINST-6690: update curl to address CVE-2023-38545
+
 ## [1.15.22] - 2023-09-22
 
 ### Changed
