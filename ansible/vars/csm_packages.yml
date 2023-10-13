@@ -30,6 +30,7 @@ ncn_csm_sles_packages:
   - craycli
   - cray-cmstools-crayctldeploy
   - csm-testing
+  - curl
   - goss-servers
   - hpe-csm-goss-package
   - hpe-csm-scripts
