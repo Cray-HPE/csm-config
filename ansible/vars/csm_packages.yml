@@ -52,6 +52,7 @@ common_mgmt_ncn_csm_sles_packages:
 # All Kubernetes Management NCNs (master and worker)
 k8s_mgmt_ncn_csm_sles_packages:
   - cray-cmstools-crayctldeploy
+  - cray-sat-podman
   - dracut-metal-dmk8s
   - dracut-metal-luksetcd
 

@@ -7,8 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.17.0] - 2023-10-18
+
 ### Dependencies
+
 - Bump `stefanzweifel/git-auto-commit-action` from 4 to 5 ([#212](https://github.com/Cray-HPE/csm-config/pull/212))
+
+### Added
+
+- CRAYSAT-1767: Added the role `csm.ncn.sat` for configuration of the System
+  Admin Toolkit (SAT). A similar role for SAT configuraiton was previously only
+  provided by the SAT product.
 
 ## [1.16.22] - 2023-09-26
 
@@ -346,7 +355,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.22...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.17.0...HEAD
+
+[1.17.0]: https://github.com/Cray-HPE/csm-config/compare/1.16.22...1.17.0
 
 [1.16.22]: https://github.com/Cray-HPE/csm-config/compare/1.16.21...1.16.22
 
