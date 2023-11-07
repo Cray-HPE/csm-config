@@ -26,7 +26,6 @@
 
 # All nodes (Management NCNs, Application nodes, and Compute nodes)
 common_csm_sles_packages:
-  - cfs-debugger
   - cfs-state-reporter
   - cfs-trust
   - craycli
@@ -38,6 +37,7 @@ common_csm_sles_packages:
 
 # All Management NCNs (master, storage, and worker)
 common_mgmt_ncn_csm_sles_packages:
+  - cfs-debugger
   - cray-kubectl-hns-plugin
   - cray-kubectl-kubelogin-plugin
   - csm-testing
