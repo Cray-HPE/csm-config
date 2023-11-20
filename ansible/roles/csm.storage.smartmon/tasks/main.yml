@@ -37,8 +37,13 @@
 - name: Redeploy node-exporter
   when:
     - admin_keyring.stat.exists
+  command: "cephadm shell --mount /etc/cray/ceph/ -- ceph orch apply -i /mnt/node-exporter.yml"
+  register: apply_node_exporter
+
+- name: Reconfig node-exporter
+  when:
+    - (apply_node_exporter.rc is defined) and (apply_node_exporter.rc == 0)
   command: "ceph orch {{ item }} "
   with_items:
-  - apply -i /etc/cray/ceph/node-exporter.yml
   - reconfig node-exporter
   - redeploy node-exporter
