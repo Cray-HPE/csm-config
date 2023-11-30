@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.17.1] - 2023-11-20
+
+### Changed
+
+- CASMPET-6860: Change the `csm.storage.smartmon` play so it redeploys `node-exporter` using 'cephadm shell' instead of a 'ceph' command.
+
 ## [1.17.0] - 2023-10-18
 
 ### Dependencies
