@@ -34,10 +34,16 @@
     path: "{{ ceph_admin_keyring_path }}"
   register: admin_keyring
 
-- name: Redeploy node-exporter
+- name: Get Ceph version
   when:
     - admin_keyring.stat.exists
-  command: "cephadm shell --mount /etc/cray/ceph/ -- ceph orch apply -i /mnt/node-exporter.yml"
+  shell: "ceph version -f json | jq .version | awk '{ print $3 }'"
+  register: ceph_version
+
+- name: Redeploy node-exporter
+  when:
+    - (ceph_version.rc is defined) and (ceph_version.rc == 0)
+  command: "cephadm --image {{ ceph_container_path }}:v{{ ceph_version.stdout }} shell --mount /etc/cray/ceph/ -- ceph orch apply -i /mnt/node-exporter.yml"
   register: apply_node_exporter
 
 - name: Reconfig node-exporter
