@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.24] - 2023-12-05
+
+### Changed
+
+- CASMTRIAGE-6370: Change the `csm.storage.smartmon` play so it redeploys `node-exporter` using a specific image with the cephadm shell.
+
 ## [1.16.23] - 2023-11-20
 
 ### Changed
