@@ -23,3 +23,4 @@
 #
 # Defaults for the csm.storage.smartmon role. See the README.md for information.
 ceph_admin_keyring_path: '/etc/ceph/ceph.client.admin.keyring'
+ceph_container_path: 'registry.local/artifactory.algol60.net/csm-docker/stable/quay.io/ceph/ceph'
