@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.25] - 2024-01-05
+
 ### Added
 
 - CASMPET-6814: `vars/csm_packages.yml`: Add `cray-spire-dracut>=2.0.0`, `spire-agent>=1.5.0`, and `tpm-provisioner` to allow for a TPM-enabled Spire.
@@ -359,7 +361,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.24...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.25...HEAD
+
+[1.16.25]: https://github.com/Cray-HPE/csm-config/compare/1.16.24...1.16.25
 
 [1.16.24]: https://github.com/Cray-HPE/csm-config/compare/1.16.23...1.16.24
 
