@@ -34,7 +34,8 @@ common_csm_sles_packages:
   - csm-node-heartbeat
   - csm-node-identity
   - hpe-yq
-  - spire-agent
+  - spire-agent>=1.5.0
+  - tpm-provisioner-client
 
 # All Management NCNs (master, storage, and worker)
 common_mgmt_ncn_csm_sles_packages:
@@ -67,12 +68,14 @@ application_csm_sles_packages:
   - cray-uai-util
   - smart-mon
   - smartmontools
+  - cray-spire-dracut>=2.0.0
 
 # All Compute nodes
 compute_csm_sles_packages:
   - acpid
   - bos-reporter
   - cray-uai-util
+  - cray-spire-dracut>=2.0.0
 
 # IMS Remote Compute Nodes:
 ims_compute_sles_packages:
