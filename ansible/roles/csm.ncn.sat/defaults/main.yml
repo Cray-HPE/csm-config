@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2023 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -21,6 +21,13 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# Defaults for the csm.storage.smartmon role. See the README.md for information.
-ceph_admin_keyring_path: '/etc/ceph/ceph.client.admin.keyring'
-ceph_container_path: 'registry.local/artifactory.algol60.net/csm-docker/stable/quay.io/ceph/ceph'
+# Defaults for the csm.ncn.sat role. See the README.md for information.
+
+sat_container_image_version_directory: "/opt/cray/etc/sat/"
+sat_container_image_version_file: "version"
+sat_config_file: "/root/.config/sat/sat.toml"
+
+# This variable gets overridden by the value in vars, which is written by the
+# init container in the Helm chart, which gets defined through the Loftsman
+# manifest included in the CSM release distribution.
+sat_container_image_version: "csm-latest"

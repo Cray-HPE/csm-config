@@ -21,6 +21,10 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# Defaults for the csm.storage.smartmon role. See the README.md for information.
-ceph_admin_keyring_path: '/etc/ceph/ceph.client.admin.keyring'
-ceph_container_path: 'registry.local/artifactory.algol60.net/csm-docker/stable/quay.io/ceph/ceph'
+# Vars for the csm.ncn.sat role. See the README.md for information.
+#
+# This file gets overwritten by the init container in the Helm chart, which
+# gets defined through the Loftsman manifest included in the CSM release
+# distribution. The file is included here just for illustrative purposes.
+
+sat_container_image_version: "csm-latest"

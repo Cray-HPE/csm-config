@@ -1,7 +1,6 @@
-#
 # MIT License
 #
-# (C) Copyright 2023 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -21,6 +20,31 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# Defaults for the csm.storage.smartmon role. See the README.md for information.
-ceph_admin_keyring_path: '/etc/ceph/ceph.client.admin.keyring'
-ceph_container_path: 'registry.local/artifactory.algol60.net/csm-docker/stable/quay.io/ceph/ceph'
+# Tasks for the csm.ncn.sat role
+
+- name: "Check if configuration file exists"
+  stat:
+    path: "{{ sat_config_file }}"
+  register: config_file_stat
+
+- name: "Ensure configuration file has 0600 permissions"
+  file:
+    path: "{{ sat_config_file }}"
+    mode: 0600
+  when: config_file_stat.stat.exists
+
+- name: "Ensure tokens directory has 0700 permissions"
+  file:
+    path: "/root/.config/sat/tokens"
+    state: "directory"
+    mode: 0700
+
+- name: "Ensure directory containing SAT container image version file exists"
+  file:
+    path: "{{ sat_container_image_version_directory }}"
+    state: "directory"
+
+- name: "Create file containing SAT container image version"
+  copy:
+    dest: "{{ sat_container_image_version_directory }}/{{ sat_container_image_version_file }}"
+    content: "{{ sat_container_image_version }}"

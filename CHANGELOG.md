@@ -11,6 +11,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - CASMPET-6814: `vars/csm_packages.yml`: Add `cray-spire-dracut>=2.0.0`, `spire-agent>=1.5.0`, and `tpm-provisioner` to allow for a TPM-enabled Spire.
 
+## [1.17.3] - 2024-01-05
+
+### Dependencies
+
+- Bump `cf-gitea-import` from `1.9` to `1.10`
+
+## [1.17.2] - 2023-12-05
+
+### Changed
+
+- CASMTRIAGE-6370: Change the `csm.storage.smartmon` play so it redeploys `node-exporter` using a specific image with the cephadm shell.
+
+## [1.17.1] - 2023-11-20
+
+### Changed
+
+- CASMPET-6860: Change the `csm.storage.smartmon` play so it redeploys `node-exporter` using 'cephadm shell' instead of a 'ceph' command.
+
+## [1.17.0] - 2023-10-18
+
+### Dependencies
+
+- Bump `stefanzweifel/git-auto-commit-action` from 4 to 5 ([#212](https://github.com/Cray-HPE/csm-config/pull/212))
+
+### Added
+
+- CRAYSAT-1767: Added the role `csm.ncn.sat` for configuration of the System
+  Admin Toolkit (SAT). A similar role for SAT configuraiton was previously only
+  provided by the SAT product.
+
 ## [1.16.22] - 2023-09-26
 
 ### Changed
@@ -347,7 +377,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.22...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.17.3...HEAD
+
+[1.17.3]: https://github.com/Cray-HPE/csm-config/compare/1.17.2...1.17.3
+
+[1.17.2]: https://github.com/Cray-HPE/csm-config/compare/1.17.1...1.17.2
+
+[1.17.1]: https://github.com/Cray-HPE/csm-config/compare/1.17.0...1.17.1
+
+[1.17.0]: https://github.com/Cray-HPE/csm-config/compare/1.16.22...1.17.0
 
 [1.16.22]: https://github.com/Cray-HPE/csm-config/compare/1.16.21...1.16.22
 
