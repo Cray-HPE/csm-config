@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.24] - 2024-01-24
+
+- [MTL-2348](https://jira-pro.it.hpe.com:8443/browse/MTL-2348: New `ncn_kernel_upgrade` role. This role is now included in the `ncn_initrd.yml` playbook. These changes will
+  enforce the installation of the new SuSE PTF Kernel and Marvell KMP. Module tweaks are also included, preventing `qedr`
+  from loading during the rootfs, as well as being excluded from dracut.
+
 ## [1.15.23] - 2023-10-13
 
 ### Changed

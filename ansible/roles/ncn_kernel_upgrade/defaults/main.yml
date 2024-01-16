@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2024 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -21,25 +21,13 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# Tasks for the csm.packages role
-- name: Configure CSM RPM Repos (SLES-based)
-  zypper_repository:
-    name: "{{ item.name }}"
-    description: "{{ item.description }}"
-    repo: "{{ item.repo }}"
-    state: present
-    disable_gpg_check: "{{ item.disable_gpg_check | default('no') }}"
-  loop: "{{ csm_sles_repositories }}"
-
-# CSM repos are generated during the release distribution creation and
-# therefore repo metadata is not signed. Allow for the repo metadata to be
-# unsigned, but still check the signature on individual packages.
-- name: Allow unsigned repo metadata
-  command: "zypper modifyrepo --gpgcheck-allow-unsigned-repo {{ item.name }}"
-  loop: "{{ csm_sles_repositories }}"
-
-- name: Install RPMs (SLES-based)
-  zypper:
-    name: "{{ packages }}"
-    state: latest
-    update_cache: yes
+ncn_kernel_upgrade_blacklist:
+  - qedr
+ncn_kernel_upgrade_kernel_version: ''
+ncn_kernel_upgrade_repositories: []
+ncn_kernel_upgrade_packages:
+  - "kernel-default-devel={{ ncn_kernel_upgrade_kernel_version }}"
+  - "kernel-default={{ ncn_kernel_upgrade_kernel_version }}"
+  - "kernel-devel={{ ncn_kernel_upgrade_kernel_version }}"
+  - "kernel-macros={{ ncn_kernel_upgrade_kernel_version }}"
+  - "kernel-syms={{ ncn_kernel_upgrade_kernel_version }}"
