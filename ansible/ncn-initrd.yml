@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2022-2023 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2022-2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -22,11 +22,61 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# NCN Worker Nodes Play
+
+#
+## CSM 1.4.4 SuSE PTF and Marvell KMP patch for Kubernetes nodes
+#
+- hosts: "Management_Master:Management_Worker:Management_Storage:&cfs_image"
+  gather_facts: true
+  # Gather the minimum that gets the ansible_distribution variable set
+  gather_subset:
+    - '!all'
+    - '!min'
+    - distribution
+  any_errors_fatal: true
+  remote_user: root
+  vars:
+
+    kernel_version: 5.14.21-150400.24.100.2.27359.1.PTF.1215587
+
+    packages:
+      - qlgc-fastlinq-kmp-default=8.74.1.0_k5.14.21_150400.22-1.sles15sp4
+
+  vars_files:
+    - vars/csm_repos.yml
+
+  roles:
+
+    - role: ncn_kernel_upgrade
+      when:
+        - ansible_distribution_file_variety == "SUSE"
+        - ansible_distribution_version == "15.4"
+      vars:
+        ncn_kernel_upgrade_kernel_version: "{{ kernel_version }}"
+        ncn_kernel_upgrade_repositories: "{{ csm_sles_repositories }}"
+
+    # Ensure the HPE-SDR key is imported for the Marvell packages to install.
+    - role: csm.gpg_keys
+      vars:
+        csm_gpg_key_k8s_secret: "hpepublickey"
+
+    - role: csm.packages
+      when:
+        - ansible_distribution_file_variety == "SUSE"
+        - ansible_distribution_version == "15.4"
+      vars:
+        csm_sles_packages: "{{ packages }}"
+
+  post_tasks:
+
+    - name: Remove fastlinq conf
+      file:
+        path: /etc/dracut.conf.d/fastlinq.conf
+        state: absent
+
 - hosts: "Management_Master:Management_Worker:Management_Storage:&cfs_image"
   any_errors_fatal: true
   remote_user: root
-
   roles:
     # Creates an NCN initrd during pre-boot image customization
     - role: csm.ncn-initrd
