@@ -58,7 +58,7 @@
     # Ensure the HPE-SDR key is imported for the Marvell packages to install.
     - role: csm.gpg_keys
       vars:
-        csm_gpg_key_k8s_secret: "hpepublickey"
+        csm_gpg_key_k8s_secret: "hpe-sdr-signing-key"
 
     - role: csm.packages
       when:
