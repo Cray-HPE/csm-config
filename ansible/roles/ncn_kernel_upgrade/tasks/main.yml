@@ -56,7 +56,9 @@
         name: "{{ ncn_kernel_upgrade_packages }}"
         update_cache: false
       register: install
-      changed_when: '"Reboot is suggested to ensure that your system benefits from these updates." in install.stdout'
+      changed_when:
+      - install.stdout is defined
+      - '"Reboot is suggested to ensure that your system benefits from these updates." in install.stdout'
       failed_when:
         - install.rc != 0
         - install.rc != 107
@@ -88,4 +90,13 @@
     path: /etc/dracut.conf.d/99-csm-ansible.conf
     regexp: '^omit_drivers\+=.*'
     line: 'omit_drivers+=" {{ ncn_kernel_upgrade_blacklist | join(" ") }} " # Needs to start and end with a space to mitigate warnings. '
+    state: present
+
+- name: Include kernel modules in dracut
+  lineinfile:
+    create: true
+    mode: '0644'
+    path: /etc/dracut.conf.d/99-csm-ansible.conf
+    regexp: '^add_drivers\+=.*'
+    line: 'add_drivers+=" {{ ncn_kernel_upgrade_add | join(" ") }} " # Needs to start and end with a space to mitigate warnings. '
     state: present
