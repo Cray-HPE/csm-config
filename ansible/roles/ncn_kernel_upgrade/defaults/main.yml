@@ -21,6 +21,11 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
+ncn_kernel_upgrade_add:
+  - qed
+  - qede
+  - qedf
+  - qedi
 ncn_kernel_upgrade_blacklist:
   - qedr
 ncn_kernel_upgrade_kernel_version: ''

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.26] - 2024-01-30
+
+- [MTL-2348](https://jira-pro.it.hpe.com:8443/browse/MTL-2348): Ensure QLogic modules are included in initrd with the absence of `fastlinq.conf`, otherwise QLogic nodes will not boot.
+
 ## [1.15.25] - 2024-01-26
 
 - [MTL-2348](https://jira-pro.it.hpe.com:8443/browse/MTL-2348): Use different Kubernetes secret
@@ -232,7 +236,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.24...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.26...HEAD
+
+[1.15.26]: https://github.com/Cray-HPE/csm-config/compare/1.15.25...1.15.26
 
 [1.15.25]: https://github.com/Cray-HPE/csm-config/compare/1.15.24...1.15.25
 
