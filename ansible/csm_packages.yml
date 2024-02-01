@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2022-2023 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2022-2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -41,6 +41,11 @@
       - cfs-state-reporter
       - csm-node-heartbeat
       - csm-node-identity
+    SKERN_9187:
+      - /opt/cray/cray-spire/orca-spire-agent
+      - /usr/bin/ckdump-spire-agent
+      # ALT-955
+      - /usr/bin/spire-agent
   roles:
     # Install CSM repositories and packages
     - role: csm.packages
@@ -58,6 +63,12 @@
     - name: Apply presets for CSM services
       loop: "{{ csm_services }}"
       command: systemctl preset "{{item}}.service"
+    # WAR for SKERN-9187
+    - name: Apply WAR for SKERN-9187
+      loop: "{{ SKERN_9187 }}"
+      command: ln -f /opt/cray/cray-spire/spire-agent "{{item}}"
+    - name: Cont. WAR SKERN-9187
+      command: ln -sf /var/lib/spire/data/keys.json /var/lib/spire/data/svid.key
 
 # Compute-nodes only play
 - hosts: Compute:&cfs_image
@@ -75,6 +86,11 @@
       - cfs-state-reporter
       - csm-node-heartbeat
       - csm-node-identity
+    SKERN_9187:
+      - /opt/cray/cray-spire/orca-spire-agent
+      - /usr/bin/ckdump-spire-agent
+      # ALT-955
+      - /usr/bin/spire-agent
   vars_files:
     - vars/csm_repos.yml
     - vars/csm_packages.yml
@@ -95,6 +111,12 @@
     - name: Apply presets for CSM services
       loop: "{{ csm_services }}"
       command: systemctl preset "{{item}}.service"
+    # WAR for SKERN-9187
+    - name: Apply WAR for SKERN-9187
+      loop: "{{ SKERN_9187 }}"
+      command: ln -f /opt/cray/cray-spire/spire-agent "{{item}}"
+    - name: Cont. WAR SKERN-9187
+      command: ln -sf /var/lib/spire/data/keys.json /var/lib/spire/data/svid.key
 
 # Application-nodes only play, excluding images
 - hosts: Application:!cfs_image
