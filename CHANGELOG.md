@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.26] - 2024-02-01
+
+### Added
+
 - CASMTRIAGE-6582: add new links for services to use the proper spire-agent version.
 
 ## [1.16.25] - 2024-01-05
@@ -363,7 +367,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.25...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.26...HEAD
+
+[1.16.26]: https://github.com/Cray-HPE/csm-config/compare/1.16.25...1.16.26
 
 [1.16.25]: https://github.com/Cray-HPE/csm-config/compare/1.16.24...1.16.25
 
