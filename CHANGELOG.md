@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.18.1] - 2024-05-21
+
+### Added
+
+- CASMPET-6797(EPIC): Added Ansible plays to provision LIO services on iSCSI targets (worker NCNs) for SBPS
+  - CASMPET-6886: Add Ansible play to install RPM packages required for SBPS
+  - CASMPET-6887: Add Ansible play to configure LIO targets
+  - CASMPET-6888: Add Ansible play to add/ update DNS "SRV" and "A" records for HSN and NMN using play script against PowerDNS API
+  - CASMPET-6890: Add Ansible play to mount s3 bucket 'boot-images' using s3fs read-only policy for SBPS
+  - CASMPET-6933: Add Ansible play to Apply k8s labels for SBPS on specified number of worker NCN's
+
+## [1.18.0] - 2024-03-20
+
+### Added
+
+- SKERN-9239: Added password-less ssh to CN/UAN to CSM layer
+
+### Removed
+
+- CASMTRIAGE-6787: `net.ipv4.conf.all.rp_filter` tunable no longer set in `ansible/roles/csm.ncn.sysctl/vars/main.yml`
+
+## [1.17.11] - 2024-03-04
+
+### Added
+
+- Added support for `aarch64` IMS remote nodes
+
 ## [1.17.10] - 2024-02-28
 
 ### Fixed
@@ -415,7 +442,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.17.10...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.18.1...HEAD
+
+[1.18.1]: https://github.com/Cray-HPE/csm-config/compare/1.18.0...1.18.1
+
+[1.18.0]: https://github.com/Cray-HPE/csm-config/compare/1.17.11...1.18.0
+
+[1.17.11]: https://github.com/Cray-HPE/csm-config/compare/1.17.10...1.17.11
 
 [1.17.10]: https://github.com/Cray-HPE/csm-config/compare/1.17.9...1.17.10
 
