@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- CASMTRIAGE-6582: add new links for services to use the proper spire-agent version.
+
 ## [1.17.4] - 2024-01-05
 
 ### Added
