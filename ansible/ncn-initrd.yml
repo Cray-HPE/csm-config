@@ -28,3 +28,14 @@
   roles:
     # Creates an NCN initrd during pre-boot image customization
     - role: csm.ncn-initrd
+
+  tasks:
+    - name: WAR CASMTRIAGE-6617
+      shell: |
+        # $(uname -r ) returns IMS kernel instead of image kernel
+        KERN=$( rpm -ql kernel-default | egrep '/lib/modules' | cut -d / -f 4 | head -n 1 )
+        ln -s /lib/modules/5.14.21-150400.24.38.1.25440.1.PTF.1204911-default/extra /lib/modules/${KERN}/weak-updates/extra
+        cd /lib/modules/${KERN}/weak-updates/updates
+        for v in /lib/modules/5.14.21-150400.24.38.1.25440.1.PTF.1204911-default/updates/* ; do ln -s $v ; done
+        depmod -a
+        dracut --force --force-add 'dmsquash-live livenet' --kver ${KERN} --no-hostonly --no-hostonly-cmdline --printsize
