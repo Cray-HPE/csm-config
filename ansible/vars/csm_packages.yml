@@ -50,3 +50,8 @@ application_csm_sles_packages:
   - cray-node-exporter
   - smart-mon
   - smartmontools
+
+# Product team kernel packages
+product_kernel_module_packages:
+  - cray-dvs-kmp-default
+  - mlnx-ofa_kernel-kmp-default
