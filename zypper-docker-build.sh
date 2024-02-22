@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2023 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2023-2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -28,7 +28,7 @@
 # and scrubs the zypper environment after the necessary operations are completed.
 
 # Preconditions:
-# 1. Following variables have been set in the Dockerfile: SP SLES_MIRROR ARCH CSM_SSH_KEYS_VERSION
+# 1. Following variables have been set in the Dockerfile: SP ARCH CSM_SSH_KEYS_VERSION
 # 2. zypper-refresh-patch-clean.sh script has also been copied into the current directory
 
 # Based in part on: https://github.com/Cray-HPE/uai-images/blob/main/uai-images/broker_uai/zypper.sh
@@ -42,15 +42,16 @@ ARTIFACTORY_PASSWORD=$(test -f /run/secrets/ARTIFACTORY_READONLY_TOKEN && cat /r
 CREDS=${ARTIFACTORY_USERNAME:-}
 # Append ":<password>" to credentials variable, if a password is set
 [[ -z ${ARTIFACTORY_PASSWORD} ]] || CREDS="${CREDS}:${ARTIFACTORY_PASSWORD}"
-CSM_SLES_REPO_URI="https://${CREDS}@artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp${SP}?auth=basic"
-CSM_NOOS_REPO_URI="https://${CREDS}@artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/noos?auth=basic"
+CSM_SLES_REPO_URL="https://${CREDS}@artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp${SP}?auth=basic"
+CSM_NOOS_REPO_URL="https://${CREDS}@artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/noos?auth=basic"
+SLES_MIRROR_URL="https://${CREDS}@artifactory.algol60.net/artifactory/sles-mirror"
 
 zypper --non-interactive rr --all
 zypper --non-interactive clean -a
-zypper --non-interactive ar "${SLES_MIRROR}/Products/SLE-Module-Basesystem/15-SP${SP}/${ARCH}/product/" "sles15sp${SP}-Module-Basesystem-product"
-zypper --non-interactive ar "${SLES_MIRROR}/Updates/SLE-Module-Basesystem/15-SP${SP}/${ARCH}/update/" "sles15sp${SP}-Module-Basesystem-update"
-zypper --non-interactive ar --no-gpgcheck "${CSM_SLES_REPO_URI}" csm-sles
-zypper --non-interactive ar --no-gpgcheck "${CSM_NOOS_REPO_URI}" csm-noos
+zypper --non-interactive ar "${SLES_MIRROR_URL}/Products/SLE-Module-Basesystem/15-SP${SP}/${ARCH}/product/" "sles15sp${SP}-Module-Basesystem-product"
+zypper --non-interactive ar "${SLES_MIRROR_URL}/Updates/SLE-Module-Basesystem/15-SP${SP}/${ARCH}/update/" "sles15sp${SP}-Module-Basesystem-update"
+zypper --non-interactive ar --no-gpgcheck "${CSM_SLES_REPO_URL}" csm-sles
+zypper --non-interactive ar --no-gpgcheck "${CSM_NOOS_REPO_URL}" csm-noos
 zypper --non-interactive --gpg-auto-import-keys refresh
 zypper --non-interactive in -f --no-confirm csm-ssh-keys-roles-${CSM_SSH_KEYS_VERSION}
 # Lock the version of csm-ssh-keys-roles, just to be certain it is not upgraded inadvertently somehow later

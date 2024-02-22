@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Use SLES package mirrors on `artifactory` instead of `slemaster`, to resolve build issues.
+
 ## [1.15.27] - 2024-02-21
 
 - [CASMTRIAGE-6617](https://jira-pro.it.hpe.com:8443/browse/CASMTRIAGE-6617) Breakout Kernel Upgrade from ncn-initrd.yml AND dynamically install [NETETH-2313](https://jira-pro.it.hpe.com:8443/browse/NETETH-2313) for ALL products
@@ -240,7 +244,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.26...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.27...HEAD
 
 [1.15.27]: https://github.com/Cray-HPE/csm-config/compare/1.15.26...1.15.27
 
