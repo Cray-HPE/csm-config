@@ -45,11 +45,33 @@ CREDS=${ARTIFACTORY_USERNAME:-}
 CSM_SLES_REPO_URL="https://${CREDS}@artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp${SP}?auth=basic"
 CSM_NOOS_REPO_URL="https://${CREDS}@artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/noos?auth=basic"
 SLES_MIRROR_URL="https://${CREDS}@artifactory.algol60.net/artifactory/sles-mirror"
+SLES_PRODUCTS_URL="${SLES_MIRROR_URL}/Products"
+SLES_UPDATES_URL="${SLES_MIRROR_URL}/Updates"
+
+function add_zypper_repos {
+    local label
+    label=$1
+    zypper --non-interactive ar "${SLES_PRODUCTS_URL}/SLE-${label}/15-SP${SP}/${ARCH}/product/?auth=basic" "sles15sp${SP}-${label}-product"
+    zypper --non-interactive ar "${SLES_UPDATES_URL}/SLE-${label}/15-SP${SP}/${ARCH}/update/?auth=basic" "sles15sp${SP}-${label}-update"
+}
+
+if [[ ${SP} -eq 4 ]]; then
+    # The current sles15sp4 base image starts with a lock on coreutils, but this prevents a necessary
+    # security patch from being applied. Thus, adding this command to remove the lock if it is
+    # present.
+    zypper --non-interactive removelock coreutils || true
+fi
 
 zypper --non-interactive rr --all
 zypper --non-interactive clean -a
-zypper --non-interactive ar "${SLES_MIRROR_URL}/Products/SLE-Module-Basesystem/15-SP${SP}/${ARCH}/product/" "sles15sp${SP}-Module-Basesystem-product"
-zypper --non-interactive ar "${SLES_MIRROR_URL}/Updates/SLE-Module-Basesystem/15-SP${SP}/${ARCH}/update/" "sles15sp${SP}-Module-Basesystem-update"
+for MODULE in Basesystem Certifications Containers Desktop-Applications Development-Tools HPC Legacy Packagehub-Subpackages \
+              Public-Cloud Python3 Server-Applications Web-Scripting
+do
+    add_zypper_repos "Module-${MODULE}"
+done
+for PRODUCT in HA HPC SLED SLES SLES_SAP WE; do
+    add_zypper_repos "Product-${PRODUCT}"
+done
 zypper --non-interactive ar --no-gpgcheck "${CSM_SLES_REPO_URL}" csm-sles
 zypper --non-interactive ar --no-gpgcheck "${CSM_NOOS_REPO_URL}" csm-noos
 zypper --non-interactive --gpg-auto-import-keys refresh
