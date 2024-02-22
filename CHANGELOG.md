@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.17.6] - 2024-02-22
+
+### Dependencies
+
+- Bump `csm-ssh-keys` from 1.5 to 1.6 for CSM 1.6
+
 ## [1.17.5] - 2024-02-01
 
 ### Added
@@ -385,7 +391,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.17.5...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.17.6...HEAD
+
+[1.17.6]: https://github.com/Cray-HPE/csm-config/compare/1.17.5...1.17.6
 
 [1.17.5]: https://github.com/Cray-HPE/csm-config/compare/1.17.4...1.17.5
 
