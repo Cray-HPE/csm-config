@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.28] - 2024-02-22
+
 ### Changed
 
 - Use SLES package mirrors on `artifactory` instead of `slemaster`, to resolve build issues.
@@ -244,7 +246,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.27...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.28...HEAD
+
+[1.15.28]: https://github.com/Cray-HPE/csm-config/compare/1.15.27...1.15.28
 
 [1.15.27]: https://github.com/Cray-HPE/csm-config/compare/1.15.26...1.15.27
 
