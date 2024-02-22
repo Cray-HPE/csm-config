@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2020-2023 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2020-2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -27,7 +27,6 @@ FROM artifactory.algol60.net/registry.suse.com/suse/sle15:15.3 as product-conten
 WORKDIR /
 
 ARG SP=3
-ARG SLES_MIRROR=https://slemaster.us.cray.com/SUSE
 ARG ARCH=x86_64
 
 # Pin the version of csm-ssh-keys being installed. The actual version is substituted by
