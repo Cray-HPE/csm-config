@@ -22,42 +22,54 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
+
+#
+## CSM 1.4.4 SuSE PTF and Marvell KMP patch for Kubernetes nodes
+#
 - hosts: "Management_Master:Management_Worker:Management_Storage:&cfs_image"
+  gather_facts: true
+  # Gather the minimum that gets the ansible_distribution variable set
+  gather_subset:
+    - '!all'
+    - '!min'
+    - distribution
   any_errors_fatal: true
   remote_user: root
+  vars:
+
+    kernel_version: 5.14.21-150400.24.100.2.27359.1.PTF.1215587
+
+    packages:
+      - qlgc-fastlinq-kmp-default=8.74.1.0_k5.14.21_150400.22-1.sles15sp4
+
   vars_files:
-    - vars/csm_packages.yml
+    - vars/csm_repos.yml
+
   roles:
-    # Creates an NCN initrd during pre-boot image customization
-    - role: csm.ncn-initrd
-  tasks:
-    - name: WAR CASMTRIAGE-6617 Fixup Kernel Modules
-      shell: |
-        if ! rpm -q {{ item }} >/dev/null 2>&1 ; then
-            echo "{{ item }} is not installed; nothing to do"
-            exit 0
-        fi
 
-        # Find kernel version for the current package.        
-        KERN_PRODUCT="$(rpm -ql {{ item }} | egrep '/lib/modules' | cut -d / -f 4 | head -n 1)"
+    - role: ncn_kernel_upgrade
+      when:
+        - ansible_distribution_file_variety == "SUSE"
+        - ansible_distribution_version == "15.4"
+      vars:
+        ncn_kernel_upgrade_kernel_version: "{{ kernel_version }}"
+        ncn_kernel_upgrade_repositories: "{{ csm_sles_repositories }}"
 
-        # $(uname -r) returns IMS kernel instead of image kernel
-        KERN="$(rpm -ql kernel-default | egrep '/lib/modules' | cut -d / -f 4 | head -n 1)"
+    # Ensure the HPE-SDR key is imported for the Marvell packages to install.
+    - role: csm.gpg_keys
+      vars:
+        csm_gpg_key_k8s_secret: "hpe-sdr-signing-key"
 
-        if [ "$KERN_PRODUCT" == "$KERN" ]; then
-          echo "{{ item }} is already built for the running kernel; nothing to do"
-          exit 0
-        fi
+    - role: csm.packages
+      when:
+        - ansible_distribution_file_variety == "SUSE"
+        - ansible_distribution_version == "15.4"
+      vars:
+        csm_sles_packages: "{{ packages }}"
 
-        mkdir -p /lib/modules/${KERN}/weak-updates/extra 
-        mkdir -p /lib/modules/${KERN}/weak-updates/updates 
+  post_tasks:
 
-        cd /lib/modules/${KERN}/weak-updates/extra
-        for v in /lib/modules/${KERN_PRODUCT}/extra/* ; do ln -snf $v ; done
-
-        cd /lib/modules/${KERN}/weak-updates/updates
-        for v in /lib/modules/${KERN_PRODUCT}/updates/* ; do ln -snf $v ; done
-
-        depmod -a
-
-      loop: "{{ product_kernel_module_packages }}"
+    - name: Remove fastlinq conf
+      file:
+        path: /etc/dracut.conf.d/fastlinq.conf
+        state: absent

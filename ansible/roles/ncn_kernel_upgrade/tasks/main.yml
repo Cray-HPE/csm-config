@@ -63,6 +63,8 @@
         - install.rc != 0
         - install.rc != 107
 
+    # This will ensure that the old kernel packages are removed on the next boot.
+    # When this task runs during image customization, the other kernels will be removed during the image's first boot.
     - name: Update multiversion.kernels
       lineinfile:
         create: true
