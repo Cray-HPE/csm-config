@@ -23,6 +23,4 @@
 #
 # Defaults for the csm.ims-remote role. See the README.md for information.
 
-builder_architecture: "x86_64"
-kata_version: "2.5.1"
 
