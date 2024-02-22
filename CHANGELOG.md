@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Use SLES package mirrors on `artifactory` instead of `slemaster`, to resolve build issues.
+
 ## [1.17.6] - 2024-02-22
 
 ### Dependencies
