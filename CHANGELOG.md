@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Append `?auth-basic` to SLES mirror zypper URLs to prevent artifactory from locking out the user during builds
 - Use SLES package mirrors on `artifactory` instead of `slemaster`, to resolve build issues.
 
 ## [1.15.27] - 2024-02-21
