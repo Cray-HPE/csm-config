@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2021-2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -25,6 +25,25 @@
 # stock SLES application/compute node playbook
 
 ---
+- hosts: Application:Compute:&cfs_image
+  gather_facts: false
+  remote_user: root
+  tasks:
+    - name: Check for GCP environment
+      uri:
+        url: http://metadata.google.internal
+        timeout: 20
+        return_content: yes
+      register: google_metadata
+      changed_when: no
+      check_mode: no
+      failed_when: no
+
+    - name: Set GCP fact
+      set_fact:
+        gcp_environment: true
+      when: google_metadata.status == 200
+
 - hosts: Application:Compute
   gather_subset:
     - '!all'
@@ -51,5 +70,6 @@
     - role: csm.cn.ntp
     - role: csm.cn.localtime
     - role: csm.cn.dns-resolver
+    - role: csm.cn.netif
     - role: csm.cn.rsyslog
     - role: csm.rebuild-initrd
