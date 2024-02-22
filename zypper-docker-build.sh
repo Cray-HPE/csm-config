@@ -45,6 +45,11 @@ CREDS=${ARTIFACTORY_USERNAME:-}
 CSM_SLES_REPO_URI="https://${CREDS}@artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp${SP}?auth=basic"
 CSM_NOOS_REPO_URI="https://${CREDS}@artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/noos?auth=basic"
 
+set -xv
+cat /etc/resolv.conf
+cat /etc/hosts
+set +xv
+
 zypper --non-interactive rr --all
 zypper --non-interactive clean -a
 zypper --non-interactive ar "${SLES_MIRROR}/Products/SLE-Module-Basesystem/15-SP${SP}/${ARCH}/product/" "sles15sp${SP}-Module-Basesystem-product"

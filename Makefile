@@ -50,7 +50,7 @@ lint:
 		./cms_meta_tools/scripts/runLint.sh
 
 image:
-		docker build --pull ${DOCKER_ARGS} --tag '${NAME}:${DOCKER_VERSION}' .
+		docker build --pull ${DOCKER_ARGS} --add-host=slemaster.us.cray.com:172.30.88.106 --tag '${NAME}:${DOCKER_VERSION}' .
 
 chart_setup:
 		mkdir -p ${CHART_PATH}/.packaged
