@@ -85,10 +85,12 @@
     register: nmnlb
     failed_when: nmnlb.status != 200
     run_once: true
+    when: gcp_environment == true
 
   - name: Get NMN DNS
     set_fact:
       nmnlb_dns: "{{ nmnlb | json_query('json[0].ExtraProperties.Subnets[0].IPReservations[?Name==`unbound`].IPAddress | [0]') }}"
+    when: gcp_environment == true
 
   - name: Add gcp DNS config
     replace:
