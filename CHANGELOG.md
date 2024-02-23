@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.17.9] - 2024-02-23
+
+### Changed
+
+- Added DNS workaround for GCP
+
 ## [1.17.8] - 2024-02-22
 
 ### Changed
