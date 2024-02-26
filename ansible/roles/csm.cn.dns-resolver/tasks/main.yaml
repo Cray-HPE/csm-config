@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2022-2023 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2022-2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -76,6 +76,28 @@
       regex: '^NETCONFIG_DNS_RESOLVER_OPTIONS=\"(.*)\"$'
       line: "NETCONFIG_DNS_RESOLVER_OPTIONS=\"{{ node_netconf_options | join(' ') }}\""
       backrefs: yes
+
+  - name: Get NMN Services Network info from SLS
+    local_action:
+      module: uri
+      url: "http://cray-sls/v1/search/networks?name={{ nmn_svcs_name }}"
+      method: GET
+    register: nmnlb
+    failed_when: nmnlb.status != 200
+    run_once: true
+    when: gcp_environment == true
+
+  - name: Get NMN DNS
+    set_fact:
+      nmnlb_dns: "{{ nmnlb | json_query('json[0].ExtraProperties.Subnets[0].IPReservations[?Name==`unbound`].IPAddress | [0]') }}"
+    when: gcp_environment == true
+
+  - name: Add gcp DNS config
+    replace:
+      path: /etc/sysconfig/network/config
+      regexp: 'NETCONFIG_DNS_STATIC_SERVERS=.*'
+      replace: 'NETCONFIG_DNS_STATIC_SERVERS="{{ nmnlb_dns }}"'
+    when: gcp_environment == true
 
   - name: Regenerate /etc/resolv.conf
     shell: netconfig update -f
