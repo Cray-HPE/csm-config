@@ -39,25 +39,33 @@
         fi
 
         # Find kernel version for the current package.        
-        KERN_PRODUCT="$(rpm -ql {{ item }} | egrep '/lib/modules' | cut -d / -f 4 | head -n 1)"
+        KVER_PRODUCT="$(rpm -ql {{ item }} | egrep '/lib/modules' | cut -d / -f 4 | head -n 1)"
 
         # $(uname -r) returns IMS kernel instead of image kernel
-        KERN="$(rpm -ql kernel-default | egrep '/lib/modules' | cut -d / -f 4 | head -n 1)"
+        . /srv/cray/scripts/common/dracut-lib.sh
 
-        if [ "$KERN_PRODUCT" == "$KERN" ]; then
+        if [ "$KVER_PRODUCT" == "$KVER" ]; then
           echo "{{ item }} is already built for the running kernel; nothing to do"
           exit 0
         fi
 
-        mkdir -p /lib/modules/${KERN}/weak-updates/extra 
-        mkdir -p /lib/modules/${KERN}/weak-updates/updates 
+        mkdir -p /lib/modules/${KVER}/weak-updates/extra 
+        mkdir -p /lib/modules/${KVER}/weak-updates/updates 
 
-        cd /lib/modules/${KERN}/weak-updates/extra
-        for v in /lib/modules/${KERN_PRODUCT}/extra/* ; do ln -snf $v ; done
+        cd /lib/modules/${KVER}/weak-updates/extra
+        for v in /lib/modules/${KVER_PRODUCT}/extra/* ; do ln -snf $v ; done
 
-        cd /lib/modules/${KERN}/weak-updates/updates
-        for v in /lib/modules/${KERN_PRODUCT}/updates/* ; do ln -snf $v ; done
+        cd /lib/modules/${KVER}/weak-updates/updates
+        for v in /lib/modules/${KVER_PRODUCT}/updates/* ; do ln -snf $v ; done
 
         depmod -a
+
+        dracut \
+          --force \
+          --force-add "$(printf '%s' "${ADD[*]}")" \
+          --kver ${KVER} \
+          --no-hostonly \
+          --no-hostonly-cmdline \
+          --printsize
 
       loop: "{{ product_kernel_module_packages }}"

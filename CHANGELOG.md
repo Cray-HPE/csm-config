@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.29] - 2024-02-27
+
+- [CASMTRIAGE-6699](https://jira-pro.it.hpe.com:8443/browse/CASMTRIAGE-6699) Adds missing call to `dracut` to fix kernel module loading in the final image.
+  Follow-up to [CASMTRIAGE-6617](https://jira-pro.it.hpe.com:8443/browse/CASMTRIAGE-6617). Together, CASMTRIAGE-6699 and CASMTRIAGE-6617 supersede [NETETH-2313](https://jira-pro.it.hpe.com:8443/browse/NETETH-2313). 
+
 ## [1.15.28] - 2024-02-22
 
 ### Changed
@@ -16,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.15.27] - 2024-02-21
 
-- [CASMTRIAGE-6617](https://jira-pro.it.hpe.com:8443/browse/CASMTRIAGE-6617) Breakout Kernel Upgrade from ncn-initrd.yml AND dynamically install [NETETH-2313](https://jira-pro.it.hpe.com:8443/browse/NETETH-2313) for ALL products
+- [CASMTRIAGE-6617](https://jira-pro.it.hpe.com:8443/browse/CASMTRIAGE-6617) Breakout Kernel Upgrade from ncn-initrd.yml AND dynamically install [NETETH-2313](https://jira-pro.it.hpe.com:8443/browse/NETETH-2313) for ALL products.
 
 ## [1.15.26] - 2024-01-30
 
@@ -247,7 +252,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.28...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.29...HEAD
+
+[1.15.29]: https://github.com/Cray-HPE/csm-config/compare/1.15.28...1.15.29
 
 [1.15.28]: https://github.com/Cray-HPE/csm-config/compare/1.15.27...1.15.28
 
