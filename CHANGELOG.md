@@ -7,10 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.27] - 2024-02-28
+
 ### Changed
 
 - Append `?auth-basic` to SLES mirror zypper URLs to prevent artifactory from locking out the user during builds
 - Use SLES package mirrors on `artifactory` instead of `slemaster`, to resolve build issues.
+
+### Fixed
+
+- Fixed typo in `ansible/ims_computes.yml`
 
 ## [1.16.26] - 2024-02-01
 
@@ -372,7 +378,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.26...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.27...HEAD
+
+[1.16.27]: https://github.com/Cray-HPE/csm-config/compare/1.16.26...1.16.27
 
 [1.16.26]: https://github.com/Cray-HPE/csm-config/compare/1.16.25...1.16.26
 
