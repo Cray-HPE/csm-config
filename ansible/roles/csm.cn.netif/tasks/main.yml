@@ -1,7 +1,8 @@
+#!/usr/bin/env ansible-playbook
 #
 # MIT License
 #
-# (C) Copyright 2023-2024 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -21,6 +22,12 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# Defaults for the csm.ims-remote role. See the README.md for information.
-
-
+# stock SLES application/compute node playbook
+---
+- name: Create ifcfg-eth0 for GCP
+  copy:
+    dest: /etc/sysconfig/network/ifcfg-eth0
+    content: |
+      BOOTPROTO=dhcp
+      STARTMODE=nfsroot
+  when: gcp_environment == true

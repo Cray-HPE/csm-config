@@ -7,9 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.17.9] - 2024-03-04
+## [1.17.11] - 2024-03-04
 
-- Configuration for IMS remote nodes with aarch64 support
+- Added support for aarch64 ims remote nodes
+
+## [1.17.10] - 2024-02-28
+
+### Fixed
+
+- Fixed typo in `ansible/ims_computes.yml`
+
+## [1.17.9] - 2024-02-23
+
+### Changed
+
+- Added DNS workaround for GCP
 
 ## [1.17.8] - 2024-02-22
 
@@ -407,7 +419,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.17.8...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.17.10...HEAD
+
+[1.17.10]: https://github.com/Cray-HPE/csm-config/compare/1.17.9...1.17.10
+
+[1.17.9]: https://github.com/Cray-HPE/csm-config/compare/1.17.8...1.17.9
 
 [1.17.8]: https://github.com/Cray-HPE/csm-config/compare/1.17.7...1.17.8
 
