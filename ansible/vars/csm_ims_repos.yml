@@ -23,10 +23,10 @@
 #
 
 csm_sles_repositories:
-- name: SUSE-SLE-Module-Containers-15-SP5-aarch64-Pool
-  description: "Suse container modules (added by Ansible)"
-  repo: https://packages.local/repository/SUSE-SLE-Module-Containers-15-SP5-aarch64-Pool
-- name: SUSE-SLE-Module-Basesystem-15-SP5-aarch64-Pool
+- name: SUSE-SLE-Module-Containers-${releasever_major}-SP${releasever_minor}-aarch64-Pool
+  description: "SUSE Container Modules (added by Ansible)"
+  repo: https://packages.local/repository/SUSE-SLE-Module-Containers-${releasever_major}-SP${releasever_minor}-aarch64-Pool
+- name: SUSE-SLE-Module-Basesystem-${releasever_major}-SP${releasever_minor}-aarch64-Pool
   description: "SUSE Basesystem Modules (added by Ansible)"
   repo: https://packages.local/repository/SUSE-SLE-Module-Basesystem-15-SP5-aarch64-Pool
 - name: csm-sle
