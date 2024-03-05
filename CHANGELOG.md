@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.28] - 2024-03-05
+
+### Changed
+
+- CASMCMS-8824 IMS remote node aarch64 support
+
 ## [1.16.27] - 2024-02-28
 
 ### Changed

@@ -33,9 +33,10 @@
     - vars/csm_ims_repos.yml
     - vars/csm_packages.yml
   roles:
+    - role: csm.ca_cert
+    - role: csm.gpg_keys
     - role: csm.packages
-      vars: 
-        packages: "{{ ims_compute_sles_packages }}"
-    - role: csm.ims-remote
       vars:
-        builder_architecture: "{{ ansible_env.IMS_ARCH |default('x86_64') }}"
+        packages: "{{ ims_compute_sles_packages + common_csm_sles_packages }}"
+    - role: csm.ims-remote
+    - role: csm.rebuild-initrd

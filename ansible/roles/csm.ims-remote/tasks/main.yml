@@ -24,46 +24,24 @@
 # Tasks for the csm.ims-remote role
 ---
 
-- name: Download Kata Containers
-  delegate_to: localhost
-  run_once: true
-  get_url:
-    url: "https://packages.local/repository/ims-remote-third-party/kata/kata-static-{{ kata_version }}-{{ builder_architecture }}.tar.xz"
-    dest: /tmp
-    validate_certs: no
-  register: source_file
+- name: Get SSH certificate
+  local_action:
+    module: csm_read_configmap
+    name: cray-ims-remote-keys
+    namespace: services
+    key: public_key
+    decrypt: false
+  register: public_key
 
-- name: Extract
-  unarchive:
-    list_files: true
-    src: "/tmp/kata-static-{{ kata_version }}-{{ builder_architecture }}.tar.xz"
-    dest: /opt
+- name: Create temp file for public-key
+  tempfile:
+    state: file
+    suffix: pub
+  register: temp_pub_key
 
-- name: Copy Kata to Canonical Location
-  copy:
-    src: /opt/opt/kata
-    dest: /opt
-    remote_src: true
-
-- name: Apply Execute Permissions
-  file:
-    mode: u+rwx
-    recurse: true
-    state: directory
-    path: /opt/kata/bin/
-
-- name: Setup Symlink
-  command: ln -sf /opt/kata/bin/containerd-shim-kata-v2 /usr/local/bin/containerd-shim-kata-qemu-v2
-
-- name: Configure Kata hypervisor rfile
-  command: sed -i 's/\[\"enable_iommu\"\]/["enable_iommu", "virtio_fs_extra_args", "default_memory", "kernel_params", "cpu_features"]/' /opt/kata/share/defaults/kata-containers/configuration-qemu.toml
-
-- name: Delete Redundant Dir
-  file:
-    path: /opt/opt
-    state: absent
-
-- name: Delete kata tarball
-  file:
-    path: "/tmp/kata-static-{{ kata_version }}-{{ builder_architecture }}.tar.xz"
-    state: absent
+- name: Add to authorized keys
+  authorized_key:
+    state: present
+    user: root
+    key: "{{ public_key.response }}"
+  when: public_key != ''
