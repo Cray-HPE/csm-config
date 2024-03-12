@@ -11,11 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- CASMPET-6797: Added CFI based ansible plays to provision LIO services on iscsi targets (worker NCNs) for SBPS 
-  - CASMPET-6886: Add ansible play to install RPM pakages required for SBPS
-  - CASMPET-6887: Add ansible play to configure LIO targets
-  - CASMPET-6888: Add ansible play to add/ update DNS A and SRV records for HSN and NMN using play script against PowerDNS API
-  - CASMPET-6890: Add ansible play to mount s3 bucket 'boot-images' using s3fs read-only policy for SBPS
+- CASMPET-6797: Added CFI based Ansible plays to provision LIO services on iSCSI targets (worker NCNs) for SBPS 
+  - CASMPET-6886: Add Ansible play to install RPM pakages required for SBPS
+  - CASMPET-6887: Add Ansible play to configure LIO targets
+  - CASMPET-6888: Add Ansible play to add/ update DNS A and SRV records for HSN and NMN using play script against PowerDNS API
+  - CASMPET-6890: Add Ansible play to mount s3 bucket 'boot-images' using s3fs read-only policy for SBPS
 
 ## [1.17.10] - 2024-02-28
 
@@ -426,6 +426,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
 [Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.17.10...HEAD
+
+[1.17.11]: https://github.com/Cray-HPE/csm-config/compare/1.17.10...1.17.11
 
 [1.17.10]: https://github.com/Cray-HPE/csm-config/compare/1.17.9...1.17.10
 

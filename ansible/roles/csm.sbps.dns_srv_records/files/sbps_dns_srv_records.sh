@@ -23,26 +23,56 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 
-set -euo pipefail
+set -eu pipefail
+#set -euo pipefail
 
 PDNS_API_KEY=$(kubectl -n services get secret cray-powerdns-credentials -o jsonpath='{.data.pdns_api_key}' | base64 -d)
 PDNS_API=$(kubectl -n services get svc cray-dns-powerdns-api -o jsonpath='{.spec.clusterIP}')
 
 system_name="$(cat /etc/cray/system_name)"
+#system_name="odin"
 echo "System Name: $system_name"
 
-host_name="$(awk '{print $1}' /etc/hostname)"
-echo "Host Name: $host_name"
+##host_name="$(awk '{print $1}' /etc/hostname)"
+##echo "Host Name: $host_name"
 
-iscsi_server_id="$(echo $host_name | awk -F "-" '{print $2}' | awk '{print substr($1,2);}')"
-echo "iscsi server id: $iscsi_server_id"
+##iscsi_server_id="$(echo $host_name | awk -F "-" '{print $2}' | awk '{print substr($1,2);}')"
+##echo "iscsi server id: $iscsi_server_id"
 
 hsn_ip="$(ip addr | grep "hsn0$" | awk '{print $2;}' | awk -F\/ '{print $1;}')"
 nmn_ip="$(ip addr | grep "nmn0$" | awk '{print $2;}' | awk -F\/ '{print $1;}')"
 echo "HSN IP: $hsn_ip"
 echo "NMN IP: $nmn_ip"
 
-curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localsystem_name/zones/${system_name}.hpc.amslabs.hpecorp.net" -d'
+hsn_records=""
+nmn_records=""
+
+##
+ncn_nodes=("ncn-w005" "ncn-w006")
+for ncn_node in "${ncn_nodes[@]}"
+do
+  echo $ncn_node
+  iscsi_server_id="$(echo $ncn_node | awk -F "-" '{print $2}' | awk '{print substr($1,2);}')"
+  hsn_srv_records="$hsn_srv_records{\"content\": \"1 0 3260 iscsi-server-"${iscsi_server_id}.hsn.${system_name}".hpc.amslabs.hpecorp.net.\",\"disabled\": false},"
+  nmn_srv_records="$nmn_srv_records{\"content\": \"1 0 3260 iscsi-server-"${iscsi_server_id}.nmn.${system_name}".hpc.amslabs.hpecorp.net.\",\"disabled\": false},"
+  hsn_a_records="$hsn_a_records{\"content\": \"'"${hsn_ip}"'\",},\"disabled\": false},"
+  nmn_a_records="$nmn_a_records{\"content\": \"'"${nmn_ip}"'\",},\"disabled\": false},"
+done
+
+hsn_srv_records=`echo "${hsn_srv_records%?}"`
+nmn_srv_records=`echo "${nmn_srv_records%?}"`
+hsn_a_records=`echo "${hsn_a_records%?}"`
+nmn_a_records=`echo "${nmn_a_records%?}"`
+ 
+echo "hsn_srv_records: $hsn_srv_records"
+echo "nmn_srv_records: $nmn_srv_records"
+echo "hsn_a_records: $hsn_a_records"
+echo "nmn_a_records:$nmn_a_records"
+##
+
+#exit 1
+
+curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/${system_name}.hpc.amslabs.hpecorp.net" -d'
 {
   "rrsets": [
     {
@@ -50,10 +80,7 @@ curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1
       "name": "_sbps-hsn._tcp.'"${system_name}"'.hpc.amslabs.hpecorp.net.",
       "changetype": "REPLACE",
       "records": [
-        {
-          "content": "1 0 3260 iscsi-server-'"${iscsi_server_id}.hsn.${system_name}"'.hpc.amslabs.hpecorp.net.",
-          "disabled": false
-        }
+	'"${hsn_srv_records}"'
       ],
       "ttl": 3600,
       "type": "SRV"
@@ -63,10 +90,7 @@ curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1
       "name": "_sbps-nmn._tcp.'"${system_name}"'.hpc.amslabs.hpecorp.net.",
       "changetype": "REPLACE",
       "records": [
-        {
-          "content": "1 0 3260 iscsi-server-'"${iscsi_server_id}.nmn.${system_name}"'.hpc.amslabs.hpecorp.net.",
-          "disabled": false
-        }
+	'"${nmn_srv_records}"'
       ],
       "ttl": 3600,
       "type": "SRV"
@@ -74,26 +98,7 @@ curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1
   ]
 }'
 
-curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localsystem_name/zones/nmn.${system_name}.hpc.amslabs.hpecorp.net" -d'
-{
-  "rrsets": [
-    {
-      "comments": [],
-      "name": "iscsi-server-'"${iscsi_server_id}.nmn.${system_name}"'.hpc.amslabs.hpecorp.net.",
-      "changetype": "REPLACE",
-      "records": [
-        {
-          "content": "'"${nmn_ip}"'",
-          "disabled": false
-        }
-      ],
-      "ttl": 3600,
-      "type": "A"
-    }
-  ]
-}'
-
-curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localsystem_name/zones/hsn.${system_name}.hpc.amslabs.hpecorp.net" -d'
+curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/hsn.${system_name}.hpc.amslabs.hpecorp.net" -d'
 {
   "rrsets": [
     {
@@ -101,10 +106,23 @@ curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1
       "name": "iscsi-server-'"${iscsi_server_id}.hsn.${system_name}"'.hpc.amslabs.hpecorp.net.",
       "changetype": "REPLACE",
       "records": [
-        {
-          "content": "'"${hsn_ip}"'",
-          "disabled": false
-        }
+        '"${hsn_a_records}"'
+      ],
+      "ttl": 3600,
+      "type": "A"
+    }
+  ]
+}'
+
+curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/nmn.${system_name}.hpc.amslabs.hpecorp.net" -d'
+{
+  "rrsets": [
+    {
+      "comments": [],
+      "name": "iscsi-server-'"${iscsi_server_id}.nmn.${system_name}"'.hpc.amslabs.hpecorp.net.",
+      "changetype": "REPLACE",
+      "records": [
+        '"${nmn_a_records}"'
       ],
       "ttl": 3600,
       "type": "A"
