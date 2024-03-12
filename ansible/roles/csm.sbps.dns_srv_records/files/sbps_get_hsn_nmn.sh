@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # MIT License
 #
@@ -21,29 +22,13 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
----
 
-#  Create DNS "SRV" and "A" records
-#
-# Get HSN and NMN IP's of the worker nodes 
-- name: Get HSN and NMN details of worker nodes
-  script: sbps_get_hsn_nmn.sh
-  register: sbps_get_hsn_nmn
-  changed_when: sbps_get_hsn_nmn.rc == 0
+set -euo pipefail
 
-# Update HSN and NMN details to tmp file
-- name: Update HSN and NMN details
-  lineinfile:
-    path: "/tmp/hsn_nmn_info.txt"
-    line: "{{ sbps_get_hsn_nmn.stdout | trim }}"
-    state: present
-    create: yes
-  delegate_to: localhost
+host_name="$(awk '{print $1}' /etc/hostname)"
+hsn_ip="$(ip addr | grep "hsn0$" | awk '{print $2;}' | awk -F\/ '{print $1;}')"
+nmn_ip="$(ip addr | grep "nmn0$" | awk '{print $2;}' | awk -F\/ '{print $1;}')"
+#echo "HSN IP: $hsn_ip"
+#echo "NMN IP: $nmn_ip"
 
-# Now create DNS "SRV" and "A" records
-- name: Create DNS SRV and A records
-  script: sbps_dns_srv_records.sh <  /tmp/hsn_nmn_info.txt
-  register: sbps_dns_srv_records
-  changed_when: sbps_dns_srv_records.rc == 0
-  delegate_to: localhost
-  run_once: true
+echo "$host_name:$hsn_ip:$nmn_ip"
