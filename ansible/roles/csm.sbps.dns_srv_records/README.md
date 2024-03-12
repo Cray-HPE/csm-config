@@ -19,12 +19,12 @@ Example Playbook
 
 ```yaml
     - hosts: Iscsi_Targets
-    gather_facts: yes
-    any_errors_fatal: true
-    remote_user: root
-    roles:
-      # Config SBPS DNS A and SRV records
-      - role: csm.sbps.dns_srv_records
+      gather_facts: yes
+      any_errors_fatal: true
+      remote_user: root
+      roles:
+        # Configure SBPS DNS A and SRV records
+        - role: csm.sbps.dns_srv_records
 ```
 
 License

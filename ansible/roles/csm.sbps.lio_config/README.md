@@ -19,12 +19,12 @@ Example Playbook
 
 ```yaml
     - hosts: Iscsi_Targets
-    gather_facts: yes
-    any_errors_fatal: true
-    remote_user: root
-    roles:
-      # Configure SBPS
-      - role: csm.sbps.lio_config
+      gather_facts: yes
+      any_errors_fatal: true
+      remote_user: root
+      roles:
+        # Configure SBPS
+        - role: csm.sbps.lio_config
 ```
 
 License

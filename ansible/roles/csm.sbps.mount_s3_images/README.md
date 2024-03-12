@@ -19,12 +19,12 @@ Example Playbook
 
 ```yaml
     - hosts: Iscsi_Targets
-    gather_facts: yes
-    any_errors_fatal: true
-    remote_user: root
-    roles:
-      # Mount s3 bucket 'boot-images' using s3fs read-only policy for SBPS agent
-      - role: csm.sbps.mount_s3_images
+      gather_facts: yes
+      any_errors_fatal: true
+      remote_user: root
+      roles:
+        # Mount s3 bucket 'boot-images' using s3fs read-only policy for SBPS agent
+        - role: csm.sbps.mount_s3_images
 ```
 
 License

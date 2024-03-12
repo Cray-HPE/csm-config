@@ -65,27 +65,6 @@
       when: ansible_distribution_file_variety == "SUSE"
     - role: csm.ncn.sat
 
-# Install and configure SBPS on iSCSI targets (worker NCNs)
-- hosts: Iscsi_Targets
-  gather_facts: yes
-  any_errors_fatal: true
-  remote_user: root
-  vars_files:
-    - vars/csm_repos.yml
-    - vars/csm_packages.yml
-  roles:
-    # Install SBPS iSCSI target packages
-    - role: csm.packages
-      vars:
-         packages: "{{ python-rtslib-fb-common + targetcli-fb-common + python3-targetcli-fb }}"
-      when: ansible_distribution_file_variety == "SUSE"
-    # Configure SBPS
-    - role: csm.sbps.lio_config
-    # Config SBPS DNS A and SRV records
-    - role: csm.sbps.dns_srv_records 
-    # Mount s3 bucket 'boot-images' using s3fs read-only policy for SBPS agent
-    - role: csm.sbps.mount_s3_images 
-
 # Install packages on storage NCNs
 - hosts:
    - Management_Storage
