@@ -33,8 +33,6 @@ sysctl_config:
     value: 0
   - name: net.ipv4.conf.all.arp_announce
     value: 2
-  - name: net.ipv4.conf.all.rp_filter
-    value: 2
   - name: net.ipv4.neigh.default.gc_interval
     value: 30
   - name: net.ipv4.neigh.default.gc_stale_time
