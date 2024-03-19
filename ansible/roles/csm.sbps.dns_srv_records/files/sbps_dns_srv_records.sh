@@ -35,27 +35,22 @@ nmn_a_records=""
 
 system_name="$(cat /etc/cray/system_name)"
 
-while read arg; do
-  ncn_worker_node=`echo "$arg" | awk -F ":" '{print $1}'`
-  iscsi_server_id="$(echo $ncn_worker_node | awk -F "-" '{print $2}' | awk '{print substr($1,2);}')"
-  hsn_ip=`echo "$arg" | awk -F ":" '{print $2}'`
-  nmn_ip=`echo "$arg" | awk -F ":" '{print $3}'`
+while read -r line; do
+  ncn_worker_node=`echo "$line" | awk -F ":" '{print $1}'`
+  iscsi_server_id="id-$(echo $ncn_worker_node | awk -F "-" '{print $2}' | awk '{print substr($1,2);}')"
+  hsn_ip=`echo "$line" | awk -F ":" '{print $2}'`
+  nmn_ip=`echo "$line" | awk -F ":" '{print $3}'`
 
   hsn_srv_records="$hsn_srv_records{\"content\": \"1 0 3260 iscsi-server-"${iscsi_server_id}.hsn.${system_name}".hpc.amslabs.hpecorp.net.\",\"disabled\": false},"
   nmn_srv_records="$nmn_srv_records{\"content\": \"1 0 3260 iscsi-server-"${iscsi_server_id}.nmn.${system_name}".hpc.amslabs.hpecorp.net.\",\"disabled\": false},"
-  hsn_a_records="$hsn_a_records{\"content\": \"${hsn_ip}\",\"disabled\": false},"
-  nmn_a_records="$nmn_a_records{\"content\": \"${nmn_ip}\",\"disabled\": false},"
+  hsn_a_records="$hsn_a_records{\"comments\": [], \"name\": \"iscsi-server-"${iscsi_server_id}.hsn.${system_name}".hpc.amslabs.hpecorp.net.\",\"changetype\":\"REPLACE\",\"records\":[{\"content\": \"${hsn_ip}\",\"disabled\": false}],\"ttl\": 3600,\"type\": \"A\"},"
+  nmn_a_records="$nmn_a_records{\"comments\": [], \"name\": \"iscsi-server-"${iscsi_server_id}.nmn.${system_name}".hpc.amslabs.hpecorp.net.\",\"changetype\":\"REPLACE\",\"records\":[{\"content\": \"${nmn_ip}\",\"disabled\": false}],\"ttl\": 3600,\"type\": \"A\"},"
 done
 
 hsn_srv_records=`echo "${hsn_srv_records%?}"`
 nmn_srv_records=`echo "${nmn_srv_records%?}"`
 hsn_a_records=`echo "${hsn_a_records%?}"`
 nmn_a_records=`echo "${nmn_a_records%?}"`
- 
-echo "hsn_srv_records: $hsn_srv_records"
-echo "nmn_srv_records: $nmn_srv_records"
-echo "hsn_a_records: $hsn_a_records"
-echo "nmn_a_records:$nmn_a_records"
 
 curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/${system_name}.hpc.amslabs.hpecorp.net" -d'
 {
@@ -86,31 +81,13 @@ curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1
 curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/hsn.${system_name}.hpc.amslabs.hpecorp.net" -d'
 {
   "rrsets": [
-    {
-      "comments": [],
-      "name": "iscsi-server-'"${iscsi_server_id}.hsn.${system_name}"'.hpc.amslabs.hpecorp.net.",
-      "changetype": "REPLACE",
-      "records": [
-        '"${hsn_a_records}"'
-      ],
-      "ttl": 3600,
-      "type": "A"
-    }
+    '"${hsn_a_records}"'
   ]
 }'
 
 curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/nmn.${system_name}.hpc.amslabs.hpecorp.net" -d'
 {
   "rrsets": [
-    {
-      "comments": [],
-      "name": "iscsi-server-'"${iscsi_server_id}.nmn.${system_name}"'.hpc.amslabs.hpecorp.net.",
-      "changetype": "REPLACE",
-      "records": [
-        '"${nmn_a_records}"'
-      ],
-      "ttl": 3600,
-      "type": "A"
-    }
+    '"${nmn_a_records}"'
   ]
 }'
