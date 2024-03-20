@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2023 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2023-2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -32,8 +32,6 @@ sysctl_config:
   - name: net.ipv4.conf.all.arp_filter
     value: 0
   - name: net.ipv4.conf.all.arp_announce
-    value: 2
-  - name: net.ipv4.conf.all.rp_filter
     value: 2
   - name: net.ipv4.neigh.default.gc_interval
     value: 30
