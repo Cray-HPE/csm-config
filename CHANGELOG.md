@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - SKERN-9239: Added password-less ssh to CN/UAN to CSM layer
 
+### Removed
+
+- CASMTRIAGE-6787: `net.ipv4.conf.all.rp_filter` tunable no longer set in `ansible/roles/csm.ncn.sysctl/vars/main.yml`
+
 ## [1.17.11] - 2024-03-04
 
 ### Added
