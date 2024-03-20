@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- SKERN-9239: Added password-less ssh to CN/UAN to CSM layer
+
 ## [1.17.11] - 2024-03-04
 
 - Added support for `aarch64` IMS remote nodes
