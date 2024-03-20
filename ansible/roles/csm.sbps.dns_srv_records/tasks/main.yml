@@ -1,0 +1,49 @@
+#
+# MIT License
+#
+# (C) Copyright 2024 Hewlett Packard Enterprise Development LP
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+---
+
+#  Create DNS "SRV" and "A" records
+#
+# Get HSN and NMN IP's of the worker nodes 
+- name: Get HSN and NMN details of worker nodes
+  script: sbps_get_hsn_nmn.sh
+  register: sbps_get_hsn_nmn
+  changed_when: sbps_get_hsn_nmn.rc == 0
+
+# Update HSN and NMN details to tmp file
+- name: Update HSN and NMN details
+  lineinfile:
+    path: "/tmp/hsn_nmn_info.txt"
+    line: "{{ sbps_get_hsn_nmn.stdout | trim }}"
+    state: present
+    create: yes
+  delegate_to: localhost
+
+# Now create DNS "SRV" and "A" records
+- name: Create DNS SRV and A records
+  script: sbps_dns_srv_records.sh <  /tmp/hsn_nmn_info.txt
+  register: sbps_dns_srv_records
+  changed_when: sbps_dns_srv_records.rc == 0
+  delegate_to: localhost
+  run_once: true

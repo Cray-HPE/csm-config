@@ -1,0 +1,48 @@
+#!/usr/bin/env ansible-playbook
+#
+# MIT License
+#
+# (C) Copyright 2024 Hewlett Packard Enterprise Development LP
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+
+# "Iscsi_Targets" will be "Management_Worker" (all workers) by default OR
+# can be sub set of worker nodes set by user/ admin during config.
+#
+# Install and configure SBPS on iSCSI targets (worker NCNs)
+- hosts: Iscsi_Targets
+  gather_facts: yes
+  any_errors_fatal: true
+  remote_user: root
+  vars_files:
+    - vars/csm_repos.yml
+    - vars/csm_packages.yml
+  roles:
+    # Install SBPS iSCSI target packages
+    - role: csm.packages
+      vars:
+         packages: "{{ python-rtslib-fb-common + targetcli-fb-common + python3-targetcli-fb }}"
+      when: ansible_distribution_file_variety == "SUSE"
+    # Configure SBPS
+    - role: csm.sbps.lio_config
+    # Configure SBPS DNS A and SRV records
+    - role: csm.sbps.dns_srv_records
+    # Mount s3 bucket 'boot-images' using s3fs read-only policy for SBPS agent
+    - role: csm.sbps.mount_s3_images
