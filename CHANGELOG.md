@@ -7,7 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.18.0] - 2024-03-20
+
+### Added
+
+- SKERN-9239: Added password-less ssh to CN/UAN to CSM layer
+
+### Removed
+
+- CASMTRIAGE-6787: `net.ipv4.conf.all.rp_filter` tunable no longer set in `ansible/roles/csm.ncn.sysctl/vars/main.yml`
+
 ## [1.17.11] - 2024-03-04
+
+### Added
 
 - Added support for `aarch64` IMS remote nodes
 
@@ -419,7 +431,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.17.11...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.18.0...HEAD
+
+[1.18.0]: https://github.com/Cray-HPE/csm-config/compare/1.17.11...1.18.0
 
 [1.17.11]: https://github.com/Cray-HPE/csm-config/compare/1.17.10...1.17.11
 
