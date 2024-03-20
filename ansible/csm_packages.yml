@@ -52,6 +52,8 @@
       vars:
         packages: "{{ common_csm_sles_packages + application_csm_sles_packages }}"
       when: ansible_distribution_file_variety == "SUSE"
+    - role: csm.ca_cert
+    - role: trust-csm-ssh-keys
   tasks:
     - name: Add CSM services to presets file
       loop: "{{ csm_services }}"
@@ -100,6 +102,8 @@
       vars:
         packages: "{{ common_csm_sles_packages + compute_csm_sles_packages }}"
       when: ansible_distribution_file_variety == "SUSE"
+    - role: csm.ca_cert
+    - role: trust-csm-ssh-keys
   tasks:
     - name: Add CSM services to presets file
       loop: "{{ csm_services }}"
