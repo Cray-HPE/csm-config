@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env ansible-playbook
 #
 # MIT License
 #
@@ -23,16 +23,28 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 
-set -euo pipefail
-
-s3_user=ISCSI-SBPS
-s3_bucket=boot-images
-s3fs_mount_dir=/var/lib/cps-local/boot-images
-filename=.iscsi-sbps.s3fs
-passwd_file="${HOME}/${filename}"
-
-radosgw-admin user info --uid "${s3_user}" |jq -r '.keys[]|.access_key +":"+ .secret_key' > "${passwd_file}"
-chmod 600 "${passwd_file}"
-
-mkdir -pv "${s3fs_mount_dir}"
-s3fs "${s3_bucket}" "${s3fs_mount_dir}" -o "passwd_file=${passwd_file},url=http://rgw-vip.nmn,use_path_request_style"
+# "Iscsi_Targets" will be "Management_Worker" (all workers) by default OR
+# can be sub set of worker nodes set by user/ admin during config.
+#
+# Install and configure SBPS on iSCSI targets (worker NCNs)
+- hosts: Iscsi_Targets
+  gather_facts: yes
+  any_errors_fatal: true
+  remote_user: root
+  vars_files:
+    - vars/csm_repos.yml
+    - vars/csm_packages.yml
+  roles:
+    # Apply k8s lable on all the intended worker nodes
+    - role: csm.sbps.apply_lable
+    # Install SBPS iSCSI target packages
+    - role: csm.packages
+      vars:
+         packages: "{{ python-rtslib-fb-common + targetcli-fb-common + python3-targetcli-fb }}"
+      when: ansible_distribution_file_variety == "SUSE"
+    # Configure SBPS
+    - role: csm.sbps.lio_config
+    # Configure SBPS DNS A and SRV records
+    - role: csm.sbps.dns_srv_records
+    # Mount s3 bucket 'boot-images' using s3fs read-only policy for SBPS agent
+    - role: csm.sbps.mount_s3_images

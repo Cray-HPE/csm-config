@@ -23,16 +23,7 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 
-set -euo pipefail
+LABLE="iscsi=sbps"
+HOST_NAME="$(awk '{print $1}' /etc/hostname)"
 
-s3_user=ISCSI-SBPS
-s3_bucket=boot-images
-s3fs_mount_dir=/var/lib/cps-local/boot-images
-filename=.iscsi-sbps.s3fs
-passwd_file="${HOME}/${filename}"
-
-radosgw-admin user info --uid "${s3_user}" |jq -r '.keys[]|.access_key +":"+ .secret_key' > "${passwd_file}"
-chmod 600 "${passwd_file}"
-
-mkdir -pv "${s3fs_mount_dir}"
-s3fs "${s3_bucket}" "${s3fs_mount_dir}" -o "passwd_file=${passwd_file},url=http://rgw-vip.nmn,use_path_request_style"
+kubectl label nodes $HOST_NAME $LABLE

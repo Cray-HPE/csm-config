@@ -1,4 +1,3 @@
-#!/bin/bash
 #
 # MIT License
 #
@@ -22,17 +21,10 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
+---
 
-set -euo pipefail
-
-s3_user=ISCSI-SBPS
-s3_bucket=boot-images
-s3fs_mount_dir=/var/lib/cps-local/boot-images
-filename=.iscsi-sbps.s3fs
-passwd_file="${HOME}/${filename}"
-
-radosgw-admin user info --uid "${s3_user}" |jq -r '.keys[]|.access_key +":"+ .secret_key' > "${passwd_file}"
-chmod 600 "${passwd_file}"
-
-mkdir -pv "${s3fs_mount_dir}"
-s3fs "${s3_bucket}" "${s3fs_mount_dir}" -o "passwd_file=${passwd_file},url=http://rgw-vip.nmn,use_path_request_style"
+#  Apply k8s lable on all the intended worker nodes
+- name: Apply k8s lable on worker nodes
+  script: apply_k8s_lable.sh
+  register: apply_k8s_lable
+  changed_when: apply_k8s_lable.rc == 0
