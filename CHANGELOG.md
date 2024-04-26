@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fixed regression where package installation would fail
+- Fixed regression where package installation would fail CASMTRIAGE-6935
 - Allow multiple SSH keys in authorized keys file
 
 ## [1.16.28] - 2024-03-05
