@@ -38,3 +38,6 @@ csm_sles_repositories:
 - name: SUSE-SLE-Module-Basesystem-${releasever_major}-SP${releasever_minor}-x86_64-Pool
   description: "SUSE Basesystem Modules (added by Ansible)"
   repo: https://packages.local/repository/SUSE-SLE-Module-Basesystem-${releasever_major}-SP${releasever_minor}-x86_64-Pool
+- name: csm-noos
+  description: "CSM No-OS Packages (added by Ansible)"
+  repo: https://packages.local/repository/csm-noos
