@@ -37,6 +37,6 @@
     - role: csm.gpg_keys
     - role: csm.packages
       vars:
-        packages: "{{ ims_compute_sles_packages + common_csm_sles_packages }}"
+        packages: "{{ ims_compute_sles_packages }}"
     - role: csm.ims-remote
     - role: csm.rebuild-initrd
