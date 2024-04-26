@@ -79,3 +79,12 @@ compute_csm_sles_packages:
 # IMS Remote Compute Nodes:
 ims_compute_sles_packages:
   - podman
+  - cfs-debugger
+  - cfs-state-reporter
+  - cfs-trust
+  - craycli
+  - csm-auth-utils
+  - csm-node-heartbeat
+  - csm-node-identity
+  - spire-agent>=1.5.0
+  - tpm-provisioner-client
