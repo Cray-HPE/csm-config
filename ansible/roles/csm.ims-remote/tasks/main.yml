@@ -43,5 +43,5 @@
   authorized_key:
     state: present
     user: root
-    key: "{{ ssh_pub_key + public_key.response }}"
+    key: "{{ public_key.response }}"
   when: public_key != ''
