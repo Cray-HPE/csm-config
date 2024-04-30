@@ -23,63 +23,6 @@
 #
 # Tasks for the csm.ims-remote role
 ---
-- name: Get vault token
-  no_log: true
-  uri:
-    url: "{{ ssh_keys_vault_url }}/v1/auth/kubernetes/login"
-    method: POST
-    body:
-      jwt: "{{ lookup('file', ssh_keys_vault_jwt_file) }}"
-      role: "{{ lookup('file', ssh_keys_vault_role_file) }}"
-    body_format: json
-  register: vault_login
-  delegate_to: localhost
-  run_once: true
-
-- name: Retrieve the ssh private key
-  block:
-    - name: Lookup the private key value in Vault
-      no_log: true
-      run_once: true
-      delegate_to: localhost
-      set_fact:
-        ssh_priv_key: "{{ lookup('hashi_vault',
-                      'secret=' + ssh_keys_user_private_key_secret_prefix + ssh_keys_username + ':' + ssh_keys_user_private_key_key +
-                      ' token=' + vault_login.json.auth.client_token +
-                      ' url=' + ssh_keys_vault_url) }}"
-  rescue:
-    - name: set the value if no private key was found
-      set_fact:
-        ssh_priv_key: ''
-
-- name: Retrieve the ssh public key
-  block:
-    - name: Lookup the public key value in Vault
-      run_once: true
-      delegate_to: localhost
-      set_fact:
-        ssh_pub_key: "{{ lookup('hashi_vault',
-                     'secret=' + ssh_keys_user_public_key_secret_prefix + ssh_keys_username + ':' + ssh_keys_user_public_key_key +
-                     ' token=' + vault_login.json.auth.client_token +
-                     ' url=' + ssh_keys_vault_url) }}"
-  rescue:
-    - name: set the value if no public key was found
-      set_fact:
-        ssh_pub_key: ''
-
-- name: Determine if play will go on
-  debug: msg="Neither a private or public key exist in Vault for the {{ ssh_keys_username }} user. Exiting without error."
-  when: ssh_pub_key == '' and ssh_priv_key == ''
-
-- name: End play if neither key exists in Vault
-  meta: end_play
-  when: ssh_pub_key == '' and ssh_priv_key == ''
-
-- name: Ensure the user exists
-  user:
-    name: "{{ ssh_keys_username }}"
-    state: present
-  register: user_registered
 
 - name: Get ims public key
   local_action:
@@ -100,24 +43,5 @@
   authorized_key:
     state: present
     user: root
-    key: "{{ ssh_pub_key + public_key.response }}"
+    key: "{{ public_key.response }}"
   when: public_key != ''
-
-- name: Copy the public key
-  copy:
-    content: "{{ ssh_pub_key }}\n"
-    dest: "{{ user_registered.home }}/.ssh/id_{{ ssh_keys_keytype }}.pub"
-    mode: 0644
-  become: true
-  become_user: "{{ ssh_keys_username }}"
-  when: ssh_pub_key != ''
-
-- name: Copy the private key
-  no_log: true
-  copy:
-    content: "{{ ssh_priv_key }}\n"
-    dest: "{{ user_registered.home }}/.ssh/id_{{ ssh_keys_keytype }}"
-    mode: 0600
-  become: true
-  become_user: "{{ ssh_keys_username }}"
-  when: ssh_priv_key != ''
