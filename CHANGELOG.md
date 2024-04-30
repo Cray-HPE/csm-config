@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Utilize csm trust ssh keys for ims remote build node
+-  CASMTRIAGE-6948 Utilize csm trust ssh keys for ims remote build node
 
 ## [1.16.29] - 2024-04-26
 
