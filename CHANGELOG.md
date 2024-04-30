@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.30] - 2024-04-30
+
+### Changed
+
+- Utilize csm trust ssh keys for ims remote build node
+
 ## [1.16.29] - 2024-04-26
 
 ### Fixed
