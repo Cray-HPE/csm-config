@@ -39,4 +39,6 @@
       vars:
         packages: "{{ ims_compute_sles_packages }}"
     - role: csm.ims-remote
+    - role: trust-csm-ssh-keys
+    - role: passwordless-ssh
     - role: csm.rebuild-initrd
