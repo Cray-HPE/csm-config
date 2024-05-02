@@ -1,7 +1,6 @@
-#
 # MIT License
 #
-# (C) Copyright 2021-2024 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -21,38 +20,14 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-
-# List of packages to be installed/updated from Nexus on all Management NCNs
-ncn_csm_sles_packages:
-  - cfs-debugger
-  - cfs-state-reporter
-  - cfs-trust
-  - craycli
-  - cray-cmstools-crayctldeploy
-  - csm-testing
-  - curl
-  - dracut-metal-mdsquash
-  - goss-servers
-  - hpe-csm-goss-package
-  - hpe-csm-scripts
-  - hpe-csm-yq-package
-  - loftsman
-  - manifestgen
-
-# List of packages to be installed/updated from Nexus on all Compute nodes
-general_csm_sles_packages:
-  - bos-reporter
-  - cfs-state-reporter
-  - craycli
-  - cray-uai-util
-
-# All Application nodes
-application_csm_sles_packages:
-  - cray-node-exporter
-  - smart-mon
-  - smartmontools
-
-# Product team kernel packages
-product_kernel_module_packages:
-  - cray-dvs-kmp-default
-  - mlnx-ofa_kernel-kmp-default
+# Use 'defaults' for xfs mount
+- name: Set /var/lib/containers xfs mount options to 'defaults'
+  lineinfile:
+    path: '{{ item }}'
+    state: present
+    line: '\1{{ var_lib_container_mount }}'
+    regexp: '(.*)\[\s?LABEL=CONTAIN.*\]'
+    backrefs: yes
+  loop:
+    - /etc/cloud/cloud.cfg.d/01_metalfs.cfg
+    - /srv/cray/resources/metal/cloud.cfg.d/01_metalfs.cfg
