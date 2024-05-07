@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.30] - 2024-05-07
+
+- [MTL-2390](https://jira-pro.it.hpe.com:8443/browse/MTL-2390) Improve IMS image build time by setting xfs mount options to 'defaults'
+
 ## [1.15.29] - 2024-02-27
 
 - [CASMTRIAGE-6699](https://jira-pro.it.hpe.com:8443/browse/CASMTRIAGE-6699) Adds missing call to `dracut` to fix kernel module loading in the final image.
