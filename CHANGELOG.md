@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.19.0] - 2024-05-21
+
+### Added
+- 'statedir' environment variable to support a newer version of the ca-certificates rpm
+
 ## [1.18.0] - 2024-03-20
 
 ### Added
@@ -431,7 +436,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.18.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.19.0...HEAD
+
+[1.19.0]: https://github.com/Cray-HPE/csm-config/compare/1.18.0...1.19.0
 
 [1.18.0]: https://github.com/Cray-HPE/csm-config/compare/1.17.11...1.18.0
 
