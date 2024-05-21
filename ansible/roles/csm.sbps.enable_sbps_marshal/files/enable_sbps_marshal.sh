@@ -1,4 +1,4 @@
-#!/usr/bin/env ansible-playbook
+#!/bin/bash
 #
 # MIT License
 #
@@ -23,25 +23,6 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 
-# Configure "Management_Worker" (all worker nodes) by default OR
-# configure only subset of worker nodes("Management_Worker") defined in 
-# CFS config/ HSM group, set by user/ admin during node personalization.
-#
-# Install and configure SBPS on iSCSI targets (worker NCNs)
-- hosts: Management_Worker
-  gather_facts: no
-  any_errors_fatal: yes
-  remote_user: root
-  roles:
-    # Apply k8s label on all the intended worker nodes
-    - role: csm.sbps.apply_label
-    # Configure SBPS
-    - role: csm.sbps.lio_config
-    #  Start SBPS Marshal Agent (systemd service)
-    - role: enable_sbps_marshal
-    # Configure SBPS
-    - role: csm.sbps.lio_config
-    # Configure SBPS DNS A and SRV records
-    - role: csm.sbps.dns_srv_records
-    # Mount s3 bucket 'boot-images' using s3fs read-only policy for SBPS agent
-    - role: csm.sbps.mount_s3_images
+set -euo pipefail
+
+systemctl enable --now sbps-marshal.service
