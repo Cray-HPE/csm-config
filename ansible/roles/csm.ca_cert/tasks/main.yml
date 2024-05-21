@@ -60,9 +60,10 @@
     ansible_distribution_version != "15.2" and
     cert_file.stat.exists
 
-
 - name: Run certificate update scripts
   command: "{{ item.path }}"
+  environment:
+    statedir: "/var/lib/ca-certificates"
   loop: "{{ ca_scripts.files }}"
   when: >
     ansible_distribution_file_variety == "SUSE" and
