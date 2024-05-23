@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- 'statedir' environment variable to support a newer version of the ca-certificates rpm
+
 ## [1.16.30] - 2024-04-30
 
 ### Changed
