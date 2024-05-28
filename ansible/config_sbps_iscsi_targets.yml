@@ -36,8 +36,8 @@
     - vars/csm_repos.yml
     - vars/csm_packages.yml
   roles:
-    # Apply k8s lable on all the intended worker nodes
-    - role: csm.sbps.apply_lable
+    # Apply k8s label on all the intended worker nodes
+    - role: csm.sbps.apply_label
     # Install SBPS iSCSI LIO target + targetcli packages
     # Note: Currently below RPMs are part of NCN node image. Below role was added for 
     # convenience during dev/ test when image is not available/ ready.
