@@ -33,8 +33,12 @@ nmn_srv_records=""
 hsn_a_records=""
 nmn_a_records=""
 
-system_name="$(cat /etc/cray/system_name)"
+system_name="$(cat /etc/environment | grep SYSTEM_NAME | awk -F= '{print $2;}')"
 
+# - read each line from the file "/tmp/hsn_nmn_info.txt" passed on to this script
+#   to fetch Host Name, HSN and NMN IP's for each worker node.
+#   line format is: <Host Name>:<HSN IP>:<NMN IP>
+# - then create DNS "SRV" and "A" records based on the above data
 while read -r line; do
   ncn_worker_node=`echo "$line" | awk -F ":" '{print $1}'`
   iscsi_server_id="id-$(echo $ncn_worker_node | awk -F "-" '{print $2}' | awk '{print substr($1,2);}')"
@@ -52,6 +56,8 @@ nmn_srv_records=`echo "${nmn_srv_records%?}"`
 hsn_a_records=`echo "${hsn_a_records%?}"`
 nmn_a_records=`echo "${nmn_a_records%?}"`
 
+
+# PATCH (update) DNS "SRV" records for HSN and NMN for all the worker nodes
 curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/${system_name}.hpc.amslabs.hpecorp.net" -d'
 {
   "rrsets": [
@@ -78,6 +84,7 @@ curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1
   ]
 }'
 
+# PATCH (update) DNS  "A" records for HSN for all the worker nodes
 curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/hsn.${system_name}.hpc.amslabs.hpecorp.net" -d'
 {
   "rrsets": [
@@ -85,6 +92,7 @@ curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1
   ]
 }'
 
+# PATCH (update) DNS  "A" records for NMN for all the worker nodes
 curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/nmn.${system_name}.hpc.amslabs.hpecorp.net" -d'
 {
   "rrsets": [

@@ -23,27 +23,8 @@
 #
 ---
 
-#  Create DNS "SRV" and "A" records
-#
-# Get Host Name, HSN IP and NMN IP of each worker node
-- name: Get Host Name, HSN and NMN details of each worker node
-  script: sbps_get_host_hsn_nmn.sh
-  register: sbps_get_host_hsn_nmn
-  changed_when: sbps_get_host_hsn_nmn.rc == 0
-
-# Update Host Name, HSN IP and NMN IP of each worker node to tmp file
-- name: Update Host Name, HSN and NMN details for each worker node
-  lineinfile:
-    path: "/tmp/hsn_nmn_info.txt"
-    line: "{{ sbps_get_host_hsn_nmn.stdout | trim }}"
-    state: present
-    create: yes
-  delegate_to: localhost
-
-# Now create DNS "SRV" and "A" records of HSN and NMN for each worker node
-- name: Create DNS "SRV" and "A" records of HSN and NMN for each worker node
-  script: sbps_dns_srv_records.sh <  /tmp/hsn_nmn_info.txt
-  register: sbps_dns_srv_records
-  changed_when: sbps_dns_srv_records.rc == 0
-  delegate_to: localhost
-  run_once: true
+#  Apply k8s label on all the intended worker nodes
+- name: Apply k8s label on worker nodes
+  script: apply_k8s_label.sh
+  register: apply_k8s_label
+  changed_when: apply_k8s_label.rc == 0

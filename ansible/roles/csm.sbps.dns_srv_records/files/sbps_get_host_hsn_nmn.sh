@@ -25,10 +25,10 @@
 
 set -euo pipefail
 
+# Get Host Name, HSN IP and NMN IP of worker node
 host_name="$(awk '{print $1}' /etc/hostname)"
 hsn_ip="$(ip addr | grep "hsn0$" | awk '{print $2;}' | awk -F\/ '{print $1;}')"
 nmn_ip="$(ip addr | grep "nmn0$" | awk '{print $2;}' | awk -F\/ '{print $1;}')"
-#echo "HSN IP: $hsn_ip"
-#echo "NMN IP: $nmn_ip"
 
+# echo the details to stdout to be picked by next task in the playbook
 echo "$host_name:$hsn_ip:$nmn_ip"
