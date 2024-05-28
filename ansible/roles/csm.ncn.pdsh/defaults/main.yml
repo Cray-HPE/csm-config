@@ -30,4 +30,6 @@ node_roles: {
     "master": "[?ExtraProperties.Role==`Management`] | [?ExtraProperties.SubRole==`Master`].Xname",
     "worker": "[?ExtraProperties.Role==`Management`] | [?ExtraProperties.SubRole==`Worker`].Xname",
     "storage": "[?ExtraProperties.Role==`Management`] | [?ExtraProperties.SubRole==`Storage`].Xname",
+    "kubernetes": "[?ExtraProperties.Role==`Management` && (ExtraProperties.SubRole==`Master` || ExtraProperties.SubRole==`Worker`)].Xname",
+    "ncn": "[?ExtraProperties.Role==`Management` && (ExtraProperties.SubRole==`Master` || ExtraProperties.SubRole==`Worker` || ExtraProperties.SubRole==`Storage`)].Xname",
 }
