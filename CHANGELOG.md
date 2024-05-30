@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.20.0] - 2024-05-30
+
+### Added
+- ansible role for creating pdsh group files based on data from sls
+
 ## [1.19.0] - 2024-05-21
 
 ### Added
@@ -436,7 +441,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.19.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.20.0...HEAD
+
+[1.20.0]: https://github.com/Cray-HPE/csm-config/compare/1.19.0...1.20.0
 
 [1.19.0]: https://github.com/Cray-HPE/csm-config/compare/1.18.0...1.19.0
 
