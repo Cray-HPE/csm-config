@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.18.1] - 2024-05-21
+## [1.21.0] - 2024-06-03
 
 ### Added
 
@@ -17,6 +17,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - CASMPET-6888: Add Ansible play to add/ update DNS "SRV" and "A" records for HSN and NMN using play script against PowerDNS API
   - CASMPET-6890: Add Ansible play to mount s3 bucket 'boot-images' using s3fs read-only policy for SBPS
   - CASMPET-6933: Add Ansible play to Apply k8s labels for SBPS on specified number of worker NCN's
+
+## [1.20.0] - 2024-05-30
+
+### Added
+- ansible role for creating pdsh group files based on data from sls
+
+## [1.19.0] - 2024-05-21
+
+### Added
+- 'statedir' environment variable to support a newer version of the ca-certificates rpm
 
 ## [1.18.0] - 2024-03-20
 
@@ -442,9 +452,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.18.1...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.20.1...HEAD
 
-[1.18.1]: https://github.com/Cray-HPE/csm-config/compare/1.18.0...1.18.1
+[1.21.0]: https://github.com/Cray-HPE/csm-config/compare/1.20.0...1.21.0
+
+[1.20.0]: https://github.com/Cray-HPE/csm-config/compare/1.19.0...1.20.0
+
+[1.19.0]: https://github.com/Cray-HPE/csm-config/compare/1.18.0...1.19.0
 
 [1.18.0]: https://github.com/Cray-HPE/csm-config/compare/1.17.11...1.18.0
 
