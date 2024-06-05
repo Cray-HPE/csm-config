@@ -1,7 +1,7 @@
 csm.sbps.dns_srv_records
 ========================
 
-Configure SBPS DNS A and SRV records
+Configure SBPS DNS "SRV" and "A" records
 
 Requirements
 ------------
@@ -19,11 +19,11 @@ Example Playbook
 
 ```yaml
     - hosts: Management_Worker
-      gather_facts: yes
+      gather_facts: no
       any_errors_fatal: true
       remote_user: root
       roles:
-        # Configure SBPS DNS A and SRV records
+        # Configure SBPS DNS "SRV" and "A" records
         - role: csm.sbps.dns_srv_records
 ```
 

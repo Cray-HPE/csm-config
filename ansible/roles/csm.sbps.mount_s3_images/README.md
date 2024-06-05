@@ -19,7 +19,7 @@ Example Playbook
 
 ```yaml
     - hosts: Management_Worker
-      gather_facts: yes
+      gather_facts: no
       any_errors_fatal: true
       remote_user: root
       roles:

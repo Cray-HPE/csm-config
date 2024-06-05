@@ -29,25 +29,15 @@
 #
 # Install and configure SBPS on iSCSI targets (worker NCNs)
 - hosts: Management_Worker
-  gather_facts: yes
-  any_errors_fatal: true
+  gather_facts: no
+  any_errors_fatal: yes
   remote_user: root
-  vars_files:
-    - vars/csm_repos.yml
-    - vars/csm_packages.yml
   roles:
     # Apply k8s label on all the intended worker nodes
     - role: csm.sbps.apply_label
-    # Install SBPS iSCSI LIO target + targetcli packages
-    # Note: Currently below RPMs are part of NCN node image. Below role was added for 
-    # convenience during dev/ test when image is not available/ ready.
-    #- role: csm.packages
-    #  vars:
-    #  packages: "{{ python-rtslib-fb-common + targetcli-fb-common + python3-targetcli-fb }}"
-    #  when: ansible_distribution_file_variety == "SUSE"
     # Configure SBPS
     - role: csm.sbps.lio_config
-    # Configure SBPS DNS A and SRV records
+      # Configure SBPS DNS "SRV" and "A" records
     - role: csm.sbps.dns_srv_records
     # Mount s3 bucket 'boot-images' using s3fs read-only policy for SBPS agent
     - role: csm.sbps.mount_s3_images
