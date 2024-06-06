@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.33] - 2024-06-26
+
+### Added
+
+- CASMINST-6896: Add support for multiple GPG keys and update with CFS
+
 ## [1.16.32] - 2024-05-30
 
 ### Added
