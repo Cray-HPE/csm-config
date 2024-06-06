@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2021-2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -22,28 +22,14 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 # Tasks for the csm.gpg_keys role
-- name: Fetch the HPE GPG Signing Key from the K8S secret
+- name: Fetch Public GPG Keys from the K8S secret
   no_log: true
   local_action:
     module: csm_read_secret
     name: "{{ csm_gpg_key_k8s_secret }}"
     namespace: "{{ csm_gpg_key_k8s_namespace }}"
-    key: "{{ csm_gpg_key_k8s_field }}"
-    decrypt: True
-  register: hpe_gpg_pubkey
+  register: hpe_gpg_pubkeys
 
-- name: Create a temporary file to store the key content
-  tempfile:
-    state: file
-    suffix: key
-  register: temp_key_file
-
-- name: Copy the key content to a temporary file
-  copy:
-    content: "{{ hpe_gpg_pubkey.response }}"
-    dest: "{{ temp_key_file.path }}"
-
-- name: Install the HPE Signing Key
-  rpm_key:
-    state: present
-    key: "{{ temp_key_file.path }}"
+- include_tasks: install_key.yml
+  no_log: true
+  loop: "{{ hpe_gpg_pubkeys.response | dict2items }}"

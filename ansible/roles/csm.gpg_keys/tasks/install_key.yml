@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2024 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -21,6 +21,19 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# Defaults for the csm.gpg_key role. See the README.md for information.
-csm_gpg_key_k8s_secret: "hpe-signing-key"
-csm_gpg_key_k8s_namespace: "services"
+
+- name: Create a temporary file to store the key content
+  tempfile:
+    state: file
+    suffix: key
+  register: temp_key_file
+
+- name: Copy the key content to a temporary file
+  copy:
+    content: "{{ item.value | b64decode }}"
+    dest: "{{ temp_key_file.path }}"
+
+- name: Install the HPE Signing Key
+  rpm_key:
+    state: present
+    key: "{{ temp_key_file.path }}"
