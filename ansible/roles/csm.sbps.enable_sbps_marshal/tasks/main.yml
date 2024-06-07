@@ -25,6 +25,7 @@
 # Enable SBPS Marshal Agent (start systemd service) on specified
 # NCN worker nodes.
 - name: enable_sbps_marshal
-  script: enable_sbps_marshal.sh
-  register: enable_sbps_marshal
-  changed_when: enable_sbps_marshal.rc == 0
+  ansible.builtin.systemd:
+    name: sbps-marshal
+    state: started
+    enabled: true
