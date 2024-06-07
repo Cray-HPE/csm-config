@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - CASMPET-6797(EPIC): Added Ansible plays to provision LIO services on iSCSI targets (worker NCNs) for SBPS
-  - CASMPET-6886: Add Ansible play to install RPM packages required for SBPS
   - CASMPET-6887: Add Ansible play to configure LIO targets
   - CASMPET-6888: Add Ansible play to add/ update DNS "SRV" and "A" records for HSN and NMN using play script against PowerDNS API
   - CASMPET-6890: Add Ansible play to mount s3 bucket 'boot-images' using s3fs read-only policy for SBPS
