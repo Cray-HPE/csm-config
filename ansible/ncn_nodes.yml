@@ -90,3 +90,4 @@
   remote_user: root
   roles:
     - role: csm.storage.smartmon
+

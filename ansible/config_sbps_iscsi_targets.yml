@@ -35,7 +35,7 @@
   roles:
     # Apply k8s label on all the intended worker nodes
     - role: csm.sbps.apply_label
-    #  Enable/ start SBPS Marshal Agent (systemd service)
+    # Enable/ start SBPS Marshal Agent (systemd service)
     - role: csm.sbps.enable_sbps_marshal
     # Configure SBPS
     - role: csm.sbps.lio_config
