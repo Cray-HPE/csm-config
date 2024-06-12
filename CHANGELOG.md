@@ -7,14 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.21.0] - 2024-06-12
+
+### Added
+
+- CASMPET-6797(EPIC): Added Ansible plays to provision LIO services on iSCSI targets (worker NCNs) for SBPS
+  - CASMPET-6887: Add Ansible play to configure LIO targets
+  - CASMPET-6888: Add Ansible play to add/ update DNS `SRV` and `A` records for HSN and NMN using play script against PowerDNS API
+  - CASMPET-6890
+    - Add Ansible play to mount S3 bucket `boot-images` using `s3fs` read-only policy for SBPS
+    - Start SBPS Marshal agent systemd service (post-install) during node personalization
+      on the selected worker nodes.
+  - CASMPET-6933: Add Ansible play to apply k8s labels for SBPS on specified number of worker NCNs
+
 ## [1.20.0] - 2024-05-30
 
 ### Added
+
 - ansible role for creating pdsh group files based on data from sls
 
 ## [1.19.0] - 2024-05-21
 
 ### Added
+
 - 'statedir' environment variable to support a newer version of the ca-certificates rpm
 
 ## [1.18.0] - 2024-03-20
@@ -441,7 +456,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.20.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.21.0...HEAD
+
+[1.21.0]: https://github.com/Cray-HPE/csm-config/compare/1.20.0...1.21.0
 
 [1.20.0]: https://github.com/Cray-HPE/csm-config/compare/1.19.0...1.20.0
 
