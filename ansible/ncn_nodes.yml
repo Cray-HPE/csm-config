@@ -38,7 +38,6 @@
     - role: csm.ncn.sysctl
       vars:
         sysctl_set: "{{ false if cray_cfs_image else true|default(false)|bool }}"
-    - role: csm.gpg_keys
     - role: trust-csm-ssh-keys
     - role: csm.ca_cert
     - role: passwordless-ssh
