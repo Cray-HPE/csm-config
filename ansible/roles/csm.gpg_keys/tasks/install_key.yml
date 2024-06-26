@@ -1,8 +1,7 @@
-#!/usr/bin/env ansible-playbook
 #
 # MIT License
 #
-# (C) Copyright 2023-2024 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -22,20 +21,19 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-- hosts: Application:Compute:&cfs_image
-  gather_subset:
-    - '!all'
-    - '!min'
-    - distribution
-  any_errors_fatal: true
-  remote_user: root
-  vars_files:
-    - vars/csm_ims_repos.yml
-    - vars/csm_packages.yml
-  roles:
-    - role: csm.ca_cert
-    - role: csm.packages
-      vars:
-        packages: "{{ ims_compute_sles_packages + common_csm_sles_packages }}"
-    - role: csm.ims-remote
-    - role: csm.rebuild-initrd
+
+- name: Create a temporary file to store the key content
+  tempfile:
+    state: file
+    suffix: key
+  register: temp_key_file
+
+- name: Copy the key content to a temporary file
+  copy:
+    content: "{{ item.value | b64decode }}"
+    dest: "{{ temp_key_file.path }}"
+
+- name: Install the HPE Signing Key
+  rpm_key:
+    state: present
+    key: "{{ temp_key_file.path }}"
