@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.33] - 2024-06-26
+
+### Added
+
+- CASMINST-6896: Add support for multiple GPG keys and update with CFS
+
 ## [1.16.32] - 2024-05-30
 
 ### Added
@@ -407,7 +413,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.32...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.33...HEAD
+
+[1.16.33]: https://github.com/Cray-HPE/csm-config/compare/1.16.32...1.16.33
 
 [1.16.32]: https://github.com/Cray-HPE/csm-config/compare/1.16.31...1.16.32
 
