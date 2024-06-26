@@ -35,7 +35,6 @@
   roles:
     - role: csm.ca_cert
     - role: csm.password
-    - role: csm.gpg_keys
     - role: csm.ssh_keys
     - role: csm.cn.exclude-module
 
