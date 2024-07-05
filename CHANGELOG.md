@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.31] - 2024-07-05
+
+- CASMINST-6896: Support for multiple gpg keys.
+- Back out xfs mount changes.
+
 ## [1.15.30] - 2024-05-07
 
 - [MTL-2390](https://jira-pro.it.hpe.com:8443/browse/MTL-2390) Improve IMS image build time by setting xfs mount options to 'defaults'
@@ -256,7 +261,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.29...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.31...HEAD
+
+[1.15.31]: https://github.com/Cray-HPE/csm-config/compare/1.15.30...1.15.31
+
+[1.15.30]: https://github.com/Cray-HPE/csm-config/compare/1.15.29...1.15.30
 
 [1.15.29]: https://github.com/Cray-HPE/csm-config/compare/1.15.28...1.15.29
 

@@ -1,3 +1,4 @@
+#
 # MIT License
 #
 # (C) Copyright 2024 Hewlett Packard Enterprise Development LP
@@ -20,14 +21,19 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# Use 'defaults' for xfs mount
-- name: Set /var/lib/containers xfs mount options to 'defaults'
-  lineinfile:
-    path: '{{ item }}'
+
+- name: Create a temporary file to store the key content
+  tempfile:
+    state: file
+    suffix: key
+  register: temp_key_file
+
+- name: Copy the key content to a temporary file
+  copy:
+    content: "{{ item.value | b64decode }}"
+    dest: "{{ temp_key_file.path }}"
+
+- name: Install the HPE Signing Key
+  rpm_key:
     state: present
-    line: '\1{{ var_lib_container_mount }}'
-    regexp: '(.*)\[\s?LABEL=CONTAIN.*\]'
-    backrefs: yes
-  loop:
-    - /etc/cloud/cloud.cfg.d/01_metalfs.cfg
-    - /srv/cray/resources/metal/cloud.cfg.d/01_metalfs.cfg
+    key: "{{ temp_key_file.path }}"
