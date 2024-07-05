@@ -54,3 +54,4 @@
     - role: csm.ssh_keys
       vars:
         ssh_keys_username: 'root'
+    - role: csm.ncn.fs_mount_options
