@@ -1,15 +1,15 @@
 csm.gpg_keys
 =========
 
-Install the CSM GPG signing public key. This role is a dependency of the
+Install the CSM GPG signing public keys. This role is a dependency of the
 `csm.packages` role.
 
 Requirements
 ------------
 
-The Kubernetes secret must be available in the namespace and field specified
-by the `csm_gpg_key_*` variables below. The key must be stored as a base64-encoded
-string.
+The Kubernetes secret must be available in the namespace specified
+by the `csm_gpg_key_*` variables below. Each field in secret is processed as separate
+GPG signing key. Keys must be stored as base64-encoded string.
 
 Role Variables
 --------------
@@ -25,9 +25,6 @@ The Kubernetes secret which contains the GPG public key.
 
 The Kubernetes namespace which contains the secret.
 
-    csm_gpg_key_k8s_field: "gpg-pubkey"
-
-The field in the Kubernetes secret that holds the GPG public key.
 
 Dependencies
 ------------
@@ -50,4 +47,4 @@ MIT
 Author Information
 ------------------
 
-Copyright 2021 Hewlett Packard Enterprise Development LP
+Copyright 2021-2024 Hewlett Packard Enterprise Development LP
