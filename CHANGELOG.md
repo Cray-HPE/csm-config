@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.32] - 2024-07-05
+
+- MTL-2405: re-add xfs mount changes.
+
 ## [1.15.31] - 2024-07-05
 
 - CASMINST-6896: Support for multiple gpg keys.
@@ -259,7 +263,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Ansible playbook for applying csm packages to Compute and Application nodes
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.32...HEAD
+
+[1.15.32]: https://github.com/Cray-HPE/csm-config/compare/1.15.31...1.15.32
 
 [Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.31...HEAD
 
