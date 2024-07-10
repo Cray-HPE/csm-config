@@ -41,12 +41,17 @@ function add_server_target()
 {
         TARGET_SERVER_IQN="${IQN_PREFIX}$1"
         NMN_IP="$2"
-        HSN_IP="$3"
-        CMN_IP="$4"
+        CMN_IP="$3"
         targetcli "/iscsi create $TARGET_SERVER_IQN" &> /dev/null
         targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1/portals delete ip_address=0.0.0.0 ip_port=3260" &> /dev/null
         targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1/portals create ${NMN_IP}" &> /dev/null
-        targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1/portals create ${HSN_IP}" &> /dev/null
+
+        if [[ ! -z $HSN_IP ]]
+        then
+          HSN_IP="$4"
+          targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1/portals create ${HSN_IP}" &> /dev/null
+        fi
+
         targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1/portals create ${CMN_IP}" &> /dev/null
         targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1 set attribute demo_mode_write_protect=1" &> /dev/null
         targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1 set attribute prod_mode_write_protect=1" &> /dev/null
@@ -63,14 +68,20 @@ function auto_generate_node_acls()
 # Base Target Configuration
 #--------------------------------------------------------------------
 
+HSN_IP="$(ip addr | grep "hsn0$")" || true
+
+if [[ ! -z $HSN_IP ]]
+then
+  HSN_IP="$(echo $HSN_IP | awk '{print $2;}' | awk -F\/ '{print $1;}')"
+fi
+
 NMN_IP="$(host -4 ${HOST}.nmn | awk '{print $NF;}')"
-HSN_IP="$(ip addr | grep "hsn0$" | awk '{print $2;}' | awk -F\/ '{print $1;}')"
 CMN_IP="$(host -4 ${HOST}.cmn | awk '{print $NF;}')"
 
 service target stop
 service target start
 clear_server_config
-SERVER_IQN="$(add_server_target $HOST $NMN_IP $HSN_IP $CMN_IP)"
+SERVER_IQN="$(add_server_target $HOST $NMN_IP $CMN_IP $HSN_IP)"
 
 #--------------------------------------------------------------------
 # Configure automatic intiator mappings when they attempt to connect
