@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.23.0] - 2024-07-11
+
+### Fixed
+
+- CASMPET-7117: iSCSI SBPS: LIO provision and DNS records config fails when HSN is not configured
+  - fixed iSCSI LIO provisioning to exclude HSN portal config when HSN n/w is not configured
+  - fixed to avoid DNS "SRV" and "A" records creation for HSN when HSN is not configured
+
+- CASMPET-7126: iSCSI SBPS: k8s labelling fails when it is already applied
+  - fixed to avoid applying k8s label when it is already exist
+
 ## [1.22.0] - 2024-06-25
 
 ### Added
@@ -462,7 +473,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.22.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.23.0...HEAD
+
+[1.23.0]: https://github.com/Cray-HPE/csm-config/compare/1.22.0...1.23.0
 
 [1.22.0]: https://github.com/Cray-HPE/csm-config/compare/1.21.0...1.22.0
 
