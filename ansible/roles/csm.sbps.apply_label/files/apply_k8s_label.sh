@@ -26,4 +26,9 @@
 LABEL="iscsi=sbps"
 HOST_NAME="$(awk '{print $1}' /etc/hostname)"
 
-kubectl label nodes $HOST_NAME $LABEL
+label_is_present=`kubectl get nodes --show-labels=true $HOST_NAME | grep $LABEL`
+
+if [[ -z $label_is_present ]]
+then
+  kubectl label nodes $HOST_NAME $LABEL
+fi
