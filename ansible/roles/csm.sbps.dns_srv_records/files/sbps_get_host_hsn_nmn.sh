@@ -30,7 +30,7 @@ host_name="$(awk '{print $1}' /etc/hostname)"
 
 hsn_ip="$(ip addr | grep "hsn0$" | awk '{print $2;}')" || true
 
-if [[ ! -z $hsn_ip ]]
+if [[ -n $hsn_ip ]]
 then
   hsn_ip="$(echo $hsn_ip | awk -F\/ '{print $1;}')"
 fi
