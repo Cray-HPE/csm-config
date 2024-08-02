@@ -26,8 +26,7 @@
 LABEL="iscsi=sbps"
 HOST_NAME="$(awk '{print $1}' /etc/hostname)"
 
-
-if [[ ! $(kubectl get nodes -l $LABEL | grep $HOST_NAME) ]]
+if [[ ! $(kubectl get nodes -l $LABEL | grep "$HOST_NAME") ]]
 then
-  kubectl label nodes $HOST_NAME $LABEL
+  kubectl label nodes "$HOST_NAME" $LABEL
 fi

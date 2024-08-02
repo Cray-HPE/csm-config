@@ -32,10 +32,10 @@ hsn_ip="$(ip addr | grep "hsn0$" | awk '{print $2;}')" || true
 
 if [[ -n $hsn_ip ]]
 then
-  hsn_ip="$(echo $hsn_ip | awk -F\/ '{print $1;}')"
+  hsn_ip="$(echo "$hsn_ip" | awk -F/ '{print $1;}')"
 fi
 
-nmn_ip="$(ip addr | grep "nmn0$" | awk '{print $2;}' | awk -F\/ '{print $1;}')"
+nmn_ip="$(ip addr | grep "nmn0$" | awk '{print $2;}' | awk -F/ '{print $1;}')"
 
 # echo the details to stdout to be picked by next task in the playbook
 echo "$host_name:$hsn_ip:$nmn_ip"

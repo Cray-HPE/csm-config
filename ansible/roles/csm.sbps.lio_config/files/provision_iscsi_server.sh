@@ -52,7 +52,7 @@ function add_server_target()
         targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1/portals create ${CMN_IP}" &> /dev/null
         targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1 set attribute demo_mode_write_protect=1" &> /dev/null
         targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1 set attribute prod_mode_write_protect=1" &> /dev/null
-        echo $TARGET_SERVER_IQN
+        echo "$TARGET_SERVER_IQN"
 }
 
 function auto_generate_node_acls()
@@ -69,11 +69,11 @@ HSN_IP="$(ip addr | grep "hsn0$")" || true
 
 if [[ -n $HSN_IP ]]
 then
-  HSN_IP="$(echo $HSN_IP | awk '{print $2;}' | awk -F\/ '{print $1;}')"
+  HSN_IP="$(echo "$HSN_IP" | awk '{print $2;}' | awk -F/ '{print $1;}')"
 fi
 
-NMN_IP="$(host -4 ${HOST}.nmn | awk '{print $NF;}')"
-CMN_IP="$(host -4 ${HOST}.cmn | awk '{print $NF;}')"
+NMN_IP="$(host -4 "${HOST}.nmn" | awk '{print $NF;}')"
+CMN_IP="$(host -4 "${HOST}.cmn" | awk '{print $NF;}')"
 
 service target stop
 service target start
@@ -84,5 +84,5 @@ SERVER_IQN="$(add_server_target)"
 # Configure automatic intiator mappings when they attempt to connect
 #--------------------------------------------------------------------
 
-auto_generate_node_acls $SERVER_IQN
+auto_generate_node_acls "$SERVER_IQN"
 save_server_config
