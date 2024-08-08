@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Dependencies
+
+- CASMCMS-9114: Build Docker image on SLE15 SP6 (up from SP4)
+
 ## [1.15.32] - 2024-07-05
 
 - MTL-2405: re-add xfs mount changes.
@@ -266,8 +270,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.32...HEAD
 
 [1.15.32]: https://github.com/Cray-HPE/csm-config/compare/1.15.31...1.15.32
-
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.15.31...HEAD
 
 [1.15.31]: https://github.com/Cray-HPE/csm-config/compare/1.15.30...1.15.31
 
