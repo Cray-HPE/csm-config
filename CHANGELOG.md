@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Dependencies
+
+- Build csm-config Docker image on SLE15 SP6 (up from SP4)
+
 ## [1.22.0] - 2024-06-25
 
 ### Added
