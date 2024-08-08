@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Dependencies
+
+- CASMCMS-9114: Build Docker image on SLE15 SP6 (up from SP4)
+
 ## [1.16.33] - 2024-06-26
 
 ### Added
