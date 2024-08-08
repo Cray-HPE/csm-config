@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.23.0] - 2024-08-08
+
 ### Dependencies
 
 - CASMCMS-9082: Build Docker image on SLE15 SP6 (up from SP4)
@@ -466,7 +468,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.22.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.23.0...HEAD
+
+[1.23.0]: https://github.com/Cray-HPE/csm-config/compare/1.22.0...1.23.0
 
 [1.22.0]: https://github.com/Cray-HPE/csm-config/compare/1.21.0...1.22.0
 
