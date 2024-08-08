@@ -23,10 +23,10 @@
 #
 # Dockerfile for importing CSM content into gitea, to be used with CFS
 
-FROM artifactory.algol60.net/registry.suse.com/suse/sle15:15.4 as product-content-base
+FROM artifactory.algol60.net/registry.suse.com/suse/sle15:15.6 as product-content-base
 WORKDIR /
 
-ARG SP=4
+ARG SP=6
 ARG ARCH=x86_64
 
 # Pin the version of csm-ssh-keys being installed. The actual version is substituted by
