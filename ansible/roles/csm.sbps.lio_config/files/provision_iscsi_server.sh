@@ -39,18 +39,20 @@ function save_server_config()
 
 function add_server_target()
 {
-        TARGET_SERVER_IQN="${IQN_PREFIX}$1"
-        NMN_IP="$2"
-        HSN_IP="$3"
-        CMN_IP="$4"
+        TARGET_SERVER_IQN="${IQN_PREFIX}${HOST}"
         targetcli "/iscsi create $TARGET_SERVER_IQN" &> /dev/null
         targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1/portals delete ip_address=0.0.0.0 ip_port=3260" &> /dev/null
         targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1/portals create ${NMN_IP}" &> /dev/null
-        targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1/portals create ${HSN_IP}" &> /dev/null
+
+        if [[ -n $HSN_IP ]]
+        then
+          targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1/portals create ${HSN_IP}" &> /dev/null
+        fi
+
         targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1/portals create ${CMN_IP}" &> /dev/null
         targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1 set attribute demo_mode_write_protect=1" &> /dev/null
         targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1 set attribute prod_mode_write_protect=1" &> /dev/null
-        echo $TARGET_SERVER_IQN
+        echo "$TARGET_SERVER_IQN"
 }
 
 function auto_generate_node_acls()
@@ -63,18 +65,24 @@ function auto_generate_node_acls()
 # Base Target Configuration
 #--------------------------------------------------------------------
 
-NMN_IP="$(host -4 ${HOST}.nmn | awk '{print $NF;}')"
-HSN_IP="$(ip addr | grep "hsn0$" | awk '{print $2;}' | awk -F\/ '{print $1;}')"
-CMN_IP="$(host -4 ${HOST}.cmn | awk '{print $NF;}')"
+HSN_IP="$(ip addr | grep "hsn0$")" || true
+
+if [[ -n $HSN_IP ]]
+then
+  HSN_IP="$(echo "$HSN_IP" | awk '{print $2;}' | awk -F/ '{print $1;}')"
+fi
+
+NMN_IP="$(host -4 "${HOST}.nmn" | awk '{print $NF;}')"
+CMN_IP="$(host -4 "${HOST}.cmn" | awk '{print $NF;}')"
 
 service target stop
 service target start
 clear_server_config
-SERVER_IQN="$(add_server_target $HOST $NMN_IP $HSN_IP $CMN_IP)"
+SERVER_IQN="$(add_server_target)"
 
 #--------------------------------------------------------------------
 # Configure automatic intiator mappings when they attempt to connect
 #--------------------------------------------------------------------
 
-auto_generate_node_acls $SERVER_IQN
+auto_generate_node_acls "$SERVER_IQN"
 save_server_config
