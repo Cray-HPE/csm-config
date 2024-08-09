@@ -26,4 +26,8 @@
 LABEL="iscsi=sbps"
 HOST_NAME="$(awk '{print $1}' /etc/hostname)"
 
-kubectl label nodes $HOST_NAME $LABEL
+# If the label is already applied to this node, then exit
+kubectl get nodes -l "$LABEL" --no-headers | grep -Eq "^${HOST_NAME}[[:space:]]" && exit 0
+
+# Otherwise, apply the label to the node
+kubectl label nodes "$HOST_NAME" "$LABEL"
