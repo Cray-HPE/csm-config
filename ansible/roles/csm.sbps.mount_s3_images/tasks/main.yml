@@ -23,9 +23,27 @@
 #
 ---
 
-#  Clear LIO configuration and save 
-#  Set LIO IQN (and default TGT1)
-#  Delete LIO default portal
+#  mount s3 boot images (boot-images bucket)
+#  with new s3 user read only policy using new
+#  s3 access/ secret key.
+
+# Create s3 access/ secret key file for s3 user (ISCSI-SBPS) on master node
+- name: create_s3_acess_secret_key
+  script: "create_s3_acess_secret_key.sh"
+  register: create_s3_acess_secret_key
+  changed_when: create_s3_acess_secret_key.rc == 0
+  delegate_to: localhost
+
+# Create/ update s3 key file (with s3 access key id + s3 secret key) on each worker node
+- name: Update s3 key file on each worker node
+  lineinfile:
+    path: "/root/.iscsi-sbps.s3fs"
+    line: "{{ create_s3_acess_secret_key.stdout | trim }}"
+    state: present
+    create: yes
+
+# mount s3 boot images (boot-images bucket) with
+# new s3 user read only policy on worker nodes
 - name: mount_s3_boot_images
   script: "mount_s3_boot_images.sh"
   register: mount_s3_boot_images

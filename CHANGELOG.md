@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.25.0] - 2024-08-12
+
+### Fixed
+
+- CASMPET-7175: iSCSI SBPS: radosgw-admin cmd fails with "auth: unable to find a keyring..."
+  part of s3fs mount for boot images (boot-images bucket)
+      - fixed CFS play to create s3 access/ secret key on master node followed by mounting
+        s3 boot images with this s3 key on worker nodes.
+
 ## [1.24.0] - 2024-08-09
 
 ### Fixed
@@ -479,7 +488,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.24.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.25.0...HEAD
+
+[1.25.0]: https://github.com/Cray-HPE/csm-config/compare/1.24.0...1.25.0
 
 [1.24.0]: https://github.com/Cray-HPE/csm-config/compare/1.23.0...1.24.0
 
