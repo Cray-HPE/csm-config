@@ -25,14 +25,10 @@
 
 set -euo pipefail
 
-# Mount s3 boot images (boot-images bucket) with
-# new s3 user (ISCSI-SBPS) read only policy.
-s3_bucket=boot-images
-s3fs_mount_dir=/var/lib/cps-local/boot-images
-filename=.iscsi-sbps.s3fs
-passwd_file="${HOME}/${filename}"
+# Generate s3 key with s3 access key id and secret key
+s3_user=ISCSI-SBPS
+s3_key=$(radosgw-admin user info --uid "${s3_user}" |jq -r '.keys[]|.access_key +":"+ .secret_key')
 
-chmod 600 "${passwd_file}"
-mkdir -pv "${s3fs_mount_dir}"
+# echo s3 key to stdout to be picked by next task in the playbook
+echo "$s3_key"
 
-s3fs "${s3_bucket}" "${s3fs_mount_dir}" -o "passwd_file=${passwd_file},url=http://rgw-vip.nmn,use_path_request_style" -o nonempty
