@@ -55,11 +55,10 @@ function add_zypper_repos {
     zypper --non-interactive ar "${SLES_UPDATES_URL}/SLE-${label}/15-SP${SP}/${ARCH}/update/?auth=basic" "sles15sp${SP}-${label}-update"
 }
 
-if [[ ${SP} -eq 4 ]]; then
-    # The current sles15sp4 base image starts with a lock on coreutils, but this prevents a necessary
-    # security patch from being applied. Thus, adding this command to remove the lock if it is
-    # present.
-    zypper --non-interactive removelock coreutils || true
+if [[ ${SP} -lt 5 ]]; then
+    # The mirrors for these earlier SLES SPs are no longer available
+    echo "ERROR: SP == $SP, but must be 5+" >&2
+    exit 1
 fi
 
 zypper --non-interactive rr --all
@@ -69,7 +68,12 @@ for MODULE in Basesystem Certifications Containers Desktop-Applications Developm
 do
     add_zypper_repos "Module-${MODULE}"
 done
-for PRODUCT in HA HPC SLED SLES SLES_SAP WE; do
+PRODUCTS="HA SLED SLES SLES_SAP WE"
+if [[ ${SP} -lt 6 ]]; then
+    # HPC is deprecated in SP6, but we want to include it for previous SPs
+    PRODUCTS="${PRODUCTS} HPC"
+fi
+for PRODUCT in $PRODUCTS; do
     add_zypper_repos "Product-${PRODUCT}"
 done
 zypper --non-interactive ar --no-gpgcheck "${CSM_SLES_REPO_URL}" csm-sles
