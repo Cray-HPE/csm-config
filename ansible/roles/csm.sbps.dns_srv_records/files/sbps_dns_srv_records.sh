@@ -69,7 +69,7 @@ curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1
   "rrsets": [
     {
       "comments": [],
-      "name": "_sbps-hsn._tcp.'"${SYSTEM_NAME}"'.'"${SITE_DOMAIN}."',
+      "name": "_sbps-hsn._tcp.'"${SYSTEM_NAME}"'.'"${SITE_DOMAIN}."'",
       "changetype":"REPLACE",
       "records":[
         '"${hsn_srv_records}"'
@@ -79,7 +79,7 @@ curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1
     },
     {
       "comments": [],
-      "name": "_sbps-nmn._tcp.'"${SYSTEM_NAME}"'.'"${SITE_DOMAIN}."',
+      "name": "_sbps-nmn._tcp.'"${SYSTEM_NAME}"'.'"${SITE_DOMAIN}."'",
       "changetype":"REPLACE",
       "records":[
         '"${nmn_srv_records}"'
