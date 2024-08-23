@@ -1,7 +1,7 @@
-csm.sbps.enable_sbps_marshal
-============================
+csm.sbps.install_enable_marshal
+===============================
 
-Enable SBPS Marshal agent (start systemd service) on specified NCN worker nodes.
+Install and enable/ start SBPS Marshal Agent (start systemd service) on specified NCN worker nodes.
 
 Requirements
 ------------
@@ -23,8 +23,8 @@ Example Playbook
       any_errors_fatal: true
       remote_user: root
       roles:
-        # Configure SBPS
-        - role: csm.sbps.enable_sbps_marshal
+        # Install and enable/ start SBPS Marshal Agent
+        - role: csm.sbps.install_enable_marshal
 ```
 
 License

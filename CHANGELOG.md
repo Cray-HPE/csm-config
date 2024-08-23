@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.24.2] - 2024-08-23
+
+### Added 
+
+- CASMPET-7180: New CFS play to enable spire for SBPS Marshal Agent
+- CASMPET-7195: New CFS play to install (+ previous enable) SBPS Marshal Agent
+
+### Fixed
+- typo fix in DNS SRV A records
+
 ## [1.24.1] - 2024-08-12
 
 ### Fixed
@@ -488,7 +498,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.24.1...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.24.2...HEAD
+
+[1.24.2]: https://github.com/Cray-HPE/csm-config/compare/1.24.1...1.24.2
 
 [1.24.1]: https://github.com/Cray-HPE/csm-config/compare/1.24.0...1.24.1
 

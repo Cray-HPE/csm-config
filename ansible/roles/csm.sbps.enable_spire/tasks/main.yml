@@ -22,10 +22,17 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 ---
-# Enable SBPS Marshal Agent (start systemd service) on specified
-# NCN worker nodes.
-- name: enable_sbps_marshal
+
+# Enable spire for SBPS Marshal Agent
+# on specified NCN worker nodes.
+- name: enable_spire_for_sbps
+  ansible.builtin.file:
+    src: /opt/cray/cray-spire/spire-agent
+    dest: /usr/bin/sbps-marshal-spire-agent
+    state: hard
+
+- name: restart_spire_agent
   ansible.builtin.systemd:
-    name: sbps-marshal
-    state: started
+    name: spire-agent
+    state: restarted
     enabled: true
