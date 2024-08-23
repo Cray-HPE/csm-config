@@ -23,7 +23,7 @@
 #
 # Tasks for the csm.gpg_keys role
 - name: Fetch Public GPG Keys from the K8S secret
-# no_log: true
+  no_log: true
   local_action:
     module: csm_read_secret
     name: "{{ csm_gpg_key_k8s_secret }}"
