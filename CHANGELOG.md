@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.24.3] - 2024-09-13
+## [1.26.0] - 2024-09-12
 
 ### Fixed
 
@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
     We need to keep this fallback option till CPS is removed in USS-1.3.
 
+## [1.25.0] - 2024-09-12
+
+### Added 
+
+- MTL-1980: Configure a bonded HSN connection on an NCN
 
 ## [1.24.2] - 2024-08-23
 
@@ -510,9 +515,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.24.3...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.26.0...HEAD
 
-[1.24.3]: https://github.com/Cray-HPE/csm-config/compare/1.24.2...1.24.3
+[1.26.0]: https://github.com/Cray-HPE/csm-config/compare/1.25.0...1.26.0
+
+[1.25.0]: https://github.com/Cray-HPE/csm-config/compare/1.24.2...1.25.0
 
 [1.24.2]: https://github.com/Cray-HPE/csm-config/compare/1.24.1...1.24.2
 
