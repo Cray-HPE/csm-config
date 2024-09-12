@@ -1,0 +1,22 @@
+#!/bin/bash
+
+action="$1"
+interface="$2"
+
+case $action in
+post-up)
+ ip route add to unicast {{ hsn_bond_cidr }} dev {{ hsn_bond_name }} src {{ hsn_bond_ip }} table {{ rt_name }} proto kernel scope host
+ ip rule add type unicast from {{ hsn_bond_ip }}/32 priority 2 table {{ rt_name }}
+ ip rule add type unicast from {{ hsn_bond_ip }}/32 to {{ hsn_bond_ip }}/32 priority 0 table local
+{% for nic in hsn_nics %}
+ ip -4 rule add type unicast from {{ hsn_bond_ip }}/32 iif {{nic.ifname}} priority 1 table local
+ ip -4 rule add type unicast from {{nic.ipaddr}}/32 iif {{ hsn_bond_name }} priority 1 table local
+ arptables-nft -A OUTPUT -o ! {{nic.ifname}} -s {{nic.ipaddr}} --jump=mangle --mangle-mac-s={{nic.macaddr}}
+ ip neigh add {{hsn_bond_ip}} lladdr {{hsn_bond_mac}} dev {{nic.ifname}} nud permanent
+ ip neigh add {{nic.ipaddr}} lladdr {{nic.macaddr}} dev {{hsn_bond_name}} nud permanent
+{% endfor %}
+ arptables-nft -A OUTPUT -o ! {{hsn_bond_name}} -s {{hsn_bond_ip}} --jump=DROP
+ ip neigh add {{ hsn_nics[0].ipaddr }} lladdr {{ hsn_nics[0].macaddr}} dev {{ hsn_nics[1].ifname }} nud permanent
+ ip neigh add {{ hsn_nics[1].ipaddr }} lladdr {{ hsn_nics[1].macaddr}} dev {{ hsn_nics[0].ifname }} nud permanent
+;;
+esac
