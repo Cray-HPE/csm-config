@@ -12,6 +12,7 @@ Configure a bonded HSN interface on an NCN.
 ## Limitations
 
 * Only one bonded interface is permitted per NCN.
+* Only systems with Cassini NICs are supported.
 
 ## Role Variables
 
