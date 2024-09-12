@@ -51,5 +51,3 @@
     - role: csm.sbps.lio_config
     # Configure SBPS DNS "SRV" and "A" records
     - role: csm.sbps.dns_srv_records
-    # Mount s3 bucket 'boot-images' using s3fs read-only policy for SBPS agent
-    - role: csm.sbps.mount_s3_images
