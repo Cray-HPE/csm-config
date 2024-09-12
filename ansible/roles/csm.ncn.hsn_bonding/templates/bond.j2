@@ -1,0 +1,9 @@
+BONDING_MASTER=yes
+BONDING_MODULE_OPTS="{{ hsn_bond_options }}"
+BONDING_SLAVE_0="{{ hsn_bond_devices[0] }}"
+BONDING_SLAVE_1="{{ hsn_bond_devices[1] }}"
+BOOTPROTO=static
+STARTMODE=auto
+IPADDR={{ hsn_bond_ip }}
+NETMASK={{ hsn_bond_netmask }}
+POST_UP_SCRIPT="wicked:slingshot-bond-{{ hsn_bond_name }}"

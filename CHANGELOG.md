@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.25.0] - 2024-09-12
+
+### Added 
+
+- MTL-1980: Configure a bonded HSN connection on an NCN
+
 ## [1.24.2] - 2024-08-23
 
 ### Added 

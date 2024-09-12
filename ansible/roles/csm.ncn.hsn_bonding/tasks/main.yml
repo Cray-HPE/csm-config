@@ -1,0 +1,118 @@
+#
+# MIT License
+#
+# (C) Copyright 2024 Hewlett Packard Enterprise Development LP
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+- name: Configure HSN bonding
+  block:
+
+  - name: Check required parameters are set
+    ansible.builtin.fail:
+      msg: "Required parameter {{ item }} is not set"
+    when: 
+      - item is not defined
+    loop:
+      - "hsn_bond_ip"
+      - "hsn_bond_netmask"
+      - "hsn_bond_mac"
+
+  - name: Check required HSN interfaces exist
+    ansible.builtin.fail:
+      msg: "Required Slingshot interface {{ item }} does not exist"
+    when: 
+      - item is not in ansible_interfaces
+    loop: "{{ hsn_devices }}"
+
+  - name: Get bonded interface network
+    ansible.builtin.set_fact:
+      hsn_bond_cidr: "{{ (hsn_bond_ip + '/' + hsn_bond_netmask) | ipaddr('network/prefix') }}"
+
+  - name:  Gather HSN NIC info
+    ansible.builtin.set_fact:
+      hsn_nics: "{{ hsn_nics +  [{
+         'ifname': item,
+         'ipaddr': hostvars[inventory_hostname]['ansible_' + item].ipv4.address,
+         'netmask': hostvars[inventory_hostname]['ansible_' + item].ipv4.netmask,
+         'macaddr': hostvars[inventory_hostname]['ansible_' + item].macaddress
+      }]}}"
+    loop: "{{ hsn_devices }}"
+    vars:
+      hsn_nics: []
+
+  - name: Create routing table
+    ansible.builtin.lineinfile:
+      path: /etc/iproute2/rt_table
+      line: "{{ rt_tablenum|string + ' ' + rt_name }}"
+      state: present
+      create: true
+
+  - name: Create macvlan interface definitions
+    ansible.builtin.template:
+      src: templates/macvlan.j2
+      dest: /etc/sysconfig/network/ifcfg-{{ hsn_device.1 }}
+    loop: "{{ hsn_devices | zip(hsn_bond_devices) | list }}"
+    loop_control:
+      loop_var: hsn_device
+    notify:
+      - Reload interfaces
+
+  - name: Create bond interface
+    ansible.builtin.template:
+      src: templates/bond.j2
+      dest: /etc/sysconfig/network/ifcfg-{{ hsn_bond_name }}
+    notify:
+      - Reload interfaces
+
+  - name:  Set bond sysctl values
+    ansible.posix.sysctl:
+      name: "{{ item.name }}"
+      value: "{{ item.value }}"
+      state: present
+      sysctl_file: /etc/sysctl.d/992-{{ hsn_bond_name}}.conf
+      reload: false
+    loop: "{{ hsn_bond_sysctls }}"
+
+  - name: Set arp_filter sysctl for HSN NICs
+    ansible.posix.sysctl:
+      state: present
+      sysctl_file: /etc/sysctl.d/992-{{ hsn_bond_name}}.conf
+      reload: false
+      name: "net.ipv4.conf.{{ item }}.arp_filter"
+      value: "0"
+    loop: "{{ hsn_devices }}"
+
+  - name: Set arp_ignore sysctl for HSN NICs
+    ansible.posix.sysctl:
+      state: present
+      sysctl_file: /etc/sysctl.d/992-{{ hsn_bond_name}}.conf
+      reload: false
+      name: "net.ipv4.conf.{{ item }}.arp_ignore"
+      value: "0"
+    loop: "{{ hsn_devices }}"
+
+  - name: Generate {{ hsn_bond_name}} post-up script
+    ansible.builtin.template:
+      src: templates/script.j2
+      dest: /etc/wicked/scripts/slingshot-bond-{{ hsn_bond_name }}
+      mode: '744'
+
+  when:
+    hsn_bond_enable == true
