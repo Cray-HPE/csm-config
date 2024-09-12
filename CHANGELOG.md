@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.26.0] - 2024-09-12
+
+### Fixed
+
+- CASMPET-7225: Fallback to default s3fs mount of boot-images bucket with IMS user policy
+  - We must have writable access to "/var/lib/cps-local/boot-images" mount dir of "boot-images"
+    bucket in order for CPS to function and also for user to have write access for removing 
+    cos-config-data under this mount path, when he want to disable CPS.
+
+    We need to keep this fallback option till CPS is removed in USS-1.3.
+
 ## [1.25.0] - 2024-09-12
 
 ### Added 
@@ -504,7 +515,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.24.2...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.26.0...HEAD
+
+[1.26.0]: https://github.com/Cray-HPE/csm-config/compare/1.25.0...1.26.0
+
+[1.25.0]: https://github.com/Cray-HPE/csm-config/compare/1.24.2...1.25.0
 
 [1.24.2]: https://github.com/Cray-HPE/csm-config/compare/1.24.1...1.24.2
 
