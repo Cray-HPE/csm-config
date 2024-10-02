@@ -38,12 +38,12 @@
     line: "{{ sbps_get_host_hsn_nmn.stdout | trim }}"
     state: present
     create: yes
-  delegate_to: localhost
+  delegate_to: "{{ play_hosts | first }}"
 
 # Now create DNS "SRV" and "A" records of HSN and NMN for each worker node
 - name: Create DNS "SRV" and "A" records of HSN and NMN for each worker node
   script: sbps_dns_srv_records.sh <  /tmp/hsn_nmn_info.txt
   register: sbps_dns_srv_records
   changed_when: sbps_dns_srv_records.rc == 0
-  delegate_to: localhost
+  delegate_to: "{{ play_hosts | first }}"
   run_once: true
