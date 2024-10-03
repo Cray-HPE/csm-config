@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.26.1] - 2024-10-01
+
+### Fixed
+
+- CASMTRIAGE-7301: Ansible play to create iscsi-sbps-targets should not delegate to localhost
+  - fixed the tasks, update file (with host, HSN and NMN info) and creation of DNS SRV and A records
+    to delegate to one of the worker node instead of localhost.
+
 ## [1.26.0] - 2024-09-12
 
 ### Fixed
@@ -515,7 +523,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.26.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.26.1...HEAD
+
+[1.26.1]: https://github.com/Cray-HPE/csm-config/compare/1.26.0...1.26.1
 
 [1.26.0]: https://github.com/Cray-HPE/csm-config/compare/1.25.0...1.26.0
 
