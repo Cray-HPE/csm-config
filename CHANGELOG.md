@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.26.2] - 2024-10-09
+
+### Fixed
+
+- CASMTRIAGE-7373
+  - Updated Spire hard link for iSCSI SBPS
+  - Require `sbps-marshal` to be at least version `0.0.8`, the first version with the corrected hard link
+
 ## [1.26.1] - 2024-10-01
 
 ### Fixed
@@ -523,7 +531,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.26.1...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.26.2...HEAD
+
+[1.26.2]: https://github.com/Cray-HPE/csm-config/compare/1.26.1...1.26.2
 
 [1.26.1]: https://github.com/Cray-HPE/csm-config/compare/1.26.0...1.26.1
 
