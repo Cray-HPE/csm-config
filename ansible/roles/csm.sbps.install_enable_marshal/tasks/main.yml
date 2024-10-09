@@ -26,7 +26,8 @@
 # NCN worker nodes.
 - name: install_sbps_marshal
   zypper:
-    name: sbps-marshal
+    # CASMTRIAGE-7373: 0.0.8 is the first version with the corrected hardlink
+    name: sbps-marshal>=0.0.8
     state: latest
     update_cache: yes
 

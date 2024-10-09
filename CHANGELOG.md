@@ -11,8 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-CASMTRIAGE-7373: iSCSI SBPS is adding spire hard link in /usr/bin rather than /opt/cray
-  - updated spire hard link for iSCSI SBPS
+- CASMTRIAGE-7373
+  - Updated Spire hard link for iSCSI SBPS
+  - Require `sbps-marshal` to be at least version `0.0.8`, the first version with the corrected hard link
 
 ## [1.26.1] - 2024-10-01
 
