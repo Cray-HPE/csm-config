@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.27.0] - 2024-10-11
+
+### Changed
+
+- CASMPET-7254: Update the config_sbps_iscsi_targets.yml playbook so that it only runs during node
+  personalization and not during image customization.
+
 ## [1.26.2] - 2024-10-09
 
 ### Fixed
@@ -531,7 +538,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.26.2...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.27.0...HEAD
+
+[1.27.0]: https://github.com/Cray-HPE/csm-config/compare/1.26.2...1.27.0
 
 [1.26.2]: https://github.com/Cray-HPE/csm-config/compare/1.26.1...1.26.2
 
