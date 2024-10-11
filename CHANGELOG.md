@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- CASMPET-7254: update hosts so CFS skips image personalization
+  - Update the config_sbps_iscsi_targets.yml playbook so that it only runs during node
+    personalization and not during image customization.
+
 ## [1.26.2] - 2024-10-09
 
 ### Fixed
