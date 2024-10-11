@@ -36,7 +36,7 @@
 # admin/ user can chose to configure only subset of worker nodes defined in 
 # CFS config/ HSM group during personalization.
 #
-- hosts: Management_Worker
+- hosts: Management_Worker:!cfs_image
   gather_facts: no
   any_errors_fatal: true
   remote_user: root
