@@ -23,13 +23,22 @@
 #
 ---
 
-#  Create DNS "SRV" and "A" records
+# Create DNS "SRV" and "A" records
 #
+# Cleanup old tmp file on worker. We keep new tmp file
+# till the next removal for debugging purposes.
+- name: Remove previous /tmp/hsn_nmn_info.txt
+  ansible.builtin.file:
+    path: /tmp/hsn_nmn_info.txt
+    state: absent
+
 # Get Host Name, HSN IP and NMN IP of each worker node
 - name: Get Host Name, HSN and NMN details of each worker node
   script: sbps_get_host_hsn_nmn.sh
   register: sbps_get_host_hsn_nmn
   changed_when: sbps_get_host_hsn_nmn.rc == 0
+  delegate_to: "{{ play_hosts | first }}"
+  run_once: true
 
 # Update Host Name, HSN IP and NMN IP of each worker node to tmp file
 - name: Update Host Name, HSN and NMN details for each worker node
@@ -39,6 +48,7 @@
     state: present
     create: yes
   delegate_to: "{{ play_hosts | first }}"
+  run_once: true
 
 # Now create DNS "SRV" and "A" records of HSN and NMN for each worker node
 - name: Create DNS "SRV" and "A" records of HSN and NMN for each worker node

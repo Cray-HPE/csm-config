@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.27.1] - 2024-10-28
+
+### Fixed
+
+- CASMTRIAGE-7428: iSCSI SBPS: Fixed DNS SRV A records creation part of node personalization at
+  bootprep (management rollout).
+
 ## [1.27.0] - 2024-10-11
 
 ### Changed
@@ -538,7 +545,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.27.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.27.1...HEAD
+
+[1.27.1]: https://github.com/Cray-HPE/csm-config/compare/1.27.0...1.27.1
 
 [1.27.0]: https://github.com/Cray-HPE/csm-config/compare/1.26.2...1.27.0
 
