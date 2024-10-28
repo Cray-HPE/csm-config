@@ -25,17 +25,27 @@
 
 set -euo pipefail
 
-# Get Host Name, HSN IP and NMN IP of worker node
-host_name="$(awk '{print $1}' /etc/hostname)"
+get-token ()
+{
+    export TOKEN=$(curl -s -S -d grant_type=client_credentials -d client_id=admin-client -d client_secret=`kubectl get secrets admin-client-auth -o jsonpath='{.data.client-secret}' | base64 -d` "https://api-gw-service-nmn.local/keycloak/realms/shasta/protocol/openid-connect/token" | jq -r '.access_token')
+}
 
-hsn_ip="$(ip addr | grep "hsn0$" | awk '{print $2;}')" || true
+function authcurl()
+{
+    get-token
+    curl -H "Authorization: Bearer ${TOKEN}" "$@"
+}
 
-if [[ -n $hsn_ip ]]
-then
-  hsn_ip="$(echo "$hsn_ip" | awk -F/ '{print $1;}')"
-fi
+function xname2hostname()
+{
+    local XNAME="$1"
+    authcurl -sk -X GET https://api-gw-service-nmn.local/apis/sls/v1/hardware/${XNAME} | jq .ExtraProperties.Aliases[] -r | head -n 1
+}
 
-nmn_ip="$(ip addr | grep "nmn0$" | awk '{print $2;}' | awk -F/ '{print $1;}')"
+for h in $( authcurl -s "https://api-gw-service-nmn.local/apis/smd/hsm/v2/State/Components?role=Management&subrole=Worker" | jq .Components[].ID -r ); do
+    NMN_IP="$( host $h | grep "has address" | tail -n 1 | awk '{ print $NF }' )"
+    HSN_IP="$( host ${h}h0 | grep "has address" | tail -n 1 | awk '{ print $NF }' || true )"
+    RHOST="$( xname2hostname $h )"
 
-# echo the details to stdout to be picked by next task in the playbook
-echo "$host_name:$hsn_ip:$nmn_ip"
+    echo $RHOST:$HSN_IP:$NMN_IP
+done | sort
