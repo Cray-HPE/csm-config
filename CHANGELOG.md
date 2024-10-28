@@ -547,7 +547,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.27.1...HEAD
 
-[1.28.0]: https://github.com/Cray-HPE/csm-config/compare/1.27.0...1.27.1
+[1.27.1]: https://github.com/Cray-HPE/csm-config/compare/1.27.0...1.27.1
 
 [1.27.0]: https://github.com/Cray-HPE/csm-config/compare/1.26.2...1.27.0
 
