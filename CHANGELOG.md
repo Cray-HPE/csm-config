@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.27.2] - 2024-10-29
+
+### Fixed
+
+- CASMTRIAGE-7447: CMN iSCSI portal can be used off system without authentication
+  - Remove CMN iSCSI portal creation from the LIO provisioning as we
+    are not using it for any projection unlike with HSN and NMN.
+
 ## [1.27.1] - 2024-10-28
 
 ### Fixed
@@ -545,7 +553,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.27.1...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.27.2...HEAD
+
+[1.27.2]: https://github.com/Cray-HPE/csm-config/compare/1.27.1...1.27.2
 
 [1.27.1]: https://github.com/Cray-HPE/csm-config/compare/1.27.0...1.27.1
 

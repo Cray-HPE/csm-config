@@ -49,7 +49,6 @@ function add_server_target()
           targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1/portals create ${HSN_IP}" &> /dev/null
         fi
 
-        targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1/portals create ${CMN_IP}" &> /dev/null
         targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1 set attribute demo_mode_write_protect=1" &> /dev/null
         targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1 set attribute prod_mode_write_protect=1" &> /dev/null
         echo "$TARGET_SERVER_IQN"
@@ -73,7 +72,6 @@ then
 fi
 
 NMN_IP="$(host -4 "${HOST}.nmn" | awk '{print $NF;}')"
-CMN_IP="$(host -4 "${HOST}.cmn" | awk '{print $NF;}')"
 
 service target stop
 service target start
