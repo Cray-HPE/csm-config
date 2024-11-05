@@ -27,8 +27,18 @@ set -euo pipefail
 
 IQN_PREFIX="iqn.2023-06.csm.iscsi:"
 
+# Before anything else, check to see if iSCSI/LIO is already
+# configured.  In that case, do nothing as we don't want to
+# wipe out the existing configuration.
+if targetcli ls "/iscsi/${IQN_PREFIX}${HOST}" >& /dev/null; then
+        echo "Skipping configuring LIO because it appears to already be configured"
+        exit 0
+fi
+
 function clear_server_config()
 {
+        # Make a back-up copy of the current config, just in case
+        targetcli saveconfig /etc/target/saveconfig.$(date +%Y%m%d%H%M%S).json &> /dev/null
         targetcli clearconfig confirm=True &> /dev/null
 }
 
@@ -73,8 +83,8 @@ fi
 
 NMN_IP="$(host -4 "${HOST}.nmn" | awk '{print $NF;}')"
 
-service target stop
-service target start
+systemctl stop target
+systemctl enable --now target
 clear_server_config
 SERVER_IQN="$(add_server_target)"
 
