@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.27.3] - 2024-11-05
+
+### Fixed
+
+- CASMTRIAGE-7445: Avoid re configuration of LIO targets when they are already configured for any worker node.
+
 ## [1.27.2] - 2024-10-29
 
 ### Fixed
@@ -553,7 +559,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.27.2...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.27.3...HEAD
+
+[1.27.3]: https://github.com/Cray-HPE/csm-config/compare/1.27.2...1.27.3
 
 [1.27.2]: https://github.com/Cray-HPE/csm-config/compare/1.27.1...1.27.2
 
