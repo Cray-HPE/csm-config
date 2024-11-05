@@ -11,8 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- CASMTRIAGE-7445: iSCSI is reporting "SQUASHFS errors" on gamora for unknown reasons
-  - Avoid re configuration of LIO targets when they are already configured for any worker node.
+- CASMTRIAGE-7445: Avoid re configuration of LIO targets when they are already configured for any worker node.
 
 ## [1.27.2] - 2024-10-29
 
