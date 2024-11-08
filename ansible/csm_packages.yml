@@ -41,6 +41,9 @@
       - cfs-state-reporter
       - csm-node-heartbeat
       - csm-node-identity
+      # CASMTRIAGE-7459
+      - iscsid
+      - multipathd
     SKERN_9187:
       - /opt/cray/cray-spire/orca-spire-agent
       - /usr/bin/ckdump-spire-agent
@@ -88,6 +91,9 @@
       - cfs-state-reporter
       - csm-node-heartbeat
       - csm-node-identity
+      # CASMTRIAGE-7459
+      - iscsid
+      - multipathd
     SKERN_9187:
       - /opt/cray/cray-spire/orca-spire-agent
       - /usr/bin/ckdump-spire-agent
