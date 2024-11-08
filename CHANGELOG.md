@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.27.4] - 2024-11-08
+
+### Fixed
+
+- CASMTRIAGE-7459: Enable iscsid.service in compute/UAN nodes
+
 ## [1.27.3] - 2024-11-05
 
 ### Fixed
@@ -559,7 +565,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.27.3...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.27.4...HEAD
+
+[1.27.4]: https://github.com/Cray-HPE/csm-config/compare/1.27.3...1.27.4
 
 [1.27.3]: https://github.com/Cray-HPE/csm-config/compare/1.27.2...1.27.3
 
