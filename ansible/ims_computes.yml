@@ -30,12 +30,14 @@
   any_errors_fatal: true
   remote_user: root
   vars_files:
-    - vars/csm_ims_repos.yml
+    - vars/csm_repos.yml
     - vars/csm_packages.yml
   roles:
     - role: csm.ca_cert
+    - role: csm.password
+    - role: csm.ssh_keys
     - role: csm.packages
       vars:
-        packages: "{{ ims_compute_sles_packages + common_csm_sles_packages }}"
+        packages: "{{ ims_csm_sles_packages + compute_csm_sles_packages }}"
     - role: csm.ims-remote
     - role: csm.rebuild-initrd
