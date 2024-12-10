@@ -72,11 +72,19 @@ application_csm_sles_packages:
 
 # All Compute nodes
 compute_csm_sles_packages:
-  - acpid
   - bos-reporter
   - cray-uai-util
   - cray-spire-dracut>=2.0.0
 
-# IMS Remote Compute Nodes:
-ims_compute_sles_packages:
-  - podman
+# base SLES packages needed for IMS remote build image
+## NOTE - this is just common_csm_sles_packages with 'hpe-yq' removed
+ims_csm_sles_packages:
+  - cfs-debugger
+  - cfs-state-reporter
+  - cfs-trust
+  - craycli
+  - csm-auth-utils
+  - csm-node-heartbeat
+  - csm-node-identity
+  - spire-agent>=1.5.0
+  - tpm-provisioner-client
