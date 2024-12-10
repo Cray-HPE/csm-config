@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.28.0] - 2024-12-10
 ### Fixed
 - CASMTRIAGE-7469 - fixed problems with ansible plays to build IMS remote build node image.
 
