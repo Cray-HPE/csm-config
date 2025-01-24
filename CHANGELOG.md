@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.35] - 2025-01-24
+
+### Changed
+- CASMCMS-9258: Only install `cfs-debugger` RPM on management NCNs.
+
 ## [1.16.34] - 2024-08-22
 
 ### Dependencies
@@ -419,7 +424,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.34...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.35...HEAD
+
+[1.16.35]: https://github.com/Cray-HPE/csm-config/compare/1.16.34...1.16.35
 
 [1.16.34]: https://github.com/Cray-HPE/csm-config/compare/1.16.33...1.16.34
 

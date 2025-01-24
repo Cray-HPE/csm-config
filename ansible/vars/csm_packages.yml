@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2024 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2021-2025 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -26,7 +26,6 @@
 
 # All nodes (Management NCNs, Application nodes, and Compute nodes)
 common_csm_sles_packages:
-  - cfs-debugger
   - cfs-state-reporter
   - cfs-trust
   - craycli
@@ -39,6 +38,7 @@ common_csm_sles_packages:
 
 # All Management NCNs (master, storage, and worker)
 common_mgmt_ncn_csm_sles_packages:
+  - cfs-debugger
   - cray-kubectl-hns-plugin
   - cray-kubectl-kubelogin-plugin
   - csm-testing
@@ -79,7 +79,6 @@ compute_csm_sles_packages:
 # IMS Remote Compute Nodes:
 ims_compute_sles_packages:
   - podman
-  - cfs-debugger
   - cfs-state-reporter
   - cfs-trust
   - craycli
