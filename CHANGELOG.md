@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.30.0] - 2025-01-30
 ### Changed
 - CASMCMS-9262: Update RPM lists in `vars/csm_packages.yml`
 
@@ -575,7 +577,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.29.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.30.0...HEAD
+
+[1.30.0]: https://github.com/Cray-HPE/csm-config/compare/1.29.0...1.30.0
 
 [1.29.0]: https://github.com/Cray-HPE/csm-config/compare/1.28.0...1.29.0
 
