@@ -38,17 +38,22 @@ common_csm_sles_packages:
 
 # All Management NCNs (master, storage, and worker)
 common_mgmt_ncn_csm_sles_packages:
+  - cani
+  - canu
   - cfs-debugger
   - cray-kubectl-hns-plugin
   - cray-kubectl-kubelogin-plugin
+  - cray-site-init
   - csm-testing
   - dracut-metal-mdsquash
   - goss-servers
   - hpe-csm-goss-package
   - hpe-csm-scripts
   - ipmitool
+  - iuf-cli
   - loftsman
   - manifestgen
+  - platform-utils
 
 # All Kubernetes Management NCNs (master and worker)
 k8s_mgmt_ncn_csm_sles_packages:
@@ -79,6 +84,7 @@ compute_csm_sles_packages:
 # base SLES packages needed for IMS remote build image
 ## NOTE - this is just common_csm_sles_packages with 'hpe-yq' removed
 ims_csm_sles_packages:
+  - bos-reporter
   - cfs-state-reporter
   - cfs-trust
   - craycli
