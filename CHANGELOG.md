@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.36] - 2025-01-30
+
+### Changed
+- CASMCMS-9262: Update RPM lists in `vars/csm_packages.yml`
+
 ## [1.16.35] - 2025-01-24
 
 ### Changed
@@ -424,7 +429,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.35...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.36...HEAD
+
+[1.16.36]: https://github.com/Cray-HPE/csm-config/compare/1.16.35...1.16.36
 
 [1.16.35]: https://github.com/Cray-HPE/csm-config/compare/1.16.34...1.16.35
 
