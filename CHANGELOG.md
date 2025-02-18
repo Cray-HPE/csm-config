@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.31.0] - 2025-02-18
+- CASMCMS-9282: Update to `csm-ssh-keys` to v1.7.0 for CSM 1.7
+- CASMCMS-9282: Update to `cf-gitea-import` to v1.11.0 for CSM 1.7
+
 ## [1.30.0] - 2025-01-30
 ### Changed
 - CASMCMS-9262: Update RPM lists in `vars/csm_packages.yml`
@@ -577,7 +581,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.30.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.31.0...HEAD
+
+[1.31.0]: https://github.com/Cray-HPE/csm-config/compare/1.30.0...1.31.0
 
 [1.30.0]: https://github.com/Cray-HPE/csm-config/compare/1.29.0...1.30.0
 
