@@ -41,7 +41,8 @@ RUN --mount=type=secret,id=ARTIFACTORY_READONLY_USER --mount=type=secret,id=ARTI
     ./zypper-docker-build.sh && \
     rm /zypper-docker-build.sh /zypper-refresh-patch-clean.sh
 
-FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:@CF_GITEA_IMPORT_VERSION@ as cf-gitea-import-base
+#FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:@CF_GITEA_IMPORT_VERSION@ as cf-gitea-import-base
+FROM artifactory.algol60.net/csm-docker/unstable/cf-gitea-import:1.11.0-casmcms-9282.29_4b42cf3 as cf-gitea-import-base
 
 # apply security patches to the cf-gitea-import base image
 #  NOTE: do this here in case base image isn't being updated regularly
