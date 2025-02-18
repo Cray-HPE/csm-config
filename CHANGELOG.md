@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.31.0] - 2025-02-18
+- CASMCMS-9282: Update to `csm-ssh-keys` to v1.7.0 for CSM 1.7
+
 ## [1.30.0] - 2025-01-30
 ### Changed
 - CASMCMS-9262: Update RPM lists in `vars/csm_packages.yml`
