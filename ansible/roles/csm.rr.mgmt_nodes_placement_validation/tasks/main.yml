@@ -1,0 +1,43 @@
+#
+# MIT License
+#
+# (C) Copyright 2025 Hewlett Packard Enterprise Development LP
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+
+# Do management nodes (master, worker and storage) placement validation
+---
+- name: Check for mgmt nodes placement discovery file
+  stat:
+    path: "/tmp/rack_info.txt"
+  register: mgmt_placement_file
+  delegate_to: "{{ play_hosts | first }}"
+  run_once: true
+  changed_when: mgmt_placement_file.rc == 0
+
+- name: Management nodes (master, worker and storage) placement validation
+  script: mgmt_nodes_placement_validation.py /tmp/rack_info.txt
+  args:
+    executable: python3
+  when: mgmt_placement_file.stat.exists
+  register: mgmt_nodes_placement_validation
+  delegate_to: "{{ play_hosts | first }}"
+  run_once: true
+  changed_when: mgmt_nodes_placement_validation.rc == 0

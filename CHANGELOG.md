@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.32.0] - 2025-05-12
+### Added
+- CASM-4872: Rack Resiliency (RR): Provide a method for placement discovery and validation of management nodes in order to meet the RR norms
+- CASM-4873: Rack Resiliency (RR): Define, create, and configure Management Plane Failure Domains and handle enablement/ disablement of  the RR feature
+
+RR CFS ansible plays for:
+  - handle enablement/ disablement of the RR feature
+  - physical racks and management nodes discovery
+  - management nodes (master, worker and storage) placement validation
+  - k8s topology zoning for master and worker nodes
+  - CEPH zoning for storage nodes (Utility Storage)
+  - RR kyverno policy for critical services equal distribution
+
 ## [1.31.0] - 2025-02-18
 - CASMCMS-9282: Update to `csm-ssh-keys` to v1.7.0 for CSM 1.7
 - CASMCMS-9282: Update to `cf-gitea-import` to v1.11.0 for CSM 1.7
@@ -581,7 +594,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.31.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.32.0...HEAD
+
+[1.32.0]: https://github.com/Cray-HPE/csm-config/compare/1.31.0...1.32.0
 
 [1.31.0]: https://github.com/Cray-HPE/csm-config/compare/1.30.0...1.31.0
 
