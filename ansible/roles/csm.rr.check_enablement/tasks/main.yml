@@ -1,4 +1,3 @@
-#!/usr/bin/env ansible-playbook
 #
 # MIT License
 #
@@ -22,22 +21,29 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
+---
 
-# Rack Resiliency: Discover physical racks and corresponding managment nodes, validate
-# their placement. If condition is met, apply zoning(k8s topology and CEPH)
-# across racks. If not met, bail out. 
-- hosts: Management_Master
-  gather_facts: no
-  any_errors_fatal: true
-  remote_user: root
-  roles:
-    #Check Rack Resiliency Enable/Disable
-    - role: csm.rr.check_enablement
-    #Perform placement discovery
-    - role: csm.rr.mgmt_nodes_placement_discovery
-    #Perform placement validation
-    - role: csm.rr.mgmt_nodes_placement_validation
-    #Perform k8s zoning
-    - role: csm.rr.k8s_topolozy_zoning
-    #Perform CEPH zoning
-    - role: csm.rr.ceph_zoning
+# Check the Rack Resiliency feature flag enablement/ Disablement from
+# site-ini secret
+# 
+- name: Check Rack Resiliency Enablement 
+  script: check_rr_enablement.py 
+  args:
+    executable: python3
+  register: rr_enablement_flag 
+  delegate_to: "{{ play_hosts | first }}"
+  run_once: true
+  changed_when: rr_enablement_flag.rc == 0
+
+# Remove this debug task from the final source
+- name: Rack Resiliency enablement flag status
+  run_once: true
+  debug:
+    msg: "{{ rr_enablement_flag.stdout }}"
+
+# Stop Executing the playbook if the RR flag is false
+- name: Fail if the rr_enablement_flag is 'false'
+  run_once: true
+  ansible.builtin.fail:
+    msg: "Rack Resiliency flag is currently disabled, so not executing other rack resiliency roles"
+  when: "'false' in rr_enablement_flag.stdout"
