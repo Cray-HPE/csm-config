@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Dependencies
+
+- Bump `dangoslen/dependabot-changelog-helper` from 3 to 4 ([#340](https://github.com/Cray-HPE/csm-config/pull/340))
+
 ## [1.31.0] - 2025-02-18
 - CASMCMS-9282: Update to `csm-ssh-keys` to v1.7.0 for CSM 1.7
 - CASMCMS-9282: Update to `cf-gitea-import` to v1.11.0 for CSM 1.7
