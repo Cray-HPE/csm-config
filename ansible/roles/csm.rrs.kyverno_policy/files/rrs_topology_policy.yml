@@ -1,0 +1,64 @@
+#
+# MIT License
+#
+# (C) Copyright 2025 Hewlett Packard Enterprise Development LP
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: insert-labels-topology-constraints
+  annotations:
+    policies.kyverno.io/title: Add Pod topology constraints
+    policies.kyverno.io/subject: Deployment
+    policies.kyverno.io/minversion: 1.6.0
+spec:
+  rules:
+    - name: insert-rack-res-label
+      match:
+        any:
+        - resources:
+            names:
+            - cray-dns-powerdns
+            - cray-hbtd
+            - cray-hmnfd
+            - cray-keycloak
+            - cray-sls-postgres
+            - cray-spire-server
+            kinds:
+            - Deployment
+            - StatefulSet
+      # Mutates the Deployment resource to add fields.
+      mutate:
+        patchStrategicMerge:
+          spec:
+            template:
+              metadata:
+                labels:
+                  rrflag: "rr-{{ request.object.metadata.name }}"
+              spec:
+                # Add the `topologySpreadConstraint`if not already specified.
+                +(topologySpreadConstraints):
+                - topologyKey: topology.kubernetes.io/zone
+                  whenUnsatisfiable: DoNotSchedule
+                  maxSkew: 1
+                  labelSelector:
+                    matchLabels:
+                      rrflag: "rr-{{ request.object.metadata.name }}"

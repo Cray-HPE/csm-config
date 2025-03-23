@@ -1,8 +1,8 @@
-#!/usr/bin/env ansible-playbook
+#!/bin/bash
 #
 # MIT License
 #
-# (C) Copyright 2025 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -23,23 +23,23 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 
-# Rack Resiliency: Discover physical racks and corresponding managment nodes, validate
-# their placement. If condition is met, apply zoning(k8s topology and CEPH)
-# across racks. If not met, bail out. 
-- hosts: Management_Master
-  gather_facts: no
-  any_errors_fatal: true
-  remote_user: root
-  roles:
-    #Check Rack Resiliency Enable/Disable
-    - role: csm.rr.check_enablement
-    #Perform placement discovery
-    - role: csm.rr.mgmt_nodes_placement_discovery
-    #Perform placement validation
-    - role: csm.rr.mgmt_nodes_placement_validation
-    #Perform k8s zoning
-    - role: csm.rr.k8s_topolozy_zoning
-    #Perform CEPH zoning
-    - role: csm.rr.ceph_zoning
-    #Setup the kyverno policy for critical services spread and rollout restart
-    - role: csm.rrs.kyverno_policy
+kubectl apply -f rrs_topology_policy.yml
+if [ $? -ne 0 ]; 
+then
+  echo "Unable to apply kyverno topology policy"
+  exit 1
+fi
+
+deployments_to_restart=("cray-dns-powerdns" "cray-hbtd" "cray-hmnfd")
+for service in "${deployments_to_restart[@]}"
+do
+  kubectl rollout restart deployment $service -n services
+done
+
+statefulsets_to_restart=("cray-keycloak" "cray-sls-postgres")
+for service in "${statefulsets_to_restart[@]}"
+do
+  kubectl rollout restart statefulset $service -n services
+done
+
+kubectl rollout restart statefulset cray-spire-server -n spire

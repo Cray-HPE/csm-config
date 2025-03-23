@@ -1,4 +1,3 @@
-#!/usr/bin/env ansible-playbook
 #
 # MIT License
 #
@@ -22,24 +21,16 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
+---
+- name: apply kyverno policy and rollout restart services
+  script: apply_topology_policy_restart.sh
+  args:
+    executable: python3
+  register: kyverno_policy_validation
+  delegate_to: "{{ play_hosts | first }}"
+  run_once: true
 
-# Rack Resiliency: Discover physical racks and corresponding managment nodes, validate
-# their placement. If condition is met, apply zoning(k8s topology and CEPH)
-# across racks. If not met, bail out. 
-- hosts: Management_Master
-  gather_facts: no
-  any_errors_fatal: true
-  remote_user: root
-  roles:
-    #Check Rack Resiliency Enable/Disable
-    - role: csm.rr.check_enablement
-    #Perform placement discovery
-    - role: csm.rr.mgmt_nodes_placement_discovery
-    #Perform placement validation
-    - role: csm.rr.mgmt_nodes_placement_validation
-    #Perform k8s zoning
-    - role: csm.rr.k8s_topolozy_zoning
-    #Perform CEPH zoning
-    - role: csm.rr.ceph_zoning
-    #Setup the kyverno policy for critical services spread and rollout restart
-    - role: csm.rrs.kyverno_policy
+# Remove this debug task from final source
+- name: services placement validation results
+  debug:
+    msg: "{{ kyverno_policy_validation.stdout }}"
