@@ -23,7 +23,7 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 
-kubectl apply -f rrs_topology_policy.yml
+kubectl apply -f $1 
 if [ $? -ne 0 ]; 
 then
   echo "Unable to apply kyverno topology policy"

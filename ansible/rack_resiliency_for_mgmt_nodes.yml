@@ -32,14 +32,14 @@
   remote_user: root
   roles:
     #Check Rack Resiliency Enable/Disable
-    - role: csm.rr.check_enablement
+    #   - role: csm.rr.check_enablement
     #Perform placement discovery
-    - role: csm.rr.mgmt_nodes_placement_discovery
+    #    - role: csm.rr.mgmt_nodes_placement_discovery
     #Perform placement validation
-    - role: csm.rr.mgmt_nodes_placement_validation
+    #  - role: csm.rr.mgmt_nodes_placement_validation
     #Perform k8s zoning
-    - role: csm.rr.k8s_topolozy_zoning
+    #  - role: csm.rr.k8s_topolozy_zoning
     #Perform CEPH zoning
-    - role: csm.rr.ceph_zoning
+    #  - role: csm.rr.ceph_zoning
     #Setup the kyverno policy for critical services spread and rollout restart
     - role: csm.rrs.kyverno_policy

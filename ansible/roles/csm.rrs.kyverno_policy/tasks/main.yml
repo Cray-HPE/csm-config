@@ -22,10 +22,13 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 ---
+- name: Copy the yaml file to the target machine
+  copy:
+    src: rrs_topology_policy.yml
+    dest: /tmp/rrs_topology_policy.yml
+
 - name: apply kyverno policy and rollout restart services
-  script: apply_topology_policy_restart.sh
-  args:
-    executable: python3
+  script: apply_topology_policy_restart.sh "/tmp/rrs_topology_policy.yml"
   register: kyverno_policy_validation
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
