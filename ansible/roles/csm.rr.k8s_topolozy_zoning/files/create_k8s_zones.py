@@ -25,6 +25,40 @@
 
 import subprocess
 import json
+import base64
+
+def get_k8s_zone_prefix():
+    # Run kubectl command and capture JSON output
+    namespace = "loftsman"
+    secret_name = "site-init"
+
+    kubectl_cmd = ["kubectl", "-n", namespace, "get", "secret", secret_name, "-o", "json"]
+    kubectl_output = subprocess.run(kubectl_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
+
+    # Parse JSON output
+    secret_data = json.loads(kubectl_output.stdout)
+
+    # Extract and decode the base64 data
+    encoded_yaml = secret_data["data"]["customizations.yaml"]
+    decoded_yaml = base64.b64decode(encoded_yaml).decode("utf-8")
+
+    # Write the yaml output to a file
+    output_file = "/tmp/customizations.yaml"
+    with open(output_file, "w") as f:
+        f.write(decoded_yaml)
+
+    print(f"Decoded YAML saved to {output_file}")
+
+    # Define the key path
+    k8s_key_path = "spec.kubernetes.services.k8s_zone_prefix"
+
+    # Run yq command to extract the value
+    k8s_yq_cmd = ["yq", "r", output_file, k8s_key_path]
+    k8s_zone = subprocess.run(k8s_yq_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
+
+    # Extract and clean the output
+    k8s_zone_prefix = k8s_zone.stdout.strip()
+    return k8s_zone_prefix
 
 def get_rack_info():
     # To get the rack to node mapping details by executing "rack_to_node_mapping.py"
@@ -45,11 +79,12 @@ def get_rack_info():
     return rack_info
 
 def label_nodes(rack_info):
-    rack_id = 0
     # To traverse the nodes in the rack and assign them the labels
-    for sublist in rack_info.values():
-        rack_id += 1
-        for node in sublist:
+    for rack_id, nodes in rack_info.items():
+        k8s_zone_prefix = get_k8s_zone_prefix(
+        if k8s_zone_prefix:
+            rack_id = k8s_zone_prefix + "-" + rack_id
+        for node in nodes:
             if not node.startswith("ncn-s"):
                 print(f"Node {node} is going to be placed on zone-{rack_id}")
                 result = subprocess.run(
