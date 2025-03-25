@@ -51,7 +51,7 @@ with open(output_file, "w") as f:
 print(f"Decoded YAML saved to {output_file}")
 
 # Define the key path
-output_file = "/tmp/customizations.yaml"
+output_file = "/tmp/customizations1.yaml"
 key_path = "spec.kubernetes.services.rack-resiliency.enabled"
 
 # Run yq command to extract the value
