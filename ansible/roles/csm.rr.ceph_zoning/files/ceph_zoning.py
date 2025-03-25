@@ -63,6 +63,7 @@ def get_ceph_zone_prefix():
         f.write(decoded_yaml)
 
     # Define the key path
+    output_file = "/tmp/customizations1.yaml"
     ceph_key_path = "spec.kubernetes.services.ceph_zone_prefix"
 
     # Run yq command to extract the value
