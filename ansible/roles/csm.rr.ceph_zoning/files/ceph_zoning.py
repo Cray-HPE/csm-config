@@ -30,162 +30,164 @@ import json
 import subprocess
 import re
 import sys
+import logging
+import base64
 
-sn_count_in_rack = []
+# Set up logger
+logger = logging.getLogger("CephZoning")
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+
+def get_ceph_zone_prefix():
+    # Run kubectl command and capture JSON output
+    namespace = "loftsman"
+    secret_name = "site-init"
+
+    kubectl_cmd = ["kubectl", "-n", namespace, "get", "secret", secret_name, "-o", "json"]
+    kubectl_output = subprocess.run(kubectl_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
+
+    # Parse JSON output
+    secret_data = json.loads(kubectl_output.stdout)
+
+    # Extract and decode the base64 data
+    encoded_yaml = secret_data["data"]["customizations.yaml"]
+    decoded_yaml = base64.b64decode(encoded_yaml).decode("utf-8")
+
+    # Write the yaml output to a file
+    output_file = "/tmp/customizations.yaml"
+    with open(output_file, "w") as f:
+        f.write(decoded_yaml)
+
+    # Define the key path
+    ceph_key_path = "spec.kubernetes.services.ceph_zone_prefix"
+
+    # Run yq command to extract the value
+    ceph_yq_cmd = ["yq", "r", output_file, ceph_key_path]
+    ceph_zone = subprocess.run(ceph_yq_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
+
+    # Extract and clean the output
+    ceph_zone_prefix = ceph_zone.stdout.strip()
+    return ceph_zone_prefix
+
+def run_command(command):
+    """Helper function to run a command and return the result."""
+    logger.info(f"Running command: {command}")
+    try:
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True, check=True)
+    except subprocess.CalledProcessError as e:
+        raise ValueError(f"Command {command} errored out with : {e.stderr}")
+    return result.stdout
+
 def create_and_map_racks(positions_dict):
-    global sn_count_in_rack
-    #Create buckets for racks and add them to the hierarchy under root=default
-    for racknum, (rack, nodes) in enumerate(positions_dict.items()):    
-        command1 = "ceph osd crush add-bucket "+rack+" rack"
-        print(command1)
-        result = subprocess.run(command1, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True)
-        print('Result for add-bucket command', result.returncode)
-        print('Output for add-bucket command', result.stdout)
+    sn_count_in_rack = []
     
-        command2 = "ceph osd crush move "+rack+" root=default"
-        print(command2)
-        result = subprocess.run(command2, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True)
-        print('Result for crush move command', result.returncode)
-        print('Output for crush move command', result.stdout)
+    for rack, nodes in positions_dict.items():
+        # Updating the rack or zone prefix
+        ceph_zone_prefix = get_ceph_zone_prefix()
+        if ceph_zone_prefix:
+            rack = ceph_zone_prefix + "-" + rack
+        # Create buckets for racks
+        logger.info(f"Creating bucket for rack: {rack}")
+        run_command(f"ceph osd crush add-bucket {rack} rack")
+        run_command(f"ceph osd crush move {rack} root=default")
     
-        #Move the storage hosts to the rack based on the discovered placement obtained from the input file
-        print(nodes)
         sn_count = 0
         for node in nodes:
-            print(node)
-            if re.match(r"^.*ncn-s00[0-9]$", node):
-                print("Node is storage node")
-                sn_count = sn_count + 1
-                command3="ceph osd crush move "+node+" rack="+rack
-                print(command3)
-                result = subprocess.run(command3, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True)
-                print('Result for crush move command', result.returncode)
-                print('Output for crush move command', result.stdout)
+            if re.match(r"^.*ncn-s00[0-9]$", node):  # Storage node match
+                sn_count += 1
+                logger.info(f"Moving storage node {node} to rack {rack}")
+                run_command(f"ceph osd crush move {node} rack={rack}")
+        
         sn_count_in_rack.append(sn_count)
-    print("storage node count list is ", sn_count_in_rack)
+    
+    logger.debug(f"Storage node count per rack: {sn_count_in_rack}")
+    return sn_count_in_rack
 
 def create_and_apply_rules():
-    #Create a CRUSH rule with Rack as the failure domain
-    command4="ceph osd crush rule create-replicated replicated_rule_with_rack_failure_domain default rack"
-    print(command4)
-    result = subprocess.run(command4, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True)
-    print('Result for rule creation command', result.returncode)
-    print('Output for rule creation command', result.stdout)
-
-    #Apply the above created rule to the CEPH pools
-    command5="ceph osd pool ls"
-    print(command5)
-    result = subprocess.run(command5, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True)
-    print('Result for pool listing command', result.returncode)
-    ceph_pools = result.stdout.splitlines()
-    print('Output for pool listing command', ceph_pools)
+    # Create and apply a CRUSH rule with Rack as the failure domain
+    logger.info("Creating CRUSH rule with rack as failure domain")
+    run_command("ceph osd crush rule create-replicated replicated_rule_with_rack_failure_domain default rack")
+    
+    ceph_pools = run_command("ceph osd pool ls").splitlines()
+    
     for pool in ceph_pools:
-        print(pool)
-        command6="ceph osd pool set "+pool+" crush_rule replicated_rule_with_rack_failure_domain"
-        print(command6)
-        result = subprocess.run(command6, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True)
-        print('Result for pool setting with rule command', result.returncode)
-        print('Output for pool setting with rule command', result.stdout)
+        logger.debug(f"Applying new rule to pool: {pool}")
+        run_command(f"ceph osd pool set {pool} crush_rule replicated_rule_with_rack_failure_domain")
 
-# Distributes CEPH services across racks so CEPH will be intact in case of rack failures
-# The service count would be either 3 or 5 depending on the number of storage nodes and also their distribution
-def service_zoning(positions_dict):
-    global sn_count_in_rack
-                                                                                        
+def service_zoning(positions_dict, sn_count_in_rack):
     service_node_list = []
-    count = 0
-    command = "craysys metadata get num_storage_nodes"
-    print(command)
-    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True)
-    print('Result for storage node count command', result.returncode)
-    number_of_nodes = int(result.stdout)
-    number_of_nodes = 5
-    print('Output for storage node count command', number_of_nodes)
-   
+    command = "ceph node ls | jq '.osd | keys | length'"
+    number_of_nodes = int(run_command(command))
+    
     if len([x for x in sn_count_in_rack if x > 0]) < 3:
-        print('WARNING: Minimum 3 racks with storage nodes to be available for optimal distribution of CEPH data and services. Without that rack resiliency would not be gauranteed')
+        logger.warning("Minimum 3 racks with storage nodes are needed for optimal distribution of CEPH data")
 
-    if number_of_nodes == 3 or number_of_nodes == 4:
+        
+    if number_of_nodes in [3, 4]:
         mon_count = 3
     elif number_of_nodes >= 5:
         mon_count = 5
-        # Incase of 5 monitors, there should be atleast 3 monitors to be running for establishing quorum.
-        # But if 3 mons are on same rack, there is a chance that CEPH would not be functional when that particular rack goes down.
-        # So configuring only 3 monitors each on one rack to handle the above scenario.
+        # Incase of 5 monitors, there should be atleast 3 monitors running for establishing quorum.
+        # But if 3 mons are on same rack(like in 3,1,1 distribution), there is a chance that CEPH would not be functional when that rack goes down.
+        # So configuring only 3 monitors instead of 5 each in one rack in this scenario.
         if number_of_nodes-2 in sn_count_in_rack:
             mon_count = 3
-        
-    print('mon count is :', mon_count)
+    
+    logger.debug(f"Monitor desired count: {mon_count}")
+    count = 0
 
-    # Select the storage nodes on which the services are to be run in round robin way across racks
-    while count <= mon_count:
-        for racknum, (rack, nodes) in enumerate(positions_dict.items()):
-
-                                                                                                  
-            print(nodes)
-
+   # Select the storage nodes on which the services are to be run in round robin way across racks
+    while count < mon_count:
+        for rack, nodes in positions_dict.items():
             for node in nodes:
-                print(node)
-                if re.match(r"^.*ncn-s00[0-9]$", node):
-                    print("Node is storage node")
-                    if node not in service_node_list:
-                        service_node_list.append(node)
-                        count=count+1
-                        break
+                if re.match(r"^.*ncn-s00[0-9]$", node) and node not in service_node_list:
+                    service_node_list.append(node)
+                    count += 1
+                    break
             if count == mon_count:
                 break
         if count == mon_count:
             break
 
-    print(service_node_list)
+    logger.debug(f"Selected nodes on which CEPH services be running: {service_node_list}")
     nodes_output = " ".join(service_node_list)
     nodes_count = len(service_node_list)
 
+    # Apply services (MON, MGR, MDS)
+    for service in ['mon', 'mgr', 'mds admin-tools', 'mds cephfs']:
+        logger.info(f"Applying {service} service on nodes {nodes_output}")
+        run_command(f"ceph orch apply {service} --placement=\"" + str(nodes_count) + " " + nodes_output + "\"")
 
-    command = "ceph orch apply mon --placement=\"" + str(nodes_count) + " " + nodes_output + "\""
-    print(command)
-    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True)
-    print('Result for mon placement command', result.returncode)
-
-    command = "ceph orch apply mgr --placement=\"" + str(nodes_count) + " " + nodes_output + "\""
-    print(command)
-    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True)
-    print('Result for mgr placement command', result.returncode)
-
-    command = "ceph orch apply mds admin-tools --placement=\"" + str(nodes_count) + " " + nodes_output + "\""
-    print(command)
-    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True)
-    print('Result for admin-tools mds placement command', result.returncode)
-
-    command = "ceph orch apply mds cephfs --placement=\"" + str(nodes_count) + " " + nodes_output + "\""
-    print(command)
-    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True)
-    print('Result for cephfs mds placement command', result.returncode)
-
-
+    # Configurations
+    logger.info("Generating minimal configuration and copying updated ceph.conf")
+    run_command("sleep 30")
+    run_command("ceph config generate-minimal-conf > /etc/ceph/ceph_conf_min")
+    run_command("cp /etc/ceph/ceph_conf_min /etc/ceph/ceph.conf")
+    run_command("for host in $(ceph node ls| jq -r '.osd|keys[]'); do scp /etc/ceph/ceph.conf $host:/etc/ceph; done")
+    
 
 def main():
     if len(sys.argv) != 2:
-        print("Usage: python ceph_zoning.py <rack_placement file>")
+        logger.error("Usage: python ceph_zoning.py <rack_placement_file>")
         sys.exit(1)
     
-    #Obtain the placement file as an input and load the JSON data
+    # Load the rack placement file
     file_path = sys.argv[1]
-    with open(file_path, 'r') as file:
-        positions = file.read()
-    #positions = '{"x3000":["ncn-m001","ncn-w001","ncn-w004","ncn-w007","ncn-s001"],"x3001":["ncn-m002","ncn-w002","ncn-w006","ncn-s003"],"x3002":["ncn-m003","ncn-w003","ncn-w009","ncn-b005","ncn-s002"]}'
-    print(positions)
-    positions_dict = json.loads(positions)
+    try:
+        with open(file_path, 'r') as file:
+            positions_dict = json.load(file)
+    except Exception as e:
+        logger.error(f"Failed to load the rack placement file: {e}")
+        sys.exit(1)
     
-    # Create buckets for rack and map hosts to racks
-    create_and_map_racks(positions_dict)
-                                          
-    # Create CRUSH rule and apply it to pools
+    # Create and map racks, create rules, and perform service zoning
+    sn_count_in_rack = create_and_map_racks(positions_dict)
     create_and_apply_rules()
-    
-    # Perform CEPH services zoning 
-    service_zoning(positions_dict)
+    service_zoning(positions_dict, sn_count_in_rack)
 
 if __name__ == "__main__":
     main()
-
