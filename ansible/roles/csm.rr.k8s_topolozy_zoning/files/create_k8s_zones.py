@@ -87,9 +87,9 @@ def label_nodes(rack_info):
             rack_id = k8s_zone_prefix + "-" + rack_id
         for node in nodes:
             if not node.startswith("ncn-s"):
-                print(f"Node {node} is going to be placed on zone-{rack_id}")
+                print(f"Node {node} is going to be placed on {rack_id}")
                 result = subprocess.run(
-                        ["kubectl", "label", "node", f"{node}", f"topology.kubernetes.io/zone=rack-{rack_id}", "--overwrite"],
+                        ["kubectl", "label", "node", f"{node}", f"topology.kubernetes.io/zone={rack_id}", "--overwrite"],
                        stdout=subprocess.PIPE
                         )
 
