@@ -82,7 +82,7 @@ def get_rack_info():
 def label_nodes(rack_info):
     # To traverse the nodes in the rack and assign them the labels
     for rack_id, nodes in rack_info.items():
-        k8s_zone_prefix = get_k8s_zone_prefix(
+        k8s_zone_prefix = get_k8s_zone_prefix()
         if k8s_zone_prefix:
             rack_id = k8s_zone_prefix + "-" + rack_id
         for node in nodes:
