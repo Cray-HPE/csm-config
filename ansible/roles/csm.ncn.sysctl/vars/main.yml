@@ -43,3 +43,5 @@ sysctl_config:
     value: 4096
   - name: net.ipv4.neigh.default.gc_thresh3
     value: 8192
+  - name: net.ipv4.neigh.default.base_reachable_time_ms
+    value: 1500000

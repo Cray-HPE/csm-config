@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- CASMTRIAGE-8069: Add `net.ipv4.neigh.default.base_reachable_time_ms` to `roles/csm.ncn.sysctl/vars/main.yml`
+
 ### Dependencies
 
 - Bump `dangoslen/dependabot-changelog-helper` from 3 to 4 ([#340](https://github.com/Cray-HPE/csm-config/pull/340))
