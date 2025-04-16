@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2023-2024 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2023-2025 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -43,3 +43,5 @@ sysctl_config:
     value: 4096
   - name: net.ipv4.neigh.default.gc_thresh3
     value: 8192
+  - name: net.ipv4.neigh.default.base_reachable_time_ms
+    value: 1500000
