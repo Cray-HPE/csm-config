@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2024 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2024-2025 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -40,6 +40,8 @@ eval "$(grep -e SITE_DOMAIN -e SYSTEM_NAME /etc/environment)"
 #   line format is: <Host Name>:<HSN IP>:<NMN IP>
 # - then create DNS SRV and A records based on the above data
 while read -r line; do
+  # Strip out any '\r' characters
+  line=$(echo "$line" | tr -d '\r')
   ncn_worker_node=$(echo "$line" | awk -F ":" '{print $1}')
   iscsi_server_id="id-$(echo "$ncn_worker_node" | awk -F "-" '{print $2}' | awk '{print substr($1,2);}')"
 
@@ -64,7 +66,7 @@ hsn_a_records="${hsn_a_records%?}"
 nmn_a_records="${nmn_a_records%?}"
 
 # PATCH (update) DNS "SRV" records for HSN and NMN for all the worker nodes
-curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/${SYSTEM_NAME}.${SITE_DOMAIN}" -d'
+curl -sf -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/${SYSTEM_NAME}.${SITE_DOMAIN}" -d'
 {
   "rrsets": [
     {
@@ -93,7 +95,7 @@ curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1
 if [[ -n $hsn_a_records ]]
 then
   # PATCH (update) DNS  "A" records for HSN for all the worker nodes
-  curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/hsn.${SYSTEM_NAME}.${SITE_DOMAIN}" -d'
+curl -sf -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/hsn.${SYSTEM_NAME}.${SITE_DOMAIN}" -d'
   {
     "rrsets": [
       '"${hsn_a_records}"'
@@ -102,7 +104,7 @@ then
 fi
 
 # PATCH (update) DNS  "A" records for NMN for all the worker nodes
-curl -s -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/nmn.${SYSTEM_NAME}.${SITE_DOMAIN}" -d'
+curl -sf -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/nmn.${SYSTEM_NAME}.${SITE_DOMAIN}" -d'
 {
   "rrsets": [
     '"${nmn_a_records}"'
