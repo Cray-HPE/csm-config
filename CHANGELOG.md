@@ -7,18 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-- CASMTRIAGE-8069: Add `net.ipv4.neigh.default.base_reachable_time_ms` to `roles/csm.ncn.sysctl/vars/main.yml`
-
-### Dependencies
-
-- Bump `dangoslen/dependabot-changelog-helper` from 3 to 4 ([#340](https://github.com/Cray-HPE/csm-config/pull/340))
-
 ## [1.32.0] - 2025-04-16
 
 ### Fixed
 CASMPET-7443: correctly detect curl failures in `sbps_dns_srv_records.sh`
 CASMPET-7444: handle CRLFs in script output in `sbps_dns_srv_records.sh`
+
+### Changed
+- CASMTRIAGE-8069: Add `net.ipv4.neigh.default.base_reachable_time_ms` to `roles/csm.ncn.sysctl/vars/main.yml`
+
+### Dependencies
+- Bump `dangoslen/dependabot-changelog-helper` from 3 to 4 ([#340](https://github.com/Cray-HPE/csm-config/pull/340))
 
 ## [1.31.0] - 2025-02-18
 - CASMCMS-9282: Update to `csm-ssh-keys` to v1.7.0 for CSM 1.7
