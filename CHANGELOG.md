@@ -7,16 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.28.3] - 2025-04-16
+
+### Fixed
+
+CASMPET-7443: correctly detect curl failures in `sbps_dns_srv_records.sh`
+CASMPET-7444: handle CRLFs in script output in `sbps_dns_srv_records.sh`
+
 ## [1.28.2] - 2025-01-30
+
 ### Changed
+
 - CASMCMS-9262: Update RPM lists in `vars/csm_packages.yml`
 
 ## [1.28.1] - 2025-01-24
+
 ### Changed
+
 - CASMCMS-9258: Only install `cfs-debugger` RPM on management NCNs.
 
 ## [1.28.0] - 2024-12-10
+
 ### Fixed
+
 - CASMTRIAGE-7469 - fixed problems with ansible plays to build IMS remote build node image.
 
 ## [1.27.4] - 2024-11-08
@@ -577,7 +590,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.28.2...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.28.3...HEAD
+
+[1.28.3]: https://github.com/Cray-HPE/csm-config/compare/1.28.2...1.28.3
 
 [1.28.2]: https://github.com/Cray-HPE/csm-config/compare/1.28.1...1.28.2
 
