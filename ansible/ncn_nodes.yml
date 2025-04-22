@@ -48,6 +48,7 @@
       vars:
         ssh_keys_username: 'root'
     - role: csm.ncn.pdsh
+    - role: csm.ncn.exclude-modules
 
 # Install packages and configure SAT on Kubernetes NCNs (masters and workers)
 - hosts:
