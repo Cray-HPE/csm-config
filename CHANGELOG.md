@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.37] - 2025-04-22
+
+### Added
+
+- blacklist snd_usb_audio kernel module for CVE-2024-53197
+
 ## [1.16.36] - 2025-01-30
 
 ### Changed
