@@ -602,7 +602,9 @@ CASMPET-7444: handle CRLFs in script output in `sbps_dns_srv_records.sh`
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.28.4...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.28.5...HEAD
+
+[1.28.5]: https://github.com/Cray-HPE/csm-config/compare/1.28.4...1.28.5
 
 [1.28.4]: https://github.com/Cray-HPE/csm-config/compare/1.28.3...1.28.4
 
