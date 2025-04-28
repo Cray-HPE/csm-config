@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.38] - 2025-04-28
+
+### Changed
+
+- fixed typo in role names
+
 ## [1.16.37] - 2025-04-22
 
 ### Added
@@ -435,7 +441,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.37...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.16.38...HEAD
+
+[1.16.38]: https://github.com/Cray-HPE/csm-config/compare/1.16.37...1.16.38
 
 [1.16.37]: https://github.com/Cray-HPE/csm-config/compare/1.16.36...1.16.37
 
