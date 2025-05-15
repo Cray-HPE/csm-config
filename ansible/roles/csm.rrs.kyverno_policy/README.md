@@ -1,1 +1,0 @@
-Apply kyverno policy and restart services

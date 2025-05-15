@@ -1,7 +1,7 @@
-csm.rr.mgmt_nodes_placement_discovery
-=====================================
+csm.rrs.kyverno_policy
+======================
 
-Do management nodes (master, worker and storage) placement discovery
+Apply kyverno policy and restart service
 
 Requirements
 ------------
@@ -23,8 +23,8 @@ Example Playbook
       any_errors_fatal: true
       remote_user: root
       roles:
-        # Do management nodes (master, worker and storage) placement discovery
-        - role: csm.rr.mgmt_nodes_placement_discovery
+        # Apply kyverno policy and restart service
+        - role: csm.rrs.kyverno_policy
 ```
 
 License

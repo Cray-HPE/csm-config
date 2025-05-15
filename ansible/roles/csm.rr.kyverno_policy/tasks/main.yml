@@ -21,6 +21,8 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
+# Apply kyverno policy for critical services to equally
+# distribute/ balance across RR k8s zones
 ---
 - name: Copy the yaml file to the target machine
   copy:
@@ -32,8 +34,3 @@
   register: kyverno_policy_validation
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
-
-# Remove this debug task from final source
-- name: services placement validation results
-  debug:
-    msg: "{{ kyverno_policy_validation.stdout }}"

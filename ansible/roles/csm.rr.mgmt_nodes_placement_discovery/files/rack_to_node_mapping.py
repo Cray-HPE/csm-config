@@ -23,6 +23,8 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 
+# Discover physical racks along with corresponding management nodes (master, worker and storage)
+
 import requests
 import json
 import subprocess

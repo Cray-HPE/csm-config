@@ -85,7 +85,7 @@ def run_command(command):
 
 def create_and_map_racks(positions_dict):
     sn_count_in_rack = []
-    
+
     for rack, nodes in positions_dict.items():
         # Updating the rack or zone prefix
         ceph_zone_prefix = get_ceph_zone_prefix()
@@ -95,16 +95,17 @@ def create_and_map_racks(positions_dict):
         logger.info(f"Creating bucket for rack: {rack}")
         run_command(f"ceph osd crush add-bucket {rack} rack")
         run_command(f"ceph osd crush move {rack} root=default")
-    
+
         sn_count = 0
         for node in nodes:
-            if re.match(r"^.*ncn-s00[0-9]$", node):  # Storage node match
+            # Storage node match
+            if re.match(r"^.*ncn-s[0-9][0-9][1-9]$", node):
                 sn_count += 1
                 logger.info(f"Moving storage node {node} to rack {rack}")
                 run_command(f"ceph osd crush move {node} rack={rack}")
-        
+
         sn_count_in_rack.append(sn_count)
-    
+
     logger.debug(f"Storage node count per rack: {sn_count_in_rack}")
     return sn_count_in_rack
 
@@ -112,22 +113,23 @@ def create_and_apply_rules():
     # Create and apply a CRUSH rule with Rack as the failure domain
     logger.info("Creating CRUSH rule with rack as failure domain")
     run_command("ceph osd crush rule create-replicated replicated_rule_with_rack_failure_domain default rack")
-    
+
     ceph_pools = run_command("ceph osd pool ls").splitlines()
-    
+
     for pool in ceph_pools:
         logger.debug(f"Applying new rule to pool: {pool}")
         run_command(f"ceph osd pool set {pool} crush_rule replicated_rule_with_rack_failure_domain")
 
 def service_zoning(positions_dict, sn_count_in_rack):
     service_node_list = []
+    mon_count = 0
     command = "ceph node ls | jq '.osd | keys | length'"
     number_of_nodes = int(run_command(command))
-    
-    if len([x for x in sn_count_in_rack if x > 0]) < 3:
-        logger.warning("Minimum 3 racks with storage nodes are needed for optimal distribution of CEPH data")
 
-        
+    if len([x for x in sn_count_in_rack if x > 0]) < 3:
+        logger.error("Minimum 3 racks with storage nodes are needed for optimal distribution of CEPH data")
+        sys.exit(1)
+
     if number_of_nodes in [3, 4]:
         mon_count = 3
     elif number_of_nodes >= 5:
@@ -137,7 +139,7 @@ def service_zoning(positions_dict, sn_count_in_rack):
         # So configuring only 3 monitors instead of 5 each in one rack in this scenario.
         if number_of_nodes-2 in sn_count_in_rack:
             mon_count = 3
-    
+
     logger.debug(f"Monitor desired count: {mon_count}")
     count = 0
 
@@ -145,7 +147,7 @@ def service_zoning(positions_dict, sn_count_in_rack):
     while count < mon_count:
         for rack, nodes in positions_dict.items():
             for node in nodes:
-                if re.match(r"^.*ncn-s00[0-9]$", node) and node not in service_node_list:
+                if re.match(r"^.*ncn-s[0-9][0-9][1-9]$", node) and node not in service_node_list:
                     service_node_list.append(node)
                     count += 1
                     break
@@ -175,7 +177,7 @@ def main():
     if len(sys.argv) != 2:
         logger.error("Usage: python ceph_zoning.py <rack_placement_file>")
         sys.exit(1)
-    
+
     # Load the rack placement file
     file_path = sys.argv[1]
     try:
@@ -184,7 +186,7 @@ def main():
     except Exception as e:
         logger.error(f"Failed to load the rack placement file: {e}")
         sys.exit(1)
-    
+
     # Create and map racks, create rules, and perform service zoning
     sn_count_in_rack = create_and_map_racks(positions_dict)
     create_and_apply_rules()

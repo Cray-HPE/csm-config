@@ -58,7 +58,7 @@ def validate_master_nodes_placement(placements_dict):
 
         found=0
         for node in nodes:
-            if re.match(r"^.*ncn-m00[0-9]$", node):
+            if re.match(r"^.*ncn-m[0-9][0-9][1-9]$", node):
                 # Found master node in a rack
                 master_nodes_cnt+=1
                 found=1
@@ -105,7 +105,7 @@ def validate_worker_nodes_placement(placements_dict):
 
         found=0
         for node in nodes:
-            if re.match(r"^.*ncn-w00[0-9]$", node):
+            if re.match(r"^.*ncn-w[0-9][0-9][1-9]$", node):
                 # Found worker node in a rack
                 worker_nodes_cnt+=1
                 found=1
@@ -152,7 +152,7 @@ def validate_ceph_nodes_placement(placements_dict):
 
         found=0
         for node in nodes:
-            if re.match(r"^.*ncn-s00[0-9]$", node):
+            if re.match(r"^.*ncn-s[0-9][0-9][1-9]$", node):
                 # Found storage node in a rack
                 storage_nodes_cnt+=1
                 found=1
@@ -199,7 +199,7 @@ def validate_compute_uan_nodes_placement(placements_dict):
 
         found=0
         for node in nodes:
-            if re.match(r"^.*nid00000[0-9]$", node) or re.match(r"^.*uan0[0-9]$", node):
+            if re.match(r"^.*nid[0-9][0-9][0-9][0-9][0-9][1-9]$", node) or re.match(r"^.*uan[0-9][1-9]$", node):
                 print(bcolors.WARNING + "Found", node, "Compute/ UAN node under management rack" + bcolors.ENDC)
                 managed_nodes_cnt+=1
                 found=1
