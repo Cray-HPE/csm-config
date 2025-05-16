@@ -42,4 +42,4 @@
     # Perform CEPH zoning
     - role: csm.rr.ceph_zoning
     # Setup the kyverno policy for critical services spread and rollout restart
-    - role: csm.rrs.kyverno_policy
+    - role: csm.rr.kyverno_policy

@@ -34,8 +34,3 @@
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
   changed_when: mgmt_nodes_discovery.rc == 0
-
-  # Remove this debug task from the final source
-- name: Management nodes discovery results
-  debug:
-    msg: "{{ mgmt_nodes_discovery.stdout }}"

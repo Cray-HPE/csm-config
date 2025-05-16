@@ -99,7 +99,7 @@ def create_and_map_racks(positions_dict):
         sn_count = 0
         for node in nodes:
             # Storage node match
-            if re.match(r"^.*ncn-s[0-9][0-9][1-9]$", node):
+            if re.match(r"^.*ncn-s[0-9][0-9][0-9]$", node):
                 sn_count += 1
                 logger.info(f"Moving storage node {node} to rack {rack}")
                 run_command(f"ceph osd crush move {node} rack={rack}")
@@ -147,7 +147,7 @@ def service_zoning(positions_dict, sn_count_in_rack):
     while count < mon_count:
         for rack, nodes in positions_dict.items():
             for node in nodes:
-                if re.match(r"^.*ncn-s[0-9][0-9][1-9]$", node) and node not in service_node_list:
+                if re.match(r"^.*ncn-s[0-9][0-9][0-9]$", node) and node not in service_node_list:
                     service_node_list.append(node)
                     count += 1
                     break

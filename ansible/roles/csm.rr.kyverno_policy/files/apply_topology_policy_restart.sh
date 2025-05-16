@@ -38,7 +38,7 @@ deployments_to_restart=("cray-hmnfd" "cray-hbtd" "hpe-slingshot-jackaloped" "hpe
 for service in "${deployments_to_restart[@]}"
 do
   kubectl rollout restart deployment $service -n services
-  if [ $? -ne 0 ];
+  if [ $? -ne 0 ]
   then
     echo "Unable to restart deployment $service in services namespace"
   fi
@@ -48,7 +48,7 @@ deployments_to_restart=("coredns" "sealed-secrets" "cilium-operator")
 for service in "${deployments_to_restart[@]}"
 do
   kubectl rollout restart deployment $service -n kube-system
-  if [ $? -ne 0 ];
+  if [ $? -ne 0 ]
   then
     echo "Unable to restart deployment $service in kube-system namespace"
   fi
@@ -59,7 +59,7 @@ deployments_to_restart=("istio-ingressgateway" "istio-ingressgateway-customer-ad
 for service in "${deployments_to_restart[@]}"
 do
   kubectl rollout restart deployment $service -n istio-system
-  if [ $? -ne 0 ];
+  if [ $? -ne 0 ]
   then
     echo "Unable to restart deployment $service in istio-system namespace"
   fi
@@ -69,7 +69,7 @@ deployments_to_restart=("cray-certmanager-cert-manager" "cray-certmanager-cert-m
 for service in "${deployments_to_restart[@]}"
 do
   kubectl rollout restart deployment $service -n cert-manager
-  if [ $? -ne 0 ];
+  if [ $? -ne 0 ]
   then
     echo "Unable to restart deployment $service in cert-manager namespace"
   fi
@@ -79,7 +79,7 @@ deployments_to_restart=("kyverno-admission-controller" "kyverno-background-contr
 for service in "${deployments_to_restart[@]}"
 do
   kubectl rollout restart deployment $service -n kyverno
-  if [ $? -ne 0 ];
+  if [ $? -ne 0 ]
   then
     echo "Unable to restart deployment $service in kyverno namespace"
   fi
@@ -89,7 +89,7 @@ deployments_to_restart=("slurmctld" "slurmctld-backup" "slurmdbd" "slurmdbd-back
 for service in "${deployments_to_restart[@]}"
 do
   kubectl rollout restart deployment $service -n user
-  if [ $? -ne 0 ];
+  if [ $? -ne 0 ]
   then
     echo "Unable to restart deployment $service in user namespace"
   fi
@@ -99,40 +99,77 @@ deployments_to_restart=("cray-vault-configurer"  "cray-vault-operator")
 for service in "${deployments_to_restart[@]}"
 do
   kubectl rollout restart deployment $service -n vault
-  if [ $? -ne 0 ];
+  if [ $? -ne 0 ]
   then
     echo "Unable to restart deployment $service in vault namespace"
   fi
 done
 
 kubectl rollout restart deploymet cray-ceph-csi-cephfs-provisioner -n ceph-cephfs
-kubectl rollout restart deploymet cray-ceph-csi-rbd-provisioner -n ceph-rbd
-kubectl rollout restart deployment cray-activemq-artemis-operator-controller-manager -n dvs
-kubectl rollout restart deployment slurm-operator -n slurm-operator
-kubectl rollout restart deployment istio-operator -n istio-operator
-kubectl rollout restart deployment nexus -n nexus
+if [ $? -ne 0 ]
+then
+  echo "Unable to restart the deployment cray-ceph-csi-cephfs-provisioner in ceph-cephfs namespace"
+fi 
 
-statefulsets_to_restart=("cray-hmnfd-bitnami-etcd" "cray-hbtd-bitnami-etcd" "hpe-slingshot-vnid" "cray-console-node" 
+kubectl rollout restart deploymet cray-ceph-csi-rbd-provisioner -n ceph-rbd
+if [ $? -ne 0 ]
+then
+  echo "Unable to restart the deployment cray-ceph-csi-rbd-provisioner in ceph-rbd namespace"
+fi
+
+kubectl rollout restart deployment cray-activemq-artemis-operator-controller-manager -n dvs
+if [ $? -ne 0 ]
+then
+  echo "Unable to restart the deployment cray-activemq-artemis-operator-controller-manager in dvs namespace"
+fi
+
+kubectl rollout restart deployment slurm-operator -n slurm-operator
+if [ $? -ne 0 ]
+then
+  echo "Unable to restart the deployment slurm-operator in slurm-operator namespace"
+fi
+
+kubectl rollout restart deployment istio-operator -n istio-operator
+if [ $? -ne 0 ]
+then
+  echo "Unable to restart the deployment istio-operator in istio-operator namespace"
+fi
+
+kubectl rollout restart deployment nexus -n nexus
+if [ $? -ne 0 ]
+then
+  echo "Unable to restart the deployment nexus in nexus namespace"
+fi
+
+statefulsets_to_restart=("cray-hmnfd-bitnami-etcd" "cray-hbtd-bitnami-etcd" "hpe-slingshot-vnid" "cray-console-node"
                          "cray-keycloak" "cray-bss-bitnami-etcd" "cray-power-control-bitnami-etcd")
 for service in "${statefulsets_to_restart[@]}"
 do
   kubectl rollout restart statefulset $service -n services
-  if [ $? -ne 0 ];
+  if [ $? -ne 0 ]
   then
     echo "Unable to restart StatefulSet $service in services namespace"
   fi
 done
 
-statefulsets_to_restart=("cray-spire-server"  "spire-server")
+statefulsets_to_restart=("cray-spire-server" "spire-server")
 for service in "${statefulsets_to_restart[@]}"
 do
   kubectl rollout restart statefulset $service -n spire
-  if [ $? -ne 0 ];
+  if [ $? -ne 0 ]
   then
     echo "Unable to restart StatefulSet $service in spire namespace"
   fi
 done
 
 kubectl rollout restart statefulset cray-vault -n vault
-kubectl rollout restart statefulset cray-dvs-mqtt-ss -n dvs
+if [ $? -ne 0 ]
+then
+  echo "Unable to restart StatefulSet cray-vault in vault namespace"
+fi
 
+kubectl rollout restart statefulset cray-dvs-mqtt-ss -n dvs
+if [ $? -ne 0 ]
+then
+  echo "Unable to restart StatefulSet cray-dvs-mqtt-ss in dvs namespace"
+fi
