@@ -28,6 +28,8 @@
   stat:
     path: "/tmp/rack_info.txt"
   register: placement_file
+  delegate_to: "{{ play_hosts | first }}"
+  run_once: true
 
 - name: Apply CEPH zoning
   script: ceph_zoning.py /tmp/rack_info.txt

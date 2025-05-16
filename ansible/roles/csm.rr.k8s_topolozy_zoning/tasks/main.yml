@@ -30,8 +30,3 @@
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
   changed_when: k8s_topology_zoning.rc == 0
-
-# Remove this debug task from final source
-- name: k8s zoning output
-  debug:
-    msg: "{{ k8s_topology_zoning.stdout }}"
