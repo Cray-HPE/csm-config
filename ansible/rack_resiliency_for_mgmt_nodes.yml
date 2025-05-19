@@ -26,7 +26,7 @@
 # Rack Resiliency: Discover physical racks and corresponding managment nodes, validate
 # their placement. If condition is met, apply zoning(k8s topology and CEPH)
 # across racks. If not met, bail out. 
-- hosts: Management_Master
+- hosts: Management_Master:!cfs_image
   gather_facts: no
   any_errors_fatal: true
   remote_user: root
@@ -34,7 +34,7 @@
     # Check if Rack Resiliency feature is enabled/ disabled
     - role: csm.rr.check_enablement
     # Perform placement discovery
-    #- role: csm.rr.mgmt_nodes_placement_discovery
+    - role: csm.rr.mgmt_nodes_placement_discovery
     # Perform placement validation
     - role: csm.rr.mgmt_nodes_placement_validation
     # Perform k8s zoning

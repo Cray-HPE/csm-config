@@ -77,7 +77,7 @@ def validate_master_nodes_placement(placements_dict):
             print("\nPlease re arrange the master nodes for equal distribution")
             print("Exiting placement validation...\n")
             sys.exit(1)
-        elif (rack_cnt > min_rack_cnt) and (master_nodes_cnt >= min_master_node_cnt) and (missing_cnt > node_rack_missing_quorum):
+        if (rack_cnt > min_rack_cnt) and (master_nodes_cnt >= min_master_node_cnt) and (missing_cnt > node_rack_missing_quorum):
             print("\nMore than one rack missing master node in a", rack_cnt , "rack system")
             print("\nPlease re arrange the master nodes for equal distribution")
             print("Exiting placement validation...\n")
