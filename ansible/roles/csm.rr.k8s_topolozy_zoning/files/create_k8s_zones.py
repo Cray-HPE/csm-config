@@ -50,7 +50,6 @@ def get_k8s_zone_prefix():
     print(f"Decoded YAML saved to {output_file}")
 
     # Define the key path
-    output_file = "/tmp/customizations1.yaml"
     k8s_key_path = "spec.kubernetes.services.k8s_zone_prefix"
     
     # Run yq command to extract the value

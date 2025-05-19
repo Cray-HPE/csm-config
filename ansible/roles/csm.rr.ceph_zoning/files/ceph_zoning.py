@@ -32,6 +32,7 @@ import re
 import sys
 import logging
 import base64
+import os
 
 # Set up logger
 logger = logging.getLogger("CephZoning")
@@ -42,38 +43,6 @@ formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-def get_ceph_zone_prefix():
-    # Run kubectl command and capture JSON output
-    namespace = "loftsman"
-    secret_name = "site-init"
-
-    kubectl_cmd = ["kubectl", "-n", namespace, "get", "secret", secret_name, "-o", "json"]
-    kubectl_output = subprocess.run(kubectl_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
-
-    # Parse JSON output
-    secret_data = json.loads(kubectl_output.stdout)
-
-    # Extract and decode the base64 data
-    encoded_yaml = secret_data["data"]["customizations.yaml"]
-    decoded_yaml = base64.b64decode(encoded_yaml).decode("utf-8")
-
-    # Write the yaml output to a file
-    output_file = "/tmp/customizations.yaml"
-    with open(output_file, "w") as f:
-        f.write(decoded_yaml)
-
-    # Define the key path
-    output_file = "/tmp/customizations1.yaml"
-    ceph_key_path = "spec.kubernetes.services.ceph_zone_prefix"
-
-    # Run yq command to extract the value
-    ceph_yq_cmd = ["yq", "r", output_file, ceph_key_path]
-    ceph_zone = subprocess.run(ceph_yq_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
-
-    # Extract and clean the output
-    ceph_zone_prefix = ceph_zone.stdout.strip()
-    return ceph_zone_prefix
-
 def run_command(command):
     """Helper function to run a command and return the result."""
     logger.info(f"Running command: {command}")
@@ -82,6 +51,22 @@ def run_command(command):
     except subprocess.CalledProcessError as e:
         raise ValueError(f"Command {command} errored out with : {e.stderr}")
     return result.stdout
+
+def get_ceph_zone_prefix():
+    namespace = "loftsman"
+    secret_name = "site-init"
+    secret = run_command(f"kubectl -n {namespace} get secret {secret_name} -o json")
+    secret_data = json.loads(secret)
+    encoded_yaml = secret_data["data"]["customizations.yaml"]
+    decoded_yaml = base64.b64decode(encoded_yaml).decode("utf-8")
+    output_file = "/tmp/customizations.yaml"
+    with open(output_file, "w") as f:
+        f.write(decoded_yaml)
+    ceph_key_path = "spec.kubernetes.services.ceph_zone_prefix"
+    # Run yq command to extract the value
+    ceph_zone = run_command(f"yq r {output_file} {ceph_key_path}")
+    ceph_zone_prefix = ceph_zone.strip()
+    return ceph_zone_prefix
 
 def create_and_map_racks(positions_dict):
     sn_count_in_rack = []
@@ -165,13 +150,16 @@ def service_zoning(positions_dict, sn_count_in_rack):
         logger.info(f"Applying {service} service on nodes {nodes_output}")
         run_command(f"ceph orch apply {service} --placement=\"" + str(nodes_count) + " " + nodes_output + "\"")
 
-    # Configurations
-    logger.info("Generating minimal configuration and copying updated ceph.conf")
     run_command("sleep 30")
-    run_command("ceph config generate-minimal-conf > /etc/ceph/ceph_conf_min")
-    run_command("cp /etc/ceph/ceph_conf_min /etc/ceph/ceph.conf")
-    run_command("for host in $(ceph node ls| jq -r '.osd|keys[]'); do scp /etc/ceph/ceph.conf $host:/etc/ceph; done")
-    
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    shell_script = os.path.join(script_dir, "ceph_haproxy.sh")
+    process = subprocess.Popen([shell_script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, bufsize=1)
+
+    # To capture and display output from the ceph_haproxy.sh script
+    for line in process.stdout:
+        logger.debug(line.strip())
+    exit_code = process.wait()
+    logger.debug(f"ceph_haproxy.sh exited with code {exit_code}")
 
 def main():
     if len(sys.argv) != 2:

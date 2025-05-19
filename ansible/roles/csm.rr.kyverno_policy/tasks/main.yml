@@ -28,6 +28,8 @@
   copy:
     src: rrs_topology_policy.yml
     dest: /tmp/rrs_topology_policy.yml
+  delegate_to: "{{ play_hosts | first }}"
+  run_once: true
 
 - name: apply kyverno policy and rollout restart services
   script: apply_topology_policy_restart.sh "/tmp/rrs_topology_policy.yml"
