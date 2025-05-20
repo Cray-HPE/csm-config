@@ -28,6 +28,12 @@ import json
 import base64
 
 def get_k8s_zone_prefix():
+    """
+    Get k8s zone prefix from the site-init secret (customization.yaml).
+    Return k8s_zone_prefix to be used by label_nodes(rack_info)
+    function to apply k8s topology zone lables (k8s_zone_prefix + xname of rack)
+    to management racks.
+    """
     # Run kubectl command and capture JSON output
     namespace = "loftsman"
     secret_name = "site-init"
@@ -61,6 +67,12 @@ def get_k8s_zone_prefix():
     return k8s_zone_prefix
 
 def get_rack_info():
+    """
+    Get key value pair of rack(s) and corresponding management nodes (xnames) fetched
+    from the placement file /tmp/rack_info.txt.
+    Return rack_info(key value pair of rack(s) and corresponding management nodes (xnames)).
+    """
+
     # To get the rack to node mapping details by executing "rack_to_node_mapping.py"
     try:
         # Fix ansible error for failing to invoke "rack_to_node_mapping.py" 
@@ -79,6 +91,12 @@ def get_rack_info():
     return rack_info
 
 def label_nodes(rack_info):
+    """
+    Apply k8s topology zone labels to management racks with corresponding
+    master and worker nodes.
+    Here zone name(rack_id) is: k8s_zone_prefix + xname of the rack
+    Return nothing.
+    """
     # To traverse the nodes in the rack and assign them the labels
     for rack_id, nodes in rack_info.items():
         k8s_zone_prefix = get_k8s_zone_prefix()
@@ -87,12 +105,25 @@ def label_nodes(rack_info):
         for node in nodes:
             if not node.startswith("ncn-s"):
                 print(f"Node {node} is going to be placed on {rack_id}")
-                result = subprocess.run(
-                        ["kubectl", "label", "node", f"{node}", f"topology.kubernetes.io/zone={rack_id}", "--overwrite"],
-                       stdout=subprocess.PIPE
-                        )
+                try:
+                    result = subprocess.run(
+                            ["kubectl", "label", "node", f"{node}", f"topology.kubernetes.io/zone={rack_id}", "--overwrite"],
+                           stdout=subprocess.PIPE
+                            )
+                except subprocess.CalledProcessError as e:
+                    print(f"Error occurred while running kubectl: {e.stderr}")
+                    exit(1)
+                except Exception as e:
+                    print(f"Unexpected error: {str(e)}")
+                    exit(1)
+                print(f"Result: {result}")
 
 def main():
+    """
+    Apply k8s topology zones to management racks with corresponding master and worker nodes.
+    rack_info here is a key value pair of rack(s) and corresponding management nodes (xnames) fetched
+    from the placement file /tmp/rack_info.txt.
+    """
     # To get the rack info
     rack_info = get_rack_info()
     # To label the rack nodes

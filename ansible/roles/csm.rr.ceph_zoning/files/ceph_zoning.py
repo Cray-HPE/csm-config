@@ -44,7 +44,7 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 def run_command(command):
-    """Helper function to run a command and return the result."""
+    """Helper function to run a command(os commands, kubectl, ceph) and return the result."""
     logger.info(f"Running command: {command}")
     try:
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True, check=True)
@@ -53,6 +53,11 @@ def run_command(command):
     return result.stdout
 
 def get_ceph_zone_prefix():
+    """
+    Get ceph zone prefix if defined from the site-init secret (customization).
+    Return ceph_zone_prefix to be used by create_and_map_racks(positions_dict) function
+    for mapping racks to zones.
+    """
     namespace = "loftsman"
     secret_name = "site-init"
     secret = run_command(f"kubectl -n {namespace} get secret {secret_name} -o json")
@@ -69,6 +74,14 @@ def get_ceph_zone_prefix():
     return ceph_zone_prefix
 
 def create_and_map_racks(positions_dict):
+    """
+    Create ceph zones and map to management racks.
+    positions_dict: dict of rack and corresponding management nodes(xnames)
+    fetched from the rack placement file(/tmp/rack_info.txt).
+    Here ceph zone name is: ceph zone prefix  + xname of the rack
+    Return sn_count_in_rack (storage nodes per rack)
+    """
+
     sn_count_in_rack = []
 
     for rack, nodes in positions_dict.items():
@@ -95,7 +108,10 @@ def create_and_map_racks(positions_dict):
     return sn_count_in_rack
 
 def create_and_apply_rules():
-    # Create and apply a CRUSH rule with Rack as the failure domain
+    """
+    Create and apply a CRUSH rule with rack as the failure domain.
+    Return nothing.
+    """
     logger.info("Creating CRUSH rule with rack as failure domain")
     run_command("ceph osd crush rule create-replicated replicated_rule_with_rack_failure_domain default rack")
 
@@ -106,6 +122,14 @@ def create_and_apply_rules():
         run_command(f"ceph osd pool set {pool} crush_rule replicated_rule_with_rack_failure_domain")
 
 def service_zoning(positions_dict, sn_count_in_rack):
+    """
+    Perform service((MON, MGR, MDS) zoning.
+    positions_dict: dict of rack and corresponding management nodes(xnames)
+    fetched from the rack placement file(/tmp/rack_info.txt).
+    sn_count_in_rack: number of storage nodes in a rack.
+    Apply service zoning only if minimum 3 racks with storage nodes (at least one per rack) are present.
+    Return nothing.
+    """
     service_node_list = []
     mon_count = 0
     command = "ceph node ls | jq '.osd | keys | length'"
@@ -151,8 +175,7 @@ def service_zoning(positions_dict, sn_count_in_rack):
         run_command(f"ceph orch apply {service} --placement=\"" + str(nodes_count) + " " + nodes_output + "\"")
 
     run_command("sleep 30")
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    shell_script = os.path.join(script_dir, "ceph_haproxy.sh")
+    shell_script="/tmp/ceph_haproxy.sh"
     process = subprocess.Popen([shell_script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, bufsize=1)
 
     # To capture and display output from the ceph_haproxy.sh script
@@ -162,6 +185,12 @@ def service_zoning(positions_dict, sn_count_in_rack):
     logger.debug(f"ceph_haproxy.sh exited with code {exit_code}")
 
 def main():
+    """ 
+    Create ceph zones and map to racks, create and apply ceph CRUSH rule for each rack
+    as the failure domain and perform ceph service zoning.
+    rack_placement_file is a file with key value pair with xnames of
+    racks and corresponding management nodes.
+    """
     if len(sys.argv) != 2:
         logger.error("Usage: python ceph_zoning.py <rack_placement_file>")
         sys.exit(1)

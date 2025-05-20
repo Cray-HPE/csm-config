@@ -37,6 +37,8 @@ sls_url= "https://api-gw-service-nmn.local/apis/sls/v1/search/hardware"
 
 # Run the kubectl command to get the secret 
 def token_fetch():
+    response = None
+
     try:
         result = subprocess.run(
             ["kubectl", "get", "secrets", "admin-client-auth", "-o", "jsonpath={.data.client-secret}"],
@@ -66,7 +68,7 @@ def token_fetch():
     # Make the API request to get the token
     response = requests.post(url, data=data)
 
-    # Print the json output
+    # Get the json output
     token = response.json()
     token = token.get("access_token")
     return token
@@ -95,12 +97,15 @@ def rack_info(hsm_response, sls_response):
         with open("/tmp/rack_info.txt", "w") as file:
             file.write(res_rack + "\n")
     else:
-        print(f"Failed to access the endpoint. Status code: {response.status_code}")
-        print("Response text:", response.text)
+        print(f"Failed to access the endpoint. Status code: {hsm_response.status_code}")
+        print("Response text:", hsm_response.text)
 
 def main():
     # Fetch the keycloak token
     token = token_fetch()
+    if token is None:
+        print("Failed to fetch the keycloak token")
+        exit(1)
 
     # Parameters for sls
     params = {'type': 'comptype_node'}

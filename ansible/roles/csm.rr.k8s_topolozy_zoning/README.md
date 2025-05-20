@@ -1,7 +1,7 @@
-csm.sbps.lio_config
-===================
+csm.rr.k8s_topolozy_zoning
+==========================
 
-Configure SBPS
+Apply k8s topology zoning to Master and Worker nodes
 
 Requirements
 ------------
@@ -18,13 +18,13 @@ Example Playbook
 ----------------
 
 ```yaml
-    - hosts: Management_Worker
+    - hosts: Management_Master
       gather_facts: no
       any_errors_fatal: true
       remote_user: root
       roles:
-        # Configure SBPS
-        - role: csm.sbps.lio_config
+        # Apply k8s topology zoning to Master and Worker nodes
+        - role: csm.rr.k8s_topolozy_zoning
 ```
 
 License
@@ -34,4 +34,4 @@ None.
 Author Information
 ------------------
 
-Copyright 2024 Hewlett Packard Enterprise Development LP
+Copyright 2025 Hewlett Packard Enterprise Development LP

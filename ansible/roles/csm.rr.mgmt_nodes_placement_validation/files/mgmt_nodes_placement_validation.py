@@ -34,9 +34,23 @@ min_worker_node_cnt = 3
 min_storage_node_cnt = 3
 
 def get_node_rack_missing_quorum(rack_cnt):
+    """ Get max quorum loss (toleration) of racks missing specific management node type """
     return (rack_cnt - min_rack_cnt)
 
 def validate_master_nodes_placement(placements_dict):
+    """
+    Do master nodes placement validation in order to enable Rack Resiliency.
+    placements_dict is: dict of key value pair with xnames of racks with corresponding
+    management nodes fetched from /tmp/rack_info.txt file.
+    Fail the placement validation if RR placement criteria is not met for master nodes.
+      - Fail the placement validation if the master node count is < min_master_node_cnt
+      - Fail the placement validation if the missing_cnt is > node_rack_missing_quorum.
+        . Here node_rack_missing_quorum is the max quorum loss with racks missing
+          master nodes which can be tolerated.
+        . Here missing_cnt is the number of racks actually missing the master nodes.
+    Returns nothing.    
+    """
+
     rack_cnt=1
     master_nodes_cnt=0
     missing_cnt=0
@@ -89,6 +103,19 @@ def validate_master_nodes_placement(placements_dict):
         sys.exit(1)
 
 def validate_worker_nodes_placement(placements_dict):
+    """
+    Do worker nodes placement validation in order to enable Rack Resiliency.
+    placements_dict is: dict of key value pair with xnames of racks with corresponding
+    management nodes fetched from /tmp/rack_info.txt file.
+    Fail the placement validation if RR placement criteria is not met for worker nodes.
+      - Fail the placement validation if the worker node count is < min_worker_node_cnt
+      - Fail the placement validation if the missing_cnt is > node_rack_missing_quorum.
+        . Here node_rack_missing_quorum is the max quorum loss with racks missing
+          worker nodes which can be tolerated.
+        . Here missing_cnt is the number of racks actually missing the worker nodes.
+    Returns nothing.    
+    """
+
     rack_cnt=1
     worker_nodes_cnt=0
     missing_cnt=0
@@ -140,6 +167,19 @@ def validate_worker_nodes_placement(placements_dict):
         sys.exit(1)
 
 def validate_ceph_nodes_placement(placements_dict):
+    """
+    Do storage nodes placement validation in order to enable Rack Resiliency.
+    placements_dict is: dict of key value pair with xnames of racks with corresponding
+    management nodes fetched from /tmp/rack_info.txt file.
+    Fail the placement validation if RR placement criteria is not met for storage nodes.
+      - Fail the placement validation if the storage node count is < min_storage_node_cnt
+      - Fail the placement validation if the missing_cnt is > node_rack_missing_quorum.
+        . Here node_rack_missing_quorum is the max quorum loss with racks missing
+          storage nodes which can be tolerated.
+        . Here missing_cnt is the number of racks actually missing the storage nodes.
+    Returns nothing.
+    """
+
     rack_cnt=1
     storage_nodes_cnt=0
     missing_cnt=0
@@ -189,6 +229,13 @@ def validate_ceph_nodes_placement(placements_dict):
         sys.exit(1)
 
 def validate_compute_uan_nodes_placement(placements_dict):
+    """
+    Do compute and UAN nodes placement validation.
+    placements_dict is: dict of key value pair with xnames of racks with corresponding
+    management nodes fetched from /tmp/rack_info.txt file.
+    Just warn if the managed nodes (compute / uan nides are present in any of the management rack.
+    Returns nothing.
+    """
     rack_cnt=1
     managed_nodes_cnt=0
     missing_cnt=0
@@ -220,6 +267,12 @@ def validate_compute_uan_nodes_placement(placements_dict):
         print("\nTotal", managed_nodes_cnt, "number of Managed nodes found under  Management racks")
 
 def main():
+    """
+    Do management nodes(master, worker and storage) placement validation in order to enable Rack Resiliency.
+    Fail the placement validation if < 3 racks are found (Need minimum 3 racks to achieve RR).
+    Fail the placement validation if RR placement criteria is not met for any of the management nodes.
+    Warn for managed nodes (Compute and UAN) when discovered them in management racks.
+    """
     if len(sys.argv) != 2:
         print("Usage: python rr_placement_validation.py <mgmt_nodes_placement_file>")
         sys.exit(1)

@@ -34,7 +34,7 @@
     # Check if Rack Resiliency feature is enabled/ disabled
     - role: csm.rr.check_enablement
     # Perform placement discovery
-    - role: csm.rr.mgmt_nodes_placement_discovery
+    #- role: csm.rr.mgmt_nodes_placement_discovery
     # Perform placement validation
     - role: csm.rr.mgmt_nodes_placement_validation
     # Perform k8s zoning
