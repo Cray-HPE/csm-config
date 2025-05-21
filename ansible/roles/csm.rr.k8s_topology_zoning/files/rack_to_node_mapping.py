@@ -23,18 +23,25 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 
-import requests
 import json
 import subprocess
 from collections import defaultdict
 import base64
+import sys
+
+import requests
+
+"""
+Discover physical racks along with corresponding
+management nodes (master, worker and storage).
+"""
 
 # Define the endpoint URL
 hsm_url = "https://api-gw-service-nmn.local/apis/smd/hsm/v2/State/Components"
 sls_url= "https://api-gw-service-nmn.local/apis/sls/v1/search/hardware"
 
 # Run the kubectl command to get the secret 
-def token_fetch():
+def token_fetch() -> dict:
     """
     Fetch the keycloak token.
     Return keycloak token.
@@ -54,10 +61,10 @@ def token_fetch():
 
     except subprocess.CalledProcessError as e:
         print(f"Error occurred while running kubectl: {e.stderr}")
-        exit(1)
+        sys.exit(1)
     except Exception as e:
         print(f"Unexpected error: {str(e)}")
-        exit(1)
+        sys.exit(1)
 
     # Set up the parameters and URL to make the POST request
     url = "https://api-gw-service-nmn.local/keycloak/realms/shasta/protocol/openid-connect/token"
@@ -75,7 +82,7 @@ def token_fetch():
     token = token.get("access_token")
     return token
 
-def rack_info(hsm_response, sls_response):
+def rack_info(hsm_response: dict, sls_responsei: dict) -> None:
     """
     Get/ extract  management racks and corresponding management nodes (master, worker and storage)
     from HSM and SLS.
@@ -121,7 +128,7 @@ def main():
     token = token_fetch()
     if token is None:
         print("Failed to get the keycloak token")
-        exit(1)
+        sys.exit(1)
 
     # Parameters for sls
     params = {'type': 'comptype_node'}

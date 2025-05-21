@@ -26,8 +26,9 @@
 import subprocess
 import json
 import base64
+import sys
 
-def get_k8s_zone_prefix():
+def get_k8s_zone_prefix() -> str:
     """
     Get k8s zone prefix from the site-init secret (customization.yaml).
     Return k8s_zone_prefix to be used by label_nodes(rack_info)
@@ -66,7 +67,7 @@ def get_k8s_zone_prefix():
     k8s_zone_prefix = k8s_zone.stdout.strip()
     return k8s_zone_prefix
 
-def get_rack_info():
+def get_rack_info() -> dict:
     """
     Get key value pair of rack(s) and corresponding management nodes (xnames) fetched
     from the placement file /tmp/rack_info.txt.
@@ -90,7 +91,7 @@ def get_rack_info():
     rack_info = json.loads(rack_info)
     return rack_info
 
-def label_nodes(rack_info):
+def label_nodes(rack_info: dict) -> None:
     """
     Apply k8s topology zone labels to management racks with corresponding
     master and worker nodes.
@@ -108,14 +109,14 @@ def label_nodes(rack_info):
                 try:
                     result = subprocess.run(
                             ["kubectl", "label", "node", f"{node}", f"topology.kubernetes.io/zone={rack_id}", "--overwrite"],
-                           stdout=subprocess.PIPE
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True
                             )
                 except subprocess.CalledProcessError as e:
                     print(f"Error occurred while running kubectl: {e.stderr}")
-                    exit(1)
+                    sys.exit()
                 except Exception as e:
                     print(f"Unexpected error: {str(e)}")
-                    exit(1)
+                    sys.exit()
                 print(f"Result: {result}")
 
 def main():

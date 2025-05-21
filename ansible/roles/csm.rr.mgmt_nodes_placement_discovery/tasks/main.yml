@@ -25,7 +25,6 @@
 
 # Discover physical racks and their mapping with respective management nodes
 # placement from HSM/ SLS 
-# 
 - name: Discover racks and corresponding management nodes placement
   script: rack_to_node_mapping.py
   args:

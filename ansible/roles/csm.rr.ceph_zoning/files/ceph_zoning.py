@@ -23,16 +23,17 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 
-#This script is used to apply CEPH zoning
-#The objective of CEPH zoning is to make sure data gets replicated at rack level, so there would not be data loss incase of a rack failure
-
+"""
+This script is used to apply CEPH zoning.
+The objective of CEPH zoning is to make sure data gets replicated at rack level,
+so there would not be data loss in case of a rack failure.
+"""
 import json
 import subprocess
 import re
 import sys
 import logging
 import base64
-import os
 
 # Set up logger
 logger = logging.getLogger("CephZoning")
@@ -43,16 +44,20 @@ formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-def run_command(command):
-    """Helper function to run a command(os commands, kubectl, ceph) and return the result."""
+def run_command(command: str) -> str:
+    """
+    Helper function to run a shell command.
+    command: is one of the command from yq, kubectl and ceph
+    Returns result of the command output(stdout).
+    """
     logger.info(f"Running command: {command}")
     try:
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True, check=True)
     except subprocess.CalledProcessError as e:
-        raise ValueError(f"Command {command} errored out with : {e.stderr}")
+        raise ValueError(f"Command {command} errored out with : {e.stderr}") from e
     return result.stdout
 
-def get_ceph_zone_prefix():
+def get_ceph_zone_prefix() -> str:
     """
     Get ceph zone prefix if defined from the site-init secret (customization).
     Return ceph_zone_prefix to be used by create_and_map_racks(positions_dict) function
@@ -73,7 +78,7 @@ def get_ceph_zone_prefix():
     ceph_zone_prefix = ceph_zone.strip()
     return ceph_zone_prefix
 
-def create_and_map_racks(positions_dict):
+def create_and_map_racks(positions_dict: dict) -> int:
     """
     Create ceph zones and map to management racks.
     positions_dict: dict of rack and corresponding management nodes(xnames)
@@ -107,7 +112,7 @@ def create_and_map_racks(positions_dict):
     logger.debug(f"Storage node count per rack: {sn_count_in_rack}")
     return sn_count_in_rack
 
-def create_and_apply_rules():
+def create_and_apply_rules() -> None:
     """
     Create and apply a CRUSH rule with rack as the failure domain.
     Return nothing.
@@ -121,7 +126,7 @@ def create_and_apply_rules():
         logger.debug(f"Applying new rule to pool: {pool}")
         run_command(f"ceph osd pool set {pool} crush_rule replicated_rule_with_rack_failure_domain")
 
-def service_zoning(positions_dict, sn_count_in_rack):
+def service_zoning(positions_dict: dict, sn_count_in_rack: int) -> None:
     """
     Perform service((MON, MGR, MDS) zoning.
     positions_dict: dict of rack and corresponding management nodes(xnames)
@@ -154,7 +159,7 @@ def service_zoning(positions_dict, sn_count_in_rack):
 
    # Select the storage nodes on which the services are to be run in round robin way across racks
     while count < mon_count:
-        for rack, nodes in positions_dict.items():
+        for nodes in positions_dict.values():
             for node in nodes:
                 if re.match(r"^.*ncn-s[0-9][0-9][0-9]$", node) and node not in service_node_list:
                     service_node_list.append(node)

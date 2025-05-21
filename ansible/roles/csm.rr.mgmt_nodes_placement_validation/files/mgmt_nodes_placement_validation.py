@@ -24,7 +24,6 @@
 #
 
 import json
-import subprocess
 import re
 import sys
 
@@ -33,9 +32,9 @@ min_master_node_cnt = 3
 min_worker_node_cnt = 3
 min_storage_node_cnt = 3
 
-def get_node_rack_missing_quorum(rack_cnt):
+def get_node_rack_missing_quorum(rack_cnt: int) -> int:
     """ Get max quorum loss (toleration) of racks missing specific management node type """
-    return (rack_cnt - min_rack_cnt)
+    return rack_cnt - min_rack_cnt
 
 def validate_master_nodes_placement(placements_dict):
     """
@@ -74,7 +73,6 @@ def validate_master_nodes_placement(placements_dict):
         if found == 0:
             # Missing master node in a rack
             print("Missing master node in a rack", rack_id)
-            missing=1
             missing_cnt+=1
 
         rack_cnt+=1
@@ -138,7 +136,6 @@ def validate_worker_nodes_placement(placements_dict):
         if found == 0:
             # Missing worker node in a rack
             print("Missing worker node in a rack", rack_id)
-            missing=1
             missing_cnt+=1
 
         rack_cnt+=1
@@ -202,7 +199,6 @@ def validate_ceph_nodes_placement(placements_dict):
         if found == 0:
             # Missing storage node in a rack
             print("Missing storage node in a rack", rack_id)
-            missing=1
             missing_cnt+=1
 
         rack_cnt+=1
@@ -217,7 +213,7 @@ def validate_ceph_nodes_placement(placements_dict):
             print("\nPlease re arrange the storage nodes for equal distribution")
             print("Exiting placement validation...\n")
             sys.exit(1)
-        elif rack_cnt > min_rack_cnt and storage_nodes_cnt >= min_master_node_cnt and missing_cnt > node_rack_missing_quorum:
+        if rack_cnt > min_rack_cnt and storage_nodes_cnt >= min_master_node_cnt and missing_cnt > node_rack_missing_quorum:
             print("\nMore than one rack missing storage node in a", rack_cnt , "rack system")
             print("\nPlease re arrange the storage nodes for equal distribution")
             print("Exiting placement validation...\n")
@@ -238,7 +234,6 @@ def validate_compute_uan_nodes_placement(placements_dict):
     """
     rack_cnt=1
     managed_nodes_cnt=0
-    missing_cnt=0
 
     print("\nValidate Managed nodes (Compute and UANs)")
 

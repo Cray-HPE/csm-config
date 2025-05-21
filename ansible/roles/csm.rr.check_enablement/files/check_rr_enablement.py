@@ -23,7 +23,9 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 
-# Check the enablement of rack resiliency feature
+"""
+Check the enablement of rack resiliency feature.
+"""
 
 import subprocess
 import base64

@@ -1,4 +1,4 @@
-csm.rr.k8s_topolozy_zoning
+csm.rr.k8s_topology_zoning
 ==========================
 
 Apply k8s topology zoning to Master and Worker nodes
@@ -23,8 +23,9 @@ Example Playbook
       any_errors_fatal: true
       remote_user: root
       roles:
-        # Apply k8s topology zoning to Master and Worker nodes
-        - role: csm.rr.k8s_topolozy_zoning
+        # Run k8s topology zoning on one of the Master node to apply k8s topology zoning
+        # to Master and Worker nodes
+        - role: csm.rr.k8s_topology_zoning
 ```
 
 License
