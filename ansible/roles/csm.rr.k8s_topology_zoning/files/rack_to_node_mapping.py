@@ -119,7 +119,7 @@ def rack_info(hsm_response: requests.Response, sls_response: requests.Response) 
         print(f"Failed to access the endpoint. Status code: {hsm_response.status_code}")
         print("Response text:", hsm_response.text)
 
-def main():
+def main() -> None:
     """
     Discover/ fetch/ group management racks and corresponding mapped management nodes
     info (xnames in the form of key value pair) from HSM and SLS and store it under
