@@ -82,7 +82,7 @@ def token_fetch() -> dict:
     token = token.get("access_token")
     return token
 
-def rack_info(hsm_response: dict, sls_responsei: dict) -> None:
+def rack_info(hsm_response: requests.Response, sls_response: requests.Response) -> None:
     """
     Get/ extract  management racks and corresponding management nodes (master, worker and storage)
     from HSM and SLS.
