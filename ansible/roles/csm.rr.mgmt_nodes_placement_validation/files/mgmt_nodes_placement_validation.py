@@ -36,7 +36,7 @@ def get_node_rack_missing_quorum(rack_cnt: int) -> int:
     """ Get max quorum loss (toleration) of racks missing specific management node type """
     return rack_cnt - min_rack_cnt
 
-def validate_master_nodes_placement(placements_dict):
+def validate_master_nodes_placement(placements_dict: Dict[str, List[str]]) -> None:
     """
     Do master nodes placement validation in order to enable Rack Resiliency.
     placements_dict is: dict of key value pair with xnames of racks with corresponding
