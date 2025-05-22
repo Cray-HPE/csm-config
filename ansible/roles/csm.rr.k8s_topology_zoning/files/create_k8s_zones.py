@@ -120,7 +120,7 @@ def label_nodes(rack_info: Dict[str, List[str]]) -> None:
                     sys.exit()
                 print(f"Result: {result}")
 
-def main():
+def main() -> None:
     """
     Apply k8s topology zones to management racks with corresponding master and worker nodes.
     rack_info here is a key value pair of rack(s) and corresponding management nodes (xnames) fetched
