@@ -26,6 +26,7 @@
 import json
 import re
 import sys
+from typing import Dict, List
 
 min_rack_cnt = 3
 min_master_node_cnt = 3
