@@ -27,6 +27,7 @@ import subprocess
 import json
 import base64
 import sys
+from typing import Dict, List
 
 def get_k8s_zone_prefix() -> str:
     """
