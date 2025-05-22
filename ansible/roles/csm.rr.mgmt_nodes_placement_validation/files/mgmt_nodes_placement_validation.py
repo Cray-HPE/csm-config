@@ -261,9 +261,9 @@ def validate_compute_uan_nodes_placement(placements_dict):
     else:
         print("\nTotal", managed_nodes_cnt, "number of Managed nodes found under  Management racks")
 
-def main():
+def main() -> None:
     """
-    Do management nodes(master, worker and storage) placement validation in order to enable Rack Resiliency.
+    Do management nodes(master, worker, and storage) placement validation in order to enable Rack Resiliency.
     Fail the placement validation if < 3 racks are found (Need minimum 3 racks to achieve RR).
     Fail the placement validation if RR placement criteria is not met for any of the management nodes.
     Warn for managed nodes (Compute and UAN) when discovered them in management racks.
