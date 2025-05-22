@@ -23,18 +23,19 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 
+"""
+Discover physical racks along with corresponding
+management nodes (master, worker and storage).
+"""
+
 import json
 import subprocess
 from collections import defaultdict
 import base64
 import sys
+from typing import Union
 
 import requests
-
-"""
-Discover physical racks along with corresponding
-management nodes (master, worker and storage).
-"""
 
 # Define the endpoint URL
 hsm_url = "https://api-gw-service-nmn.local/apis/smd/hsm/v2/State/Components"
