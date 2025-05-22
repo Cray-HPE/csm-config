@@ -79,7 +79,7 @@ def get_ceph_zone_prefix() -> str:
     ceph_zone_prefix = ceph_zone.strip()
     return ceph_zone_prefix
 
-def create_and_map_racks(positions_dict: dict) -> int:
+def create_and_map_racks(positions_dict: Dict[str, List[str]]) -> int:
     """
     Create ceph zones and map to management racks.
     positions_dict: dict of rack and corresponding management nodes(xnames)
