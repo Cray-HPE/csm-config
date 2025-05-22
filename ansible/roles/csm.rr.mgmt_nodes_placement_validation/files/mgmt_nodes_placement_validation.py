@@ -48,7 +48,7 @@ def validate_master_nodes_placement(placements_dict: Dict[str, List[str]]) -> No
         . Here node_rack_missing_quorum is the max quorum loss with racks missing
           master nodes which can be tolerated.
         . Here missing_cnt is the number of racks actually missing the master nodes.
-    Returns nothing.    
+    Returns nothing.
     """
 
     rack_cnt=1
@@ -112,7 +112,7 @@ def validate_worker_nodes_placement(placements_dict: Dict[str, List[str]]) -> No
         . Here node_rack_missing_quorum is the max quorum loss with racks missing
           worker nodes which can be tolerated.
         . Here missing_cnt is the number of racks actually missing the worker nodes.
-    Returns nothing.    
+    Returns nothing.
     """
 
     rack_cnt=1
@@ -298,10 +298,10 @@ def main() -> None:
 
     # Do storge nodes (Utility storage/ CEPH) placement validation
     validate_ceph_nodes_placement(placements_dict)
-   
+
     print("\nManagment nodes placement validation suceeded...")
 
-    # Do managed nodes (compute and UAN) placement validation: Just WARN if they are 
+    # Do managed nodes (compute and UAN) placement validation: Just WARN if they are
     # placed under any management rack
     validate_compute_uan_nodes_placement(placements_dict)
 

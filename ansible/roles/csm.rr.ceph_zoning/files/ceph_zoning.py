@@ -177,7 +177,7 @@ def service_zoning(positions_dict: Dict[str, List[str]], sn_count_in_rack: int) 
     if nodes_count < 1:
         logger.error("ceph service node list is empty or storage nodes not found")
         sys.exit(1)
-        
+
     # Apply services (MON, MGR, MDS)
     for service in ['mon', 'mgr', 'mds admin-tools', 'mds cephfs']:
         logger.info(f"Applying {service} service on nodes {nodes_output}")
@@ -194,7 +194,7 @@ def service_zoning(positions_dict: Dict[str, List[str]], sn_count_in_rack: int) 
     logger.debug(f"ceph_haproxy.sh exited with code {exit_code}")
 
 def main() -> None:
-    """ 
+    """
     Create ceph zones and map to racks, create and apply ceph CRUSH rule for each rack
     as the failure domain and perform ceph service zoning.
     rack_placement_file is a file with key value pair with xnames of

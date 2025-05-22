@@ -59,7 +59,7 @@ def get_k8s_zone_prefix() -> str:
 
     # Define the key path
     k8s_key_path = "spec.kubernetes.services.k8s_zone_prefix"
-    
+
     # Run yq command to extract the value
     k8s_yq_cmd = ["yq", "r", output_file, k8s_key_path]
     k8s_zone = subprocess.run(k8s_yq_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
@@ -77,7 +77,7 @@ def get_rack_info() -> Dict[str, List[str]]:
 
     # To get the rack to node mapping details by executing "rack_to_node_mapping.py"
     try:
-        # Fix ansible error for failing to invoke "rack_to_node_mapping.py" 
+        # Fix ansible error for failing to invoke "rack_to_node_mapping.py"
         # For now using "/tmp/rack_info.txt" produced from discovery to make CFS ansible play work
         #result = subprocess.run(["python3", "rack_to_node_mapping.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
         result = subprocess.run(["cat", "/tmp/rack_info.txt"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
