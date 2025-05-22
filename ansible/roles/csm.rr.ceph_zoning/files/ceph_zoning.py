@@ -174,7 +174,10 @@ def service_zoning(positions_dict: Dict[str, List[str]], sn_count_in_rack: int) 
     logger.debug(f"Selected nodes on which CEPH services be running: {service_node_list}")
     nodes_output = " ".join(service_node_list)
     nodes_count = len(service_node_list)
-
+    if nodes_count < 1:
+        logger.error("ceph service node list is empty or storage nodes not found")
+        sys.exit(1)
+        
     # Apply services (MON, MGR, MDS)
     for service in ['mon', 'mgr', 'mds admin-tools', 'mds cephfs']:
         logger.info(f"Applying {service} service on nodes {nodes_output}")
