@@ -68,7 +68,7 @@ def get_k8s_zone_prefix() -> str:
     k8s_zone_prefix = k8s_zone.stdout.strip()
     return k8s_zone_prefix
 
-def get_rack_info() -> dict:
+def get_rack_info() -> Dict[str, List[str]]:
     """
     Get key value pair of rack(s) and corresponding management nodes (xnames) fetched
     from the placement file /tmp/rack_info.txt.
