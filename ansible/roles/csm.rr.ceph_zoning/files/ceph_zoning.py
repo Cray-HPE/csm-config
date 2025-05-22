@@ -127,7 +127,7 @@ def create_and_apply_rules() -> None:
         logger.debug(f"Applying new rule to pool: {pool}")
         run_command(f"ceph osd pool set {pool} crush_rule replicated_rule_with_rack_failure_domain")
 
-def service_zoning(positions_dict: dict, sn_count_in_rack: int) -> None:
+def service_zoning(positions_dict: Dict[str, List[str]], sn_count_in_rack: int) -> None:
     """
     Perform service((MON, MGR, MDS) zoning.
     positions_dict: dict of rack and corresponding management nodes(xnames)
