@@ -92,7 +92,7 @@ def get_rack_info() -> Dict[str, List[str]]:
     rack_info = json.loads(rack_info)
     return rack_info
 
-def label_nodes(rack_info: dict) -> None:
+def label_nodes(rack_info: Dict[str, List[str]]) -> None:
     """
     Apply k8s topology zone labels to management racks with corresponding
     master and worker nodes.
