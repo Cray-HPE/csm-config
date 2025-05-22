@@ -42,7 +42,7 @@ hsm_url = "https://api-gw-service-nmn.local/apis/smd/hsm/v2/State/Components"
 sls_url= "https://api-gw-service-nmn.local/apis/sls/v1/search/hardware"
 
 # Run the kubectl command to get the secret 
-def token_fetch() -> dict:
+def token_fetch() -> Union[str, None]:
     """
     Fetch the keycloak token.
     Return keycloak token.
