@@ -224,7 +224,7 @@ def validate_ceph_nodes_placement(placements_dict: Dict[str, List[str]]) -> None
         print("Exiting placement validation...\n")
         sys.exit(1)
 
-def validate_compute_uan_nodes_placement(placements_dict):
+def validate_compute_uan_nodes_placement(placements_dict: Dict[str, List[str]]) -> None:
     """
     Do compute and UAN nodes placement validation.
     placements_dict is: dict of key value pair with xnames of racks with corresponding
