@@ -152,7 +152,7 @@ def validate_worker_nodes_placement(placements_dict: Dict[str, List[str]]) -> No
                 print("\nPlease re arrange the worker nodes for equal distribution")
                 print("Exiting placement validation...\n")
                 sys.exit(1)
-            elif rack_cnt > min_rack_cnt and (worker_nodes_cnt >= min_worker_node_cnt):
+            if rack_cnt > min_rack_cnt and (worker_nodes_cnt >= min_worker_node_cnt):
                 print("\nMore than one rack missing worker node in a", rack_cnt , "rack system")
                 print("\nPlease re arrange the worker nodes for equal distribution")
                 print("Exiting placement validation...\n")
