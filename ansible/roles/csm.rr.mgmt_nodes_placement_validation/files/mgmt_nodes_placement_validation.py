@@ -100,7 +100,7 @@ def validate_master_nodes_placement(placements_dict):
         print("Exiting placement validation...\n")
         sys.exit(1)
 
-def validate_worker_nodes_placement(placements_dict):
+def validate_worker_nodes_placement(placements_dict: Dict[str, List[str]]) -> None:
     """
     Do worker nodes placement validation in order to enable Rack Resiliency.
     placements_dict is: dict of key value pair with xnames of racks with corresponding
