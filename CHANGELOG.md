@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.33.0] - 2025-05-12
+### Added
+- CASM-4872: Rack Resiliency (RR): Provide a method for placement discovery and validation of management nodes in order to meet the RR norms
+- CASM-4873: Rack Resiliency (RR): Define, create, and configure Management Plane Failure Domains and handle enablement/disablement of the RR feature
+
+RR Ansible plays for:
+  - handling enablement/disablement of the RR feature
+  - discovery of physical racks and management nodes (master, worker, and storage)
+  - management nodes placement validation
+  - k8s topology zoning for master and worker nodes
+  - CEPH zoning for storage nodes
+  - RR kyverno policy for equal distribution of critical services
+
 ## [1.32.0] - 2025-04-16
 
 ### Fixed
@@ -593,7 +606,9 @@ CASMPET-7444: handle CRLFs in script output in `sbps_dns_srv_records.sh`
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.32.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.33.0...HEAD
+
+[1.33.0]: https://github.com/Cray-HPE/csm-config/compare/1.32.0...1.33.0
 
 [1.32.0]: https://github.com/Cray-HPE/csm-config/compare/1.31.0...1.32.0
 
