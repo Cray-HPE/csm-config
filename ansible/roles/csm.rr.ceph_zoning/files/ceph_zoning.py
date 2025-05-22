@@ -190,7 +190,7 @@ def service_zoning(positions_dict: Dict[str, List[str]], sn_count_in_rack: int) 
     exit_code = process.wait()
     logger.debug(f"ceph_haproxy.sh exited with code {exit_code}")
 
-def main():
+def main() -> None:
     """ 
     Create ceph zones and map to racks, create and apply ceph CRUSH rule for each rack
     as the failure domain and perform ceph service zoning.
