@@ -82,10 +82,10 @@ def get_rack_info() -> dict:
         result = subprocess.run(["cat", "/tmp/rack_info.txt"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
     except subprocess.CalledProcessError as e:
         print(f"Error occurred while running kubectl: {e.stderr}")
-        exit(1)
+        sys.exit(1)
     except Exception as e:
         print(f"Unexpected error: {str(e)}")
-        exit(1)
+        sys.exit(1)
     print(f"Result: {result}")
     rack_info = result.stdout
     rack_info = json.loads(rack_info)
