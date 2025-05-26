@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- RPM's transferred from COS to CSM
+  - csm-sbps-dracut
+  - csm-sbps-utils
+  - csm-udev-network (cn and ncn)
+  - csm-netif-dracut
+  - csm-scripts-dracut
+
 ## [1.33.0] - 2025-05-12
 ### Added
 - CASM-4872: Rack Resiliency (RR): Provide a method for placement discovery and validation of management nodes in order to meet the RR norms
