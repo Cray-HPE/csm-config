@@ -66,6 +66,21 @@
       when: ansible_distribution_file_variety == "SUSE"
     - role: csm.ncn.sat
 
+# Install packages on Worker NCNs
+- hosts:
+   - Management_Worker
+  gather_facts: yes
+  any_errors_fatal: true
+  remote_user: root
+  vars_files:
+    - vars/csm_repos.yml
+    - vars/csm_packages.yml
+  roles:
+    - role: csm.packages
+      vars:
+        packages: "{{ common_csm_sles_packages + common_mgmt_ncn_csm_sles_packages + k8s_worker_ncn_csm_sles_packages }}"
+      when: ansible_distribution_file_variety == "SUSE"
+
 # Install packages on storage NCNs
 - hosts:
    - Management_Storage

@@ -62,6 +62,10 @@ k8s_mgmt_ncn_csm_sles_packages:
   - dracut-metal-dmk8s
   - dracut-metal-luksetcd
 
+# All kubernetes Worker NCNs
+k8s_worker_ncn_csm_sles_packages:
+  - csm-udev-network-ncn
+
 # All storage Management NCNs
 storage_mgmt_ncn_csm_sles_packages:
   - smart-mon
@@ -80,6 +84,9 @@ compute_csm_sles_packages:
   - bos-reporter
   - cray-uai-util
   - cray-spire-dracut>=2.0.0
+  - csm-netif-dracut
+  - csm-sbps-dracut
+  - csm-udev-network-cn
 
 # base SLES packages needed for IMS remote build image
 ## NOTE - this is just common_csm_sles_packages with 'hpe-yq' removed
