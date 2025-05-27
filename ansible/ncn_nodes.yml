@@ -78,7 +78,7 @@
   roles:
     - role: csm.packages
       vars:
-        packages: "{{ common_csm_sles_packages + common_mgmt_ncn_csm_sles_packages + k8s_worker_ncn_csm_sles_packages }}"
+        packages: "{{ k8s_worker_ncn_csm_sles_packages }}"
       when: ansible_distribution_file_variety == "SUSE"
 
 # Install packages on storage NCNs
