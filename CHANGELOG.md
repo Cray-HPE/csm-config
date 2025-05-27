@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.34.0] - 2025-05-27
+
+### Added
+- CASMCMS-9439
+  - Added `csm.ssh_config` roles to restore user SSH configuration from Vault
+  - Added calls to this role to top-level NCN playbooks that called `csm.ssh_keys`
+  - Created new top-level playbook `rotate-ssh-config-mgmt-nodes.yml`, akin to `rotate-ssh-keys-mgmt-nodes.yml`
+
+### Changed
+- MTL-2569/MTL-2574/MTL-2556/MTL-2555/MTL-2573: RPMs transferred from COS to CSM
+  - csm-sbps-dracut
+  - csm-sbps-utils
+  - csm-udev-network (cn and ncn)
+  - csm-netif-dracut
+  - csm-scripts-dracut
+
 ## [1.33.0] - 2025-05-12
 ### Added
 - CASM-4872: Rack Resiliency (RR): Provide a method for placement discovery and validation of management nodes in order to meet the RR norms
@@ -606,7 +622,9 @@ CASMPET-7444: handle CRLFs in script output in `sbps_dns_srv_records.sh`
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.33.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.34.0...HEAD
+
+[1.34.0]: https://github.com/Cray-HPE/csm-config/compare/1.33.0...1.34.0
 
 [1.33.0]: https://github.com/Cray-HPE/csm-config/compare/1.32.0...1.33.0
 

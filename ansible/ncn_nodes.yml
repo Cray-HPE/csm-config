@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2024 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2021-2025 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -47,6 +47,9 @@
     - role: csm.ssh_keys
       vars:
         ssh_keys_username: 'root'
+    - role: csm.ssh_config
+      vars:
+        ssh_config_username: 'root'
     - role: csm.ncn.pdsh
 
 # Install packages and configure SAT on Kubernetes NCNs (masters and workers)
@@ -65,6 +68,21 @@
         packages: "{{ common_csm_sles_packages + common_mgmt_ncn_csm_sles_packages + k8s_mgmt_ncn_csm_sles_packages }}"
       when: ansible_distribution_file_variety == "SUSE"
     - role: csm.ncn.sat
+
+# Install packages on Worker NCNs
+- hosts:
+   - Management_Worker
+  gather_facts: yes
+  any_errors_fatal: true
+  remote_user: root
+  vars_files:
+    - vars/csm_repos.yml
+    - vars/csm_packages.yml
+  roles:
+    - role: csm.packages
+      vars:
+        packages: "{{ k8s_worker_ncn_csm_sles_packages }}"
+      when: ansible_distribution_file_variety == "SUSE"
 
 # Install packages on storage NCNs
 - hosts:
@@ -90,4 +108,3 @@
   remote_user: root
   roles:
     - role: csm.storage.smartmon
-
