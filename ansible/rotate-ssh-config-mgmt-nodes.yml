@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2025 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2025 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -22,43 +22,12 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# Deprecation Notice: These top level playbooks are replaced by ncn_nodes.yml
----
-- hosts: all
-  gather_facts: no
-  tasks:
-    - name: DEPRECATION NOTICE
-      debug:
-        msg: "This playbook is marked for deprecation, please use the unified ncn_nodes.yml playbook instead."
-      run_once: true
-      delegate_to: localhost
-
-# NCN Worker Nodes Play, and NCN Worker Images
-- hosts: Management_Worker
-  gather_facts: yes
+# Retrieve the ssh config for management nodes from Vault and apply it
+- hosts: Management
   any_errors_fatal: true
   remote_user: root
-  vars_files:
-    - vars/csm_repos.yml
-    - vars/csm_packages.yml
+
   roles:
-    - role: csm.ncn.sysctl
-      vars:
-        sysctl_set: "{{ false if cray_cfs_image else true|default(false)|bool }}"
-    - role: trust-csm-ssh-keys
-    - role: csm.ca_cert
-    - role: csm.packages
-      vars:
-        packages: "{{ common_csm_sles_packages + common_mgmt_ncn_csm_sles_packages + k8s_mgmt_ncn_csm_sles_packages }}"
-      when: ansible_distribution_file_variety == "SUSE"
-    - role: passwordless-ssh
-    - role: csm.password
-      vars:
-        password_username: 'root'
-    - role: csm.ssh_keys
-      vars:
-        ssh_keys_username: 'root'
     - role: csm.ssh_config
       vars:
-        ssh_config_username: 'root'
-    - role: csm.ncn.sat
+        ssh_config_username: root

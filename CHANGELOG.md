@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- RPM's transferred from COS to CSM
+### Added
+- CASMCMS-9439
+  - Added `csm.ssh_config` roles to restore user SSH configuration from Vault
+  - Added calls to this role to top-level NCN playbooks that called `csm.ssh_keys`
+  - Created new top-level playbook `rotate-ssh-config-mgmt-nodes.yml`, akin to `rotate-ssh-keys-mgmt-nodes.yml`
+
+### Changed
+- MTL-2569/MTL-2574/MTL-2556/MTL-2555/MTL-2573: RPMs transferred from COS to CSM
   - csm-sbps-dracut
   - csm-sbps-utils
   - csm-udev-network (cn and ncn)
