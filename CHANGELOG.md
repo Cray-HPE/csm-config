@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- CASMCMS-9439
+  - Added `csm.ssh_config` roles to restore user SSH configuration from Vault
+  - Added calls to this role to top-level NCN playbooks that called `csm.ssh_keys`
+  - Created new top-level playbook `rotate-ssh-config-mgmt-nodes.yml`, akin to `rotate-ssh-keys-mgmt-nodes.yml`
+
 ## [1.33.0] - 2025-05-12
 ### Added
 - CASM-4872: Rack Resiliency (RR): Provide a method for placement discovery and validation of management nodes in order to meet the RR norms
