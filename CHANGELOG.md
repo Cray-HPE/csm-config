@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.35.0] - 2025-05-28
+
+### Added
+- CASMPET-7260
+  - Added support for selective worker node personalization for iSCSI SBPS
+  - This achieved by creating HSM groups before bootprep time
+  - Added HSM group name `iscsi_worker` in `config_sbps_iscsi_targets.yml` in place of `Management_Worker`
+
 ## [1.34.0] - 2025-05-27
 
 ### Added
@@ -622,7 +630,9 @@ CASMPET-7444: handle CRLFs in script output in `sbps_dns_srv_records.sh`
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.34.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.35.0...HEAD
+
+[1.35.0]: https://github.com/Cray-HPE/csm-config/compare/1.34.0...1.35.0
 
 [1.34.0]: https://github.com/Cray-HPE/csm-config/compare/1.33.0...1.34.0
 
