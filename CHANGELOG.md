@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- CASMCMS-9445: Remove `cray-uai-util` from package list (since UAI/UAS was removed in CSM 1.6)
+
 ## [1.35.0] - 2025-05-28
 
 ### Added
