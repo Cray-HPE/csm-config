@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.36.0] - 2025-05-28
+
+### Removed
+
+- CASMCMS-9445: Remove `cray-uai-util` from package list (since UAI/UAS was removed in CSM 1.6)
+
 ## [1.35.0] - 2025-05-28
 
 ### Added
@@ -630,7 +636,9 @@ CASMPET-7444: handle CRLFs in script output in `sbps_dns_srv_records.sh`
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.35.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.36.0...HEAD
+
+[1.36.0]: https://github.com/Cray-HPE/csm-config/compare/1.35.0...1.36.0
 
 [1.35.0]: https://github.com/Cray-HPE/csm-config/compare/1.34.0...1.35.0
 
