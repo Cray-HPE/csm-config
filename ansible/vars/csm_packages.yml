@@ -74,7 +74,6 @@ storage_mgmt_ncn_csm_sles_packages:
 application_csm_sles_packages:
   - bos-reporter
   - cray-node-exporter
-  - cray-uai-util
   - smart-mon
   - smartmontools
   - cray-spire-dracut>=2.0.0
@@ -82,7 +81,6 @@ application_csm_sles_packages:
 # All Compute nodes
 compute_csm_sles_packages:
   - bos-reporter
-  - cray-uai-util
   - cray-spire-dracut>=2.0.0
   - csm-netif-dracut
   - csm-sbps-dracut
