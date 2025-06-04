@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.38.0] - 2025-06-03
+
+- CASMMON-534: Remove `cray-node-exporter` from package list.
+
 ## [1.37.0] - 2025-05-28
 
 - CASMCMS-9447: Remove top-level playbooks that have been deprecated (in favor of `ncn_nodes.yml`) since CSM 1.4:
@@ -643,7 +647,9 @@ CASMPET-7444: handle CRLFs in script output in `sbps_dns_srv_records.sh`
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.37.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.38.0...HEAD
+
+[1.38.0]: https://github.com/Cray-HPE/csm-config/compare/1.37.0...1.38.0
 
 [1.37.0]: https://github.com/Cray-HPE/csm-config/compare/1.36.0...1.37.0
 

@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2022-2024 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2022-2025 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -151,10 +151,5 @@
     - name: Enable smart service
       systemd:
         name: smart
-        state: started
-        enabled: true
-    - name: Enable cray-node-exporter service
-      systemd:
-        name: cray-node-exporter
         state: started
         enabled: true
