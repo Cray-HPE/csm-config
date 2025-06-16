@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.39.0] - 2025-06-16
+- CASMTRIAGE-8171
+  - Changed the order of iSCSI ansible play books execution in `config_sbps_iscsi_targets.yml`
+  - Added disable the target port functionality in `provision_iscsi_server.sh` 
+
+### Added
+
+
 ## [1.38.0] - 2025-06-03
 
 - CASMMON-534: Remove `cray-node-exporter` from package list.
@@ -88,7 +96,7 @@ CASMPET-7444: handle CRLFs in script output in `sbps_dns_srv_records.sh`
 ## [1.28.0] - 2024-12-10
 ### Fixed
 - CASMTRIAGE-7469 - fixed problems with ansible plays to build IMS remote build node image.
-
+/han
 ## [1.27.4] - 2024-11-08
 
 ### Fixed
