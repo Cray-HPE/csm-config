@@ -68,7 +68,7 @@ for MODULE in Basesystem Certifications Containers Desktop-Applications Developm
 do
     add_zypper_repos "Module-${MODULE}"
 done
-PRODUCTS="HA SLED SLES SLES_SAP WE"
+PRODUCTS="SLES WE"
 if [[ ${SP} -lt 6 ]]; then
     # HPC is deprecated in SP6, but we want to include it for previous SPs
     PRODUCTS="${PRODUCTS} HPC"
