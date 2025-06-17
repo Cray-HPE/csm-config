@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.39.0] - 2025-06-17
+
+- MTL-2581: move uss specific packages into separate vars file to avoid installing them in csm compute images
+
 ## [1.38.0] - 2025-06-03
 
 - CASMMON-534: Remove `cray-node-exporter` from package list.
