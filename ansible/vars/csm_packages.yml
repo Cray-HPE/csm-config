@@ -81,9 +81,6 @@ application_csm_sles_packages:
 compute_csm_sles_packages:
   - bos-reporter
   - cray-spire-dracut>=2.0.0
-  - csm-netif-dracut
-  - csm-sbps-dracut
-  - csm-udev-network-cn
 
 # base SLES packages needed for IMS remote build image
 ## NOTE - this is just common_csm_sles_packages with 'hpe-yq' removed

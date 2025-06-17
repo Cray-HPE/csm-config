@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.39.0] - 2025-06-17
+
+- MTL-2581: move uss specific packages into separate vars file to avoid installing them in csm compute images
+
 ## [1.38.0] - 2025-06-03
 
 - CASMMON-534: Remove `cray-node-exporter` from package list.
@@ -647,7 +651,9 @@ CASMPET-7444: handle CRLFs in script output in `sbps_dns_srv_records.sh`
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.38.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.39.0...HEAD
+
+[1.39.0]: https://github.com/Cray-HPE/csm-config/compare/1.38.0...1.39.0
 
 [1.38.0]: https://github.com/Cray-HPE/csm-config/compare/1.37.0...1.38.0
 
