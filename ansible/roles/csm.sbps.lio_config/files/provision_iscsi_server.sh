@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2025 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2024-2025 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -98,6 +98,5 @@ SERVER_IQN="$(add_server_target)"
 #--------------------------------------------------------------------
 
 auto_generate_node_acls "$SERVER_IQN"
-targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1" disable
 disable_target_port
 save_server_config

@@ -7,19 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.39.0] - 2025-06-16
+## [1.40.0] - 2025-06-18
+
 - CASMTRIAGE-8171
   - Changed the order of iSCSI ansible play books execution in `config_sbps_iscsi_targets.yml`
-  - Added disable the target port functionality in `provision_iscsi_server.sh` 
+  - Added target port disable functionality in `provision_iscsi_server.sh`
 
-### Added
+## [1.39.0] - 2025-06-17
 
+### Changed
+
+- MTL-2581: move uss specific packages into separate vars file to avoid installing them in csm compute images
 
 ## [1.38.0] - 2025-06-03
+
+### Removed
 
 - CASMMON-534: Remove `cray-node-exporter` from package list.
 
 ## [1.37.0] - 2025-05-28
+
+### Removed
 
 - CASMCMS-9447: Remove top-level playbooks that have been deprecated (in favor of `ncn_nodes.yml`) since CSM 1.4:
   - `ncn-master_nodes.yml`
@@ -35,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.35.0] - 2025-05-28
 
 ### Added
+
 - CASMPET-7260
   - Added support for selective worker node personalization for iSCSI SBPS
   - This achieved by creating HSM groups before bootprep time
@@ -43,12 +52,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.34.0] - 2025-05-27
 
 ### Added
+
 - CASMCMS-9439
   - Added `csm.ssh_config` roles to restore user SSH configuration from Vault
   - Added calls to this role to top-level NCN playbooks that called `csm.ssh_keys`
   - Created new top-level playbook `rotate-ssh-config-mgmt-nodes.yml`, akin to `rotate-ssh-keys-mgmt-nodes.yml`
 
 ### Changed
+
 - MTL-2569/MTL-2574/MTL-2556/MTL-2555/MTL-2573: RPMs transferred from COS to CSM
   - csm-sbps-dracut
   - csm-sbps-utils
@@ -57,7 +68,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - csm-scripts-dracut
 
 ## [1.33.0] - 2025-05-12
+
 ### Added
+
 - CASM-4872: Rack Resiliency (RR): Provide a method for placement discovery and validation of management nodes in order to meet the RR norms
 - CASM-4873: Rack Resiliency (RR): Define, create, and configure Management Plane Failure Domains and handle enablement/disablement of the RR feature
 
@@ -72,31 +85,43 @@ RR Ansible plays for:
 ## [1.32.0] - 2025-04-16
 
 ### Fixed
-CASMPET-7443: correctly detect curl failures in `sbps_dns_srv_records.sh`
-CASMPET-7444: handle CRLFs in script output in `sbps_dns_srv_records.sh`
+
+- CASMPET-7443: correctly detect curl failures in `sbps_dns_srv_records.sh`
+- CASMPET-7444: handle CRLFs in script output in `sbps_dns_srv_records.sh`
 
 ### Changed
+
 - CASMTRIAGE-8069: Add `net.ipv4.neigh.default.base_reachable_time_ms` to `roles/csm.ncn.sysctl/vars/main.yml`
 
 ### Dependencies
+
 - Bump `dangoslen/dependabot-changelog-helper` from 3 to 4 ([#340](https://github.com/Cray-HPE/csm-config/pull/340))
 
 ## [1.31.0] - 2025-02-18
+
+### Dependencies
+
 - CASMCMS-9282: Update to `csm-ssh-keys` to v1.7.0 for CSM 1.7
 - CASMCMS-9282: Update to `cf-gitea-import` to v1.11.0 for CSM 1.7
 
 ## [1.30.0] - 2025-01-30
+
 ### Changed
+
 - CASMCMS-9262: Update RPM lists in `vars/csm_packages.yml`
 
 ## [1.29.0] - 2025-01-24
+
 ### Changed
+
 - CASMCMS-9258: Only install `cfs-debugger` RPM on management NCNs.
 
 ## [1.28.0] - 2024-12-10
+
 ### Fixed
+
 - CASMTRIAGE-7469 - fixed problems with ansible plays to build IMS remote build node image.
-/han
+
 ## [1.27.4] - 2024-11-08
 
 ### Fixed
@@ -655,7 +680,11 @@ CASMPET-7444: handle CRLFs in script output in `sbps_dns_srv_records.sh`
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.38.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.40.0...HEAD
+
+[1.40.0]: https://github.com/Cray-HPE/csm-config/compare/1.39.0...1.40.0
+
+[1.39.0]: https://github.com/Cray-HPE/csm-config/compare/1.38.0...1.39.0
 
 [1.38.0]: https://github.com/Cray-HPE/csm-config/compare/1.37.0...1.38.0
 
