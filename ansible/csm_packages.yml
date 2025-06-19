@@ -35,6 +35,7 @@
   vars_files:
     - vars/csm_repos.yml
     - vars/csm_packages.yml
+    - vars/csm_uss_cn_packages.yml
   vars:
     csm_services:
       - bos-reporter
@@ -53,7 +54,7 @@
     # Install CSM repositories and packages
     - role: csm.packages
       vars:
-        packages: "{{ common_csm_sles_packages + application_csm_sles_packages }}"
+        packages: "{{ common_csm_sles_packages + application_csm_sles_packages + uss_compute_application_packages }}"
       when: ansible_distribution_file_variety == "SUSE"
     - role: csm.ca_cert
     - role: trust-csm-ssh-keys
@@ -102,11 +103,12 @@
   vars_files:
     - vars/csm_repos.yml
     - vars/csm_packages.yml
+    - vars/csm_uss_cn_packages.yml
   roles:
     # Install CSM repositories and packages
     - role: csm.packages
       vars:
-        packages: "{{ common_csm_sles_packages + compute_csm_sles_packages }}"
+        packages: "{{ common_csm_sles_packages + compute_csm_sles_packages + uss_compute_application_packages }}"
       when: ansible_distribution_file_variety == "SUSE"
     - role: csm.ca_cert
     - role: trust-csm-ssh-keys
@@ -141,11 +143,12 @@
   vars_files:
     - vars/csm_repos.yml
     - vars/csm_packages.yml
+    - vars/csm_uss_cn_packages.yml
   roles:
     # Install CSM repositories and packages
     - role: csm.packages
       vars:
-        packages: "{{application_csm_sles_packages }}"
+        packages: "{{ application_csm_sles_packages + uss_compute_application_packages }}"
       when: ansible_distribution_file_variety == "SUSE"
   tasks:
     - name: Enable smart service
