@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.40.0] - 2025-06-18
 
+### Changed
+
 - CASMTRIAGE-8171
   - Changed the order of iSCSI ansible play books execution in `config_sbps_iscsi_targets.yml`
   - Added target port disable functionality in `provision_iscsi_server.sh`
