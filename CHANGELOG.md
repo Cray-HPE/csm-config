@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.40.0] - 2025-06-23
+
+### Added
+
+- CASMMON-548: Add `cray-node-exporter` to the  package list. Revert CASMMON-534.
+
 ## [1.39.0] - 2025-06-17
 
 ### Changed
