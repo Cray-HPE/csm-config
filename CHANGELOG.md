@@ -7,13 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.40.0] - 2025-06-18
+## [1.41.0] - 2025-06-25
 
 ### Changed
 
 - CASMTRIAGE-8171
   - Changed the order of iSCSI ansible play books execution in `config_sbps_iscsi_targets.yml`
   - Added target port disable functionality in `provision_iscsi_server.sh`
+
+## [1.40.0] - 2025-06-23
+
+### Added
+
+- CASMMON-548: Add `cray-node-exporter` to the  package list. Revert CASMMON-534.
 
 ## [1.39.0] - 2025-06-17
 
@@ -682,7 +688,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.40.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.41.0...HEAD
+
+[1.41.0]: https://github.com/Cray-HPE/csm-config/compare/1.40.0...1.41.0
 
 [1.40.0]: https://github.com/Cray-HPE/csm-config/compare/1.39.0...1.40.0
 

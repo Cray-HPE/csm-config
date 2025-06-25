@@ -156,3 +156,8 @@
         name: smart
         state: started
         enabled: true
+    - name: Enable cray-node-exporter service
+      systemd:
+        name: cray-node-exporter
+        state: started
+        enabled: true
