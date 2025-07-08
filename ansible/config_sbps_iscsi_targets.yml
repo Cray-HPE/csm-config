@@ -45,6 +45,9 @@
   pre_tasks:
     # Skip this worker if the iSCSI HSM group exists and this host is not in it
     - name: Check if this worker should be skipped
+      # end_host will skip the rest of THIS play, only for THIS host
+      # Other hosts are not impacted
+      # If there are additional plays in this playbook, they are not impacted.
       meta: end_host
       # {{groups}} is a variable containing all host groups. CFS creates a host group for every HSM group.
       # {{group_names}} is a list of host groups to which the current host belongs.
