@@ -32,14 +32,26 @@
 #   - mount s3 bucket (boot-image) images using new dedicated s3 read only policy
 #   - apply k8s label to the personalized nodes for other consumers of iSCSI SBPS
 # 
-# By default all the worker nodes (Management_Worker) will be configured OR 
-# admin/ user can chose to configure only subset of worker nodes defined in 
-# CFS config/ HSM group during personalization.
+# All the worker nodes (Management_Worker) will be configured.
+# By default, all of the worker nodes will have the Kubernetes iscsi label applied, and will
+# be included in the DNS record updates. This is the case unless
+# the HSM group defined below (under iscsi_group_name) exists. If that HSM group exists,
+# then:
+# 1. All worker nodes belonging to that group will have the Kubernetes iscsi label applied, and will
+#    be included in the DNS record updates.
+# 2. All worker nodes NOT belonging to that group will have the Kubernetes iscsi label removed, and
+#    it will not be included in the DNS record updates. However, if it was included on a previous
+#    run of this playbook, then removal of the DNS records must be done manually by the administrator.
 #
-- hosts: iscsi_worker:!cfs_image
-  gather_facts: no
+- hosts: Management_Worker:!cfs_image
+  gather_facts: yes
+  # We need to get ansible_hostname set
+  gather_subset: min
   any_errors_fatal: true
   remote_user: root
+  vars:
+    iscsi_group_name: "iscsi_worker"
+    iscsi_label_value: "sbps"
   roles:
     # Apply k8s label on all the intended worker nodes
     - role: csm.sbps.apply_label
