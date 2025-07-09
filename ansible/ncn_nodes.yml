@@ -108,3 +108,45 @@
   remote_user: root
   roles:
     - role: csm.storage.smartmon
+
+# This play runs on all worker NCNs, but not their images.
+# It contains a pre_task which skips the play for a given worker
+# if both of the following things are true:
+# 1. The HSM group defined in the play (in the iscsi_group_name variable) exists.
+# 2. The worker does not belong to that group.
+#
+# Personalize/ configure identified worker nodes for iSCSI SBPS (Scalable Boot
+# Content Projection Service):
+#   - provision these worker nodes as iSCSI targets with LIO services
+#   - install/ enable SBPS Marshal Agent(systemd service) on these iSCSI targets
+#   - create DNS SRV and A records to be used to discover iSCSI targets during compute nodes booting
+#   - mount s3 bucket (boot-image) images using new dedicated s3 read only policy
+#   - apply k8s label to the personalized nodes for other consumers of iSCSI SBPS
+
+- hosts: Management_Worker:!cfs_image
+  gather_facts: no
+  any_errors_fatal: true
+  remote_user: root
+  vars:
+    iscsi_group_name: "iscsi_worker"
+  pre_tasks:
+    # Skip this worker if the iSCSI HSM group exists and this host is not in it
+    - name: Check if this worker should be skipped
+      # end_host will skip the rest of THIS play, only for THIS host
+      # Other hosts are not impacted
+      # If there are additional plays in this playbook, they are not impacted.
+      meta: end_host
+      # {{groups}} is a variable containing all host groups. CFS creates a host group for every HSM group.
+      # {{group_names}} is a list of host groups to which the current host belongs.
+      when: (iscsi_group_name in groups) and (iscsi_group_name not in group_names)
+  roles:
+    # Apply k8s label on all the intended worker nodes
+    - role: csm.sbps.apply_label
+    # Enable spire for SBPS Marshal Agent (systemd service)
+    - role: csm.sbps.enable_spire
+    # Provision iSCSI targets/ LIO services
+    - role: csm.sbps.lio_config
+    # Install and enable SBPS Marshal Agent
+    - role: csm.sbps.install_enable_marshal
+    # Configure SBPS DNS "SRV" and "A" records
+    - role: csm.sbps.dns_srv_records

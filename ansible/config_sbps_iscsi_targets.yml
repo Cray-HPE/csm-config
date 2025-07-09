@@ -32,14 +32,26 @@
 #   - mount s3 bucket (boot-image) images using new dedicated s3 read only policy
 #   - apply k8s label to the personalized nodes for other consumers of iSCSI SBPS
 # 
-# By default all the worker nodes (Management_Worker) will be configured OR 
-# admin/ user can chose to configure only subset of worker nodes defined in 
-# CFS config/ HSM group during personalization.
-#
-- hosts: iscsi_worker:!cfs_image
+# By default all the worker nodes (Management_Worker) will be configured, unless
+# the HSM group defined below (under iscsi_group_name) exists. If that HSM group exists,
+# then all workers belonging to that group will be configured.
+
+- hosts: Management_Worker:!cfs_image
   gather_facts: no
   any_errors_fatal: true
   remote_user: root
+  vars:
+    iscsi_group_name: "iscsi_worker"
+  pre_tasks:
+    # Skip this worker if the iSCSI HSM group exists and this host is not in it
+    - name: Check if this worker should be skipped
+      # end_host will skip the rest of THIS play, only for THIS host
+      # Other hosts are not impacted
+      # If there are additional plays in this playbook, they are not impacted.
+      meta: end_host
+      # {{groups}} is a variable containing all host groups. CFS creates a host group for every HSM group.
+      # {{group_names}} is a list of host groups to which the current host belongs.
+      when: (iscsi_group_name in groups) and (iscsi_group_name not in group_names)
   roles:
     # Apply k8s label on all the intended worker nodes
     - role: csm.sbps.apply_label
