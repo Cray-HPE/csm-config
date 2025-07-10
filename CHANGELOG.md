@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.42.0] - 2025-07-10
+
 ### Changed
 
 - CASMPET-7616: Modify iSCSI playbook to be aware of new HSM group
@@ -699,7 +701,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.41.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.42.0...HEAD
+
+[1.42.0]: https://github.com/Cray-HPE/csm-config/compare/1.41.0...1.42.0
 
 [1.41.0]: https://github.com/Cray-HPE/csm-config/compare/1.40.0...1.41.0
 
