@@ -1,4 +1,4 @@
-csm.sbps.apply_k8s_label
+csm.sbps.apply_label
 ========================
 
 Apply k8s label on intended worker nodes
