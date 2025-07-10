@@ -34,7 +34,7 @@ Example Playbook
         iscsi_label_value: "sbps"
       roles:
         # Apply k8s label on intended worker nodes
-        - role: csm.sbps.apply_k8s_label
+        - role: csm.sbps.apply_label
 ```
 
 License
