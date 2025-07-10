@@ -14,7 +14,7 @@ Role Variables
 | *Variable*          | *Description*       |
 | ------------------- | ------------------- |
 | `iscsi_group_name`  | Name of the HSM group that can be used to limit the iSCSI worker nodes (default: `iscsi_worker`)                           |
-| `iscsi_label_value` | Value of the Kubernetes `iscsi` label trhat indicates a worker is intended to be used as an iSCSI target (default: `sbps`) |
+| `iscsi_label_value` | Value of the Kubernetes `iscsi` label that indicates a worker is intended to be used as an iSCSI target (default: `sbps`) |
 
 Dependencies
 ------------
