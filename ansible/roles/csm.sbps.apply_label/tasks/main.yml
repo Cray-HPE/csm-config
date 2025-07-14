@@ -28,6 +28,21 @@
 # then all workers belonging to that group will be configured.
 
 #  Add or remove the k8s label on worker nodes to match the HSM group
+- name: Determine intersection of HSM iSCSI group and NCN worker nodes
+  # {{groups}} is a variable containing all host groups. CFS creates a host group for every HSM group.
+  when: iscsi_group_name in groups
+  run_once: true
+  delegate_to: localhost
+  set_fact:
+    iscsi_group_has_worker: "{{ groups['Management_Worker'] | intersect(groups[iscsi_group_name]) | length > 0 }}"
+- name: Verify HSM iSCSI group contains at least one worker node
+  # {{groups}} is a variable containing all host groups. CFS creates a host group for every HSM group.
+  when: iscsi_group_name in groups
+  delegate_to: localhost
+  ansible.builtin.assert:
+    that: iscsi_group_has_worker
+    fail_msg: "HSM group \"{{iscsi_group_name}}\" contains no worker NCNs"
+    success_msg: "HSM group \"{{iscsi_group_name}}\" contains at least 1 worker NCN"
 - name: Get Kubernetes node info
   kubernetes.core.k8s_info:
     api_version: v1

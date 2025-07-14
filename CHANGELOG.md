@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.42.1] - 2025-07-14
+
+### Changed
+
+- CASMPET-7624: Add check to beginning of `csm.sbps.apply_label`, to make sure that if the HSM iSCSI
+  group exists, that it contains at least one worker NCN. If it does not, fail the playbook for all hosts
+  with an appropriate error message.
+
 ## [1.42.0] - 2025-07-10
 
 ### Changed
@@ -701,7 +709,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.42.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.42.1...HEAD
+
+[1.42.1]: https://github.com/Cray-HPE/csm-config/compare/1.42.0...1.42.1
 
 [1.42.0]: https://github.com/Cray-HPE/csm-config/compare/1.41.0...1.42.0
 
