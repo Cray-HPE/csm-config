@@ -45,7 +45,5 @@
   shell: |
     cp ceph_haproxy.sh /tmp/ceph_haproxy.sh && chmod +x /tmp/ceph_haproxy.sh && /tmp/ceph_haproxy.sh
   when: ceph_zoning_result.rc == 0
-  delegate_to: "{{ item }}"
-  loop: "{{ play_hosts }}"
   register: ceph_haproxy_result
   changed_when: ceph_haproxy_result.rc == 0

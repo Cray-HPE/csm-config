@@ -62,10 +62,9 @@ for section in "${sections[@]}"; do
     if [ -z "$hosts" ]; then
         log "No entries with missing IPs found for $label"
         continue
-    else
-        log "$label contains entries with missing IPs for hosts - $hosts"
-        hosts_found=true
     fi
+    log "$label contains entries with missing IPs for hosts - $hosts"
+    hosts_found=true
 
     for host in $hosts; do
         ip=$(ceph mon dump | grep "${host}" | awk '{ print $2 }' | awk -F'[:,/]' '{print $2}') || fail "Failed to get IP for host $host"
@@ -83,15 +82,15 @@ for section in "${sections[@]}"; do
     done
 done
 
-if [ "$hosts_found" = true ]; then
-    log "Replacing haproxy.cfg with updated config"
-    mv "$haproxy_temp_file" /etc/haproxy/haproxy.cfg || fail "Failed to replace haproxy.cfg"
+[ "$hosts_found" = true ] || exit 0
 
-    log "Enabling haproxy.service"
-    systemctl enable haproxy.service || fail "Failed to enable haproxy.service"
+log "Replacing haproxy.cfg with updated config"
+mv "$haproxy_temp_file" /etc/haproxy/haproxy.cfg || fail "Failed to replace haproxy.cfg"
 
-    log "Restarting haproxy.service"
-    systemctl restart haproxy.service || fail "Failed to restart haproxy.service"
+log "Enabling haproxy.service"
+systemctl enable haproxy.service || fail "Failed to enable haproxy.service"
 
-    log "HAProxy config update completed successfully!"
-fi
+log "Restarting haproxy.service"
+systemctl restart haproxy.service || fail "Failed to restart haproxy.service"
+
+log "HAProxy config update completed successfully!"

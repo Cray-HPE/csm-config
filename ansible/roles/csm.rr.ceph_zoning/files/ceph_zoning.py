@@ -147,7 +147,7 @@ def service_zoning(positions_dict: Dict[str, List[str]], sn_count_in_rack: int) 
         logger.error("Minimum 3 racks with storage nodes are needed for optimal distribution of CEPH data")
         sys.exit(1)
 
-    # We will be modifying only monitors count to 5 if there are more storage nodes
+    # We will be modifying monitors count to a maximum of 5, if there are more storage nodes,
     # to provide more fault tolerance.
     # For all the other services, the count will be 3 only.
     if number_of_nodes in [3, 4]:
