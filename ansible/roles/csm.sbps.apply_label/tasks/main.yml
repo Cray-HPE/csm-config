@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2024 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2024-2025 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -23,8 +23,41 @@
 #
 ---
 
-#  Apply k8s label on all the intended worker nodes
-- name: Apply k8s label on worker nodes
-  script: apply_k8s_label.sh
-  register: apply_k8s_label
-  changed_when: apply_k8s_label.rc == 0
+# By default all the worker nodes (Management_Worker) will be configured, unless
+# the HSM group defined below (under iscsi_group_name) exists. If that HSM group exists,
+# then all workers belonging to that group will be configured.
+
+#  Add or remove the k8s label on worker nodes to match the HSM group
+- name: Get Kubernetes node info
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Node
+    name: "{{ansible_hostname}}"
+  register: node_info
+  failed_when: node_info.resources is not defined or node_info.resources | length == 0
+- name: Check iSCSI label and HSM group
+  set_fact:
+    has_iscsi_label: "{{ 'iscsi' in node_info.resources[0].metadata.labels and node_info.resources[0].metadata.labels['iscsi'] == iscsi_label_value }}"
+    # {{groups}} is a variable containing all host groups. CFS creates a host group for every HSM group.
+    # {{group_names}} is a list of host groups to which the current host belongs.
+    intended_for_iscsi: "{{ (iscsi_group_name not in groups) or (iscsi_group_name in group_names) }}"
+- name: Add label
+  kubernetes.core.k8s:
+    api_version: v1
+    kind: Node
+    name: "{{ansible_hostname}}"
+    definition:
+      metadata:
+        labels:
+          iscsi: "{{iscsi_label_value}}"
+  when: intended_for_iscsi and not has_iscsi_label
+- name: Remove label
+  kubernetes.core.k8s:
+    api_version: v1
+    kind: Node
+    name: "{{ansible_hostname}}"
+    definition:
+      metadata:
+        labels:
+          iscsi: null
+  when: not intended_for_iscsi and has_iscsi_label

@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.42.0] - 2025-07-14
+## [1.43.0] - 2025-07-14
 
 ### Changed
 
@@ -15,6 +15,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Changed the hosts for RR CEPH ansible play books in `rack_resiliency_for_mgmt_nodes.yml`
   - Added new tasks for CEPH haproxy config update in `main.yml` for role `csm.rr.ceph_zoning`
   - Updated logic in scripts `ceph_zoning.py` and `ceph_haproxy.sh`
+
+## [1.42.0] - 2025-07-10
+
+### Changed
+
+- CASMPET-7616: Modify iSCSI playbook to be aware of new HSM group
+  - The playbook runs on all worker nodes, and does the iSCSI configuration on all of them.
+  - The `csm.sbps.apply_label` role behavior has changed. Now all workers in the group will have the
+    label applied to them, and all workers not in the group will have the label removed from them.
+  - The `csm.sbps.dns_srv_records` role previously queried SLS and made DNS entries for all worker
+    nodes. Now it instead does this for all worker nodes that have the iSCSI Kubernetes label.
+  - For the purposes of these changes, if the new HSM group does not exist, it is the same as if it
+    exists and all workers belong to it.
 
 ## [1.41.0] - 2025-06-25
 
@@ -697,7 +710,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.41.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.42.0...HEAD
+
+[1.42.0]: https://github.com/Cray-HPE/csm-config/compare/1.41.0...1.42.0
 
 [1.41.0]: https://github.com/Cray-HPE/csm-config/compare/1.40.0...1.41.0
 
