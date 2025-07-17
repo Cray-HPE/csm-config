@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.43.0] - 2025-07-14
+## [1.43.0] - 2025-07-17
 
 ### Added
 
@@ -18,6 +18,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CASM-5626
   - Changed the hosts for RR CEPH ansible play books in `rack_resiliency_for_mgmt_nodes.yml`
   - Updated logic in scripts `ceph_zoning.py` and `ceph_haproxy.sh`
+
+## [1.42.1] - 2025-07-15
+
+### Changed
+- CASMPET-7624: Add check to beginning of `csm.sbps.apply_label`, to make sure that if the HSM iSCSI
+  group exists, that it contains at least one worker NCN. If it does not, fail the playbook for all hosts
+  with an appropriate error message.
+- CASMPET-7625: Modified apply_label role to run only once, and inside the CFS pod, since nothing it does requires
+  the target nodes to be up and running. This will allow node labels to be updated for every worker, whether or not they
+  are up at the time the playbook is run.
 
 ## [1.42.0] - 2025-07-10
 
@@ -715,7 +725,9 @@ RR Ansible plays for:
 
 [Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.43.0...HEAD
 
-[1.43.0]: https://github.com/Cray-HPE/csm-config/compare/1.42.0...1.43.0
+[1.43.0]: https://github.com/Cray-HPE/csm-config/compare/1.42.1...1.43.0
+
+[1.42.1]: https://github.com/Cray-HPE/csm-config/compare/1.42.0...1.42.1
 
 [1.42.0]: https://github.com/Cray-HPE/csm-config/compare/1.41.0...1.42.0
 
