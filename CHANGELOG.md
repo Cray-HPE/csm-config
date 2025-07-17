@@ -9,11 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.43.0] - 2025-07-14
 
+### Added
+
+- CASM-5626: Added new tasks for CEPH haproxy config update in `main.yml` for role `csm.rr.ceph_zoning`
+
 ### Changed
 
 - CASM-5626
   - Changed the hosts for RR CEPH ansible play books in `rack_resiliency_for_mgmt_nodes.yml`
-  - Added new tasks for CEPH haproxy config update in `main.yml` for role `csm.rr.ceph_zoning`
   - Updated logic in scripts `ceph_zoning.py` and `ceph_haproxy.sh`
 
 ## [1.42.0] - 2025-07-10
