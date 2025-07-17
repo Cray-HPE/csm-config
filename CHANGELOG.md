@@ -710,7 +710,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.42.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.43.0...HEAD
+
+[1.43.0]: https://github.com/Cray-HPE/csm-config/compare/1.42.0...1.43.0
 
 [1.42.0]: https://github.com/Cray-HPE/csm-config/compare/1.41.0...1.42.0
 
