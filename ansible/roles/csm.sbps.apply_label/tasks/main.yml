@@ -27,37 +27,36 @@
 # the HSM group defined below (under iscsi_group_name) exists. If that HSM group exists,
 # then all workers belonging to that group will be configured.
 
+# {{groups}} is a variable containing all host groups. CFS creates a host group for every HSM group.
+# {{group_names}} is a list of host groups to which the current host belongs.
+
 #  Add or remove the k8s label on worker nodes to match the HSM group
-- name: Get Kubernetes node info
-  kubernetes.core.k8s_info:
-    api_version: v1
-    kind: Node
-    name: "{{ansible_hostname}}"
-  register: node_info
-  failed_when: node_info.resources is not defined or node_info.resources | length == 0
-- name: Check iSCSI label and HSM group
+- name: All workers are intended for iSCSI by default
+  run_once: true
+  delegate_to: localhost
   set_fact:
-    has_iscsi_label: "{{ 'iscsi' in node_info.resources[0].metadata.labels and node_info.resources[0].metadata.labels['iscsi'] == iscsi_label_value }}"
-    # {{groups}} is a variable containing all host groups. CFS creates a host group for every HSM group.
-    # {{group_names}} is a list of host groups to which the current host belongs.
-    intended_for_iscsi: "{{ (iscsi_group_name not in groups) or (iscsi_group_name in group_names) }}"
-- name: Add label
-  kubernetes.core.k8s:
-    api_version: v1
-    kind: Node
-    name: "{{ansible_hostname}}"
-    definition:
-      metadata:
-        labels:
-          iscsi: "{{iscsi_label_value}}"
-  when: intended_for_iscsi and not has_iscsi_label
-- name: Remove label
-  kubernetes.core.k8s:
-    api_version: v1
-    kind: Node
-    name: "{{ansible_hostname}}"
-    definition:
-      metadata:
-        labels:
-          iscsi: null
-  when: not intended_for_iscsi and has_iscsi_label
+    iscsi_workers: "{{ groups['Management_Worker'] }}"
+
+- name: Only workers in HSM group are intended for iSCSI
+  run_once: true
+  delegate_to: localhost
+  set_fact:
+    # Overwrite the fact from the previous step with the intersection of itself and the HSM group
+    iscsi_workers: "{{ groups[iscsi_group_name] | intersect(iscsi_workers) }}"
+  when: iscsi_group_name in groups
+
+- name: Verify HSM iSCSI group contains at least one worker node
+  run_once: true
+  delegate_to: localhost
+  when: iscsi_group_name in groups
+  ansible.builtin.assert:
+    that: iscsi_workers | length > 0
+    fail_msg: "HSM group \"{{iscsi_group_name}}\" contains no worker NCNs"
+    success_msg: "HSM group \"{{iscsi_group_name}}\" contains at least 1 worker NCN"
+
+- name: Update labels
+  ansible.builtin.include_tasks:
+    file: update_labels.yml
+  loop: "{{ groups['Management_Worker'] }}"
+  loop_control:
+    loop_var: xname
