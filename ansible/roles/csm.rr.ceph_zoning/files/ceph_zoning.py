@@ -137,7 +137,9 @@ def service_zoning(positions_dict: Dict[str, List[str]], sn_count_in_rack: int) 
     Return nothing.
     """
     service_node_list = []
+    remaining_service_node_list = []
     mon_count = 0
+    remaining_service_count = 3
     command = "ceph node ls | jq '.osd | keys | length'"
     number_of_nodes = int(run_command(command))
 
@@ -145,6 +147,9 @@ def service_zoning(positions_dict: Dict[str, List[str]], sn_count_in_rack: int) 
         logger.error("Minimum 3 racks with storage nodes are needed for optimal distribution of CEPH data")
         sys.exit(1)
 
+    # We will be modifying monitors count to a maximum of 5, if there are more storage nodes,
+    # to provide more fault tolerance.
+    # For all the other services, the count will be 3 only.
     if number_of_nodes in [3, 4]:
         mon_count = 3
     elif number_of_nodes >= 5:
@@ -171,27 +176,41 @@ def service_zoning(positions_dict: Dict[str, List[str]], sn_count_in_rack: int) 
         if count == mon_count:
             break
 
-    logger.debug(f"Selected nodes on which CEPH services be running: {service_node_list}")
-    nodes_output = " ".join(service_node_list)
-    nodes_count = len(service_node_list)
-    if nodes_count < 1:
+   # Select the storage nodes on which other CEPH services apart from mon are to be run in round robin way across racks
+    count = 0
+    while count < remaining_service_count:
+        for nodes in positions_dict.values():
+            for node in nodes:
+                if re.match(r"^.*ncn-s[0-9][0-9][0-9]$", node) and node not in remaining_service_node_list:
+                    remaining_service_node_list.append(node)
+                    count += 1
+                    break
+            if count == remaining_service_count:
+                break
+        if count == remaining_service_count:
+            break
+
+    logger.debug(f"Selected nodes on which CEPH mon service be running: {service_node_list}")
+    logger.debug(f"Selected nodes on which remaining CEPH services be running: {remaining_service_node_list}")
+    mon_nodes_output = " ".join(service_node_list)
+    mon_nodes_count = len(service_node_list)
+    remaining_service_nodes_output = " ".join(remaining_service_node_list)
+    remaining_service_nodes_count = len(remaining_service_node_list)
+    if mon_nodes_count < 1 or remaining_service_nodes_count < 1:
         logger.error("ceph service node list is empty or storage nodes not found")
         sys.exit(1)
 
-    # Apply services (MON, MGR, MDS)
-    for service in ['mon', 'mgr', 'mds admin-tools', 'mds cephfs']:
-        logger.info(f"Applying {service} service on nodes {nodes_output}")
-        run_command(f"ceph orch apply {service} --placement=\"" + str(nodes_count) + " " + nodes_output + "\"")
+    # Apply CEPH monitor service
+    logger.info(f"Applying CEPH mon service on nodes {mon_nodes_output}")
+    run_command(f"ceph orch apply mon --placement=\"" + str(mon_nodes_count) + " " + mon_nodes_output + "\"")
+
+    # Apply services (MGR, MDS)
+    for service in ['mgr', 'mds admin-tools', 'mds cephfs']:
+        logger.info(f"Applying {service} service on nodes {remaining_service_nodes_output}")
+        run_command(f"ceph orch apply {service} --placement=\"" + str(remaining_service_nodes_count) + " " + remaining_service_nodes_output + "\"")
 
     run_command("sleep 30")
-    shell_script="/tmp/ceph_haproxy.sh"
-    process = subprocess.Popen([shell_script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, bufsize=1)
 
-    # To capture and display output from the ceph_haproxy.sh script
-    for line in process.stdout:
-        logger.debug(line.strip())
-    exit_code = process.wait()
-    logger.debug(f"ceph_haproxy.sh exited with code {exit_code}")
 
 def main() -> None:
     """
