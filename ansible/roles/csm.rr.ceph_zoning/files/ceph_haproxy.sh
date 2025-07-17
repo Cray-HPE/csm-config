@@ -25,53 +25,72 @@
 
 # When CEPH services distribution is modified as a result of CEPH zoning,
 # there would be entries in haproxy with missing IPs which is updated using this script.
-# Also, this updates ceph.conf accross all storage nodes with latest configuration. 
+# Also, this script updates ceph.conf accross all storage nodes with latest configuration.
 
-echo "Generating minimal configuration and copying updated ceph.conf"
-ceph config generate-minimal-conf > /etc/ceph/ceph_conf_min
-cp /etc/ceph/ceph_conf_min /etc/ceph/ceph.conf
-for host in $(ceph node ls| jq -r '.osd|keys[]'); do
-  echo "Copying ceph.conf to $host"
-  scp /etc/ceph/ceph.conf $host:/etc/ceph
+set -euo pipefail
+
+log() {
+    echo "[INFO] $1"
+}
+
+fail() {
+    echo "[ERROR] $1" >&2
+    exit 1
+}
+
+log "Updating ceph.conf with latest configuration"
+ceph config generate-minimal-conf > /etc/ceph/ceph_conf_min || fail "Failed to generate ceph configuration"
+cp /etc/ceph/ceph_conf_min /etc/ceph/ceph.conf || fail "Failed to copy ceph configuration to /etc/ceph/ceph.conf"
+
+log "Generating temporary haproxy config"
+haproxy_temp_file="/etc/haproxy/haproxy_temp.cfg"
+srv/cray/scripts/metal/generate_haproxy_cfg.sh > "$haproxy_temp_file" || fail "Failed to generate haproxy config"
+
+log "Parsing generated haproxy config"
+hosts_found=false
+
+sections=("mgr:3000:grafana-backend" "rgw0:8080:rgw-backend" "mgr:8443:dashboard_back_ssl")
+for section in "${sections[@]}"; do
+    svc=$(echo "$section" | cut -d':' -f1)
+    port=$(echo "$section" | cut -d':' -f2)
+    label=$(echo "$section" | cut -d':' -f3)
+
+    log "Processing section: $label (svc=$svc, port=$port)"
+
+    hosts=$(sed -n "s/.*server server-\([a-z0-9\-]*\)-$svc :$port check weight 100.*/\1/p" "$haproxy_temp_file") || fail "Failed to parse hosts for $label"
+
+    if [ -z "$hosts" ]; then
+        log "No entries with missing IPs found for $label"
+        continue
+    fi
+    log "$label contains entries with missing IPs for hosts - $hosts"
+    hosts_found=true
+
+    for host in $hosts; do
+        ip=$(ceph mon dump | grep "${host}" | awk '{ print $2 }' | awk -F'[:,/]' '{print $2}') || fail "Failed to get IP for host $host"
+
+        if [ -z "$ip" ]; then
+            fail "Could not resolve IP for host $host"
+        fi
+
+        old_pattern="server server-$host-$svc :$port check weight 100"
+        new_pattern="server server-$host-$svc ${ip}:$port check weight 100"
+
+        log "Updating $label config for host $host: $old_pattern -> $new_pattern"
+
+        sed -i "s|$old_pattern|$new_pattern|" "$haproxy_temp_file" || fail "Failed to update haproxy config for $host"
+    done
 done
 
-for host in $(ceph node ls| jq -r '.osd|keys[]'); do
-  ssh -T -q $host << 'EOF'
-    haproxy_temp_file="/etc/haproxy/haproxy_temp.cfg"
-    /srv/cray/scripts/metal/generate_haproxy_cfg.sh > $haproxy_temp_file
+[ "$hosts_found" = true ] || exit 0
 
-    hosts=$(sed -n 's/.*server server-\([a-z0-9\-]*\)-mgr :3000 check weight 100.*/\1/p' "$haproxy_temp_file")
-    echo "grafana-backend entries in haproxy config that are missing IPs are - \"${hosts}\""
-    for host in $hosts; do
-      ip=$(ceph mon dump | grep ${host} | awk '{ print $2 }' |  awk -F'[:,/]' '{print $2}')
-      old_pattern="server server-$host-mgr :3000 check weight 100"
-      new_pattern="server server-$host-mgr $ip:3000 check weight 100"
-      echo "Updated entry with IP for grafana-backend section - \"${new_pattern}\""
-      sed -i "s|$old_pattern|$new_pattern|" "$haproxy_temp_file"
-    done
+log "Replacing haproxy.cfg with updated config"
+mv "$haproxy_temp_file" /etc/haproxy/haproxy.cfg || fail "Failed to replace haproxy.cfg"
 
-    hosts=$(sed -n 's/.*server server-\([a-z0-9\-]*\)-rgw0 :8080 check weight 100.*/\1/p' "$haproxy_temp_file")
-    echo "rgw-backend entries in haproxy config that are missing IPs are - \"${hosts}\""
-    for host in $hosts; do
-      ip=$(ceph mon dump | grep ${host} | awk '{ print $2 }' |  awk -F'[:,/]' '{print $2}')
-      old_pattern="server server-$host-rgw0 :8080 check weight 100"
-      new_pattern="server server-$host-rgw0 $ip:8080 check weight 100"
-      echo "Updated entry with IP for rgw-backend section - \"${new_pattern}\""
-      sed -i "s|$old_pattern|$new_pattern|" "$haproxy_temp_file"
-    done
+log "Enabling haproxy.service"
+systemctl enable haproxy.service || fail "Failed to enable haproxy.service"
 
-    hosts=$(sed -n 's/.*server server-\([a-z0-9\-]*\)-mgr :8443 check weight 100.*/\1/p' "$haproxy_temp_file")
-    echo "dashboard_back_ssl entries in haproxy config that are missing IPs are - \"${hosts}\""
-    for host in $hosts; do
-      ip=$(ceph mon dump | grep ${host} | awk '{ print $2 }' |  awk -F'[:,/]' '{print $2}')
-      old_pattern="server server-$host-mgr :8443 check weight 100"
-      new_pattern="server server-$host-mgr $ip:8443 check weight 100"
-      echo "Updated entry with IP for dashboard_back_ssl section - \"${new_pattern}\""
-      sed -i "s|$old_pattern|$new_pattern|" "$haproxy_temp_file"
-    done
+log "Restarting haproxy.service"
+systemctl restart haproxy.service || fail "Failed to restart haproxy.service"
 
-mv $haproxy_temp_file /etc/haproxy/haproxy.cfg
-systemctl enable haproxy.service
-systemctl restart haproxy.service
-EOF
-done
+log "HAProxy config update completed successfully!"

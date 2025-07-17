@@ -31,14 +31,6 @@
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
 
-- name: Copy the haproxy file to the target machine
-  copy:
-    src: ceph_haproxy.sh
-    dest: /tmp/ceph_haproxy.sh
-    mode: +x
-  delegate_to: "{{ play_hosts | first }}"
-  run_once: true
-
 - name: Apply CEPH zoning
   script: ceph_zoning.py /tmp/rack_info.txt
   args:
@@ -48,3 +40,10 @@
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
   changed_when: ceph_zoning_result.rc == 0
+
+- name: Copy and execute the ceph_haproxy script on the target machine
+  shell: |
+    cp ceph_haproxy.sh /tmp/ceph_haproxy.sh && chmod +x /tmp/ceph_haproxy.sh && /tmp/ceph_haproxy.sh
+  when: ceph_zoning_result.rc == 0
+  register: ceph_haproxy_result
+  changed_when: ceph_haproxy_result.rc == 0
