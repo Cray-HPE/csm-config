@@ -40,13 +40,21 @@
     # Perform k8s zoning
     - role: csm.rr.k8s_topology_zoning
 
-- hosts: Management_Storage:!cfs_image
+- hosts: Management_Master:!cfs_image
   gather_facts: no
   any_errors_fatal: true
   remote_user: root
   roles:
     # Perform CEPH zoning
     - role: csm.rr.ceph_zoning
+
+- hosts: Management_Storage:!cfs_image
+  gather_facts: no
+  any_errors_fatal: true
+  remote_user: root
+  roles:
+    # Update CEPH haproxy
+    - role: csm.rr.ceph_haproxy
 
 - hosts: Management_Master:!cfs_image
   gather_facts: no

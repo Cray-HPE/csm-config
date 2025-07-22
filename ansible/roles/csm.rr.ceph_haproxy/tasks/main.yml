@@ -22,21 +22,16 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 ---
-# Apply CEPH zoning to make sure CEPH data gets replicated at rack level, 
-# so that there would not be data loss incase of a rack failure.
-- name: Check for mgmt nodes placement discovery file
-  stat:
-    path: "/tmp/rack_info.txt"
-  register: placement_file
-  delegate_to: "{{ play_hosts | first }}"
-  run_once: true
+# Updates CEPH haproxy configuration with latest information after performing CEPH zoning
+# and also update ceph.conf on all storage nodes with latest configuration.
 
-- name: Apply CEPH zoning
-  script: ceph_zoning.py /tmp/rack_info.txt
-  args:
-    executable: python3
-  when: placement_file.stat.exists
-  register: ceph_zoning_result
-  delegate_to: "{{ play_hosts | first }}"
-  run_once: true
-  changed_when: ceph_zoning_result.rc == 0
+- name: Copy ceph_haproxy.sh script to the target machine
+  copy:
+    src: ceph_haproxy.sh
+    dest: /tmp/ceph_haproxy.sh
+
+- name: Execute the ceph_haproxy script on the target machine
+  shell: |
+    chmod +x /tmp/ceph_haproxy.sh && /tmp/ceph_haproxy.sh
+  register: ceph_haproxy_result
+  changed_when: ceph_haproxy_result.rc == 0

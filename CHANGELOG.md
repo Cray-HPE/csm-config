@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.44.0] - 2025-07-22
+
+### Changed
+
+- CASM-5626
+  - CASM-5656: Added and modified tasks for CEPH haproxy config update in `main.yml` for role `csm.rr.ceph_zoning`
+  - Changed the hosts for RR CEPH ansible play books in `rack_resiliency_for_mgmt_nodes.yml`
+  - Fixed typo in `ceph_haproxy.sh`
+
 ## [1.43.0] - 2025-07-17
 
 ### Added
@@ -723,7 +732,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.43.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.44.0...HEAD
+
+[1.44.0]: https://github.com/Cray-HPE/csm-config/compare/1.43.0...1.44.0
 
 [1.43.0]: https://github.com/Cray-HPE/csm-config/compare/1.42.1...1.43.0
 
