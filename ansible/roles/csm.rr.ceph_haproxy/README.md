@@ -18,7 +18,7 @@ Example Playbook
 ----------------
 
 ```yaml
-    - hosts: Management_Storage
+    - hosts: Management_Storage:!cfs_image
       gather_facts: no
       any_errors_fatal: true
       remote_user: root

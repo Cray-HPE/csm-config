@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Tasks related to CEPH haproxy are moved from `csm.rr.ceph_zoning` to above new role
   - playbook `rack_resiliency_for_mgmt_nodes.yml` is update accordingly with above changes
 
-### Changed
+### Fixed
 
 - CASM-5656
   - Fixed typo in `ceph_haproxy.sh` of role `csm.rr.ceph_haproxy`
