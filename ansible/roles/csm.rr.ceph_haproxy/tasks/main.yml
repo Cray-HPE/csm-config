@@ -35,3 +35,8 @@
     chmod +x /tmp/ceph_haproxy.sh && /tmp/ceph_haproxy.sh
   register: ceph_haproxy_result
   changed_when: ceph_haproxy_result.rc == 0
+
+- name: Cleanup - Remove ceph_haproxy.sh from the target machine
+  file:
+    path: /tmp/ceph_haproxy.sh
+    state: absent
