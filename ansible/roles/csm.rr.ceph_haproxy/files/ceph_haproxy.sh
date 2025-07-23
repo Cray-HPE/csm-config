@@ -44,7 +44,7 @@ cp /etc/ceph/ceph_conf_min /etc/ceph/ceph.conf || fail "Failed to copy ceph conf
 
 log "Generating temporary haproxy config"
 haproxy_temp_file="/etc/haproxy/haproxy_temp.cfg"
-srv/cray/scripts/metal/generate_haproxy_cfg.sh > "$haproxy_temp_file" || fail "Failed to generate haproxy config"
+/srv/cray/scripts/metal/generate_haproxy_cfg.sh > "$haproxy_temp_file" || fail "Failed to generate haproxy config"
 
 log "Parsing generated haproxy config"
 hosts_found=false

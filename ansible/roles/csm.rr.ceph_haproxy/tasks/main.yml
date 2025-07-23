@@ -1,4 +1,3 @@
-#!/usr/bin/env ansible-playbook
 #
 # MIT License
 #
@@ -22,32 +21,22 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
+---
+# Updates CEPH haproxy configuration with latest information after performing CEPH zoning
+# and also update ceph.conf on all storage nodes with latest configuration.
 
-# Rack Resiliency: Discover physical racks and corresponding managment nodes, validate
-# their placement. If condition is met, apply zoning(k8s topology and CEPH)
-# across racks. If not met, bail out. 
-- hosts: Management_Master:!cfs_image
-  gather_facts: no
-  any_errors_fatal: true
-  remote_user: root
-  roles:
-    # Check if Rack Resiliency feature is enabled/ disabled
-    - role: csm.rr.check_enablement
-    # Perform placement discovery
-    - role: csm.rr.mgmt_nodes_placement_discovery
-    # Perform placement validation
-    - role: csm.rr.mgmt_nodes_placement_validation
-    # Perform k8s zoning
-    - role: csm.rr.k8s_topology_zoning
-    # Perform CEPH zoning
-    - role: csm.rr.ceph_zoning
-    # Setup the kyverno policy for critical services spread and rollout restart
-    - role: csm.rr.kyverno_policy
+- name: Copy ceph_haproxy.sh script to the target machine
+  copy:
+    src: ceph_haproxy.sh
+    dest: /tmp/ceph_haproxy.sh
 
-- hosts: Management_Storage:!cfs_image
-  gather_facts: no
-  any_errors_fatal: true
-  remote_user: root
-  roles:
-    # Update CEPH haproxy
-    - role: csm.rr.ceph_haproxy
+- name: Execute the ceph_haproxy script on the target machine
+  shell: |
+    chmod +x /tmp/ceph_haproxy.sh && /tmp/ceph_haproxy.sh
+  register: ceph_haproxy_result
+  changed_when: ceph_haproxy_result.rc == 0
+
+- name: Cleanup - Remove ceph_haproxy.sh from the target machine
+  file:
+    path: /tmp/ceph_haproxy.sh
+    state: absent
