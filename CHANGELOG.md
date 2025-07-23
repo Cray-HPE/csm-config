@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.45.0] - 2025-07-23
+
+### Changed
+
+- CASM-5661: RR Ansible play only checks for RR enablement sometimes
+  - Fixed to skip enabling/ configuring Rack Resiliency instead of failing 
+  the configuration when it is disabled in the site-init (customizations.yaml) config.
+
 ## [1.44.0] - 2025-07-22
 
 ### Added
@@ -737,7 +745,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.44.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.45.0...HEAD
+
+[1.45.0]: https://github.com/Cray-HPE/csm-config/compare/1.44.0...1.45.0
 
 [1.44.0]: https://github.com/Cray-HPE/csm-config/compare/1.43.0...1.44.0
 

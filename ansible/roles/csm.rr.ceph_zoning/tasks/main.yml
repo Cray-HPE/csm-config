@@ -30,6 +30,7 @@
   register: placement_file
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
+  when: rr_enabled == true
 
 - name: Apply CEPH zoning
   script: ceph_zoning.py /tmp/rack_info.txt
@@ -39,4 +40,5 @@
   register: ceph_zoning_result
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
+  when: rr_enabled == true
   changed_when: ceph_zoning_result.rc == 0

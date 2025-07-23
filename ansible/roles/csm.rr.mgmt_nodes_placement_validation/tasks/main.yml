@@ -30,6 +30,7 @@
   register: mgmt_placement_file
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
+  when: rr_enabled == true
 
 - name: Management nodes (master, worker and storage) placement validation
   script: mgmt_nodes_placement_validation.py /tmp/rack_info.txt
@@ -39,4 +40,5 @@
   register: mgmt_nodes_placement_validation
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
+  when: rr_enabled == true
   changed_when: mgmt_nodes_placement_validation.rc == 0

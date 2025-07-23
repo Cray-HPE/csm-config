@@ -29,14 +29,17 @@
   copy:
     src: ceph_haproxy.sh
     dest: /tmp/ceph_haproxy.sh
+  when: rr_enabled == true
 
 - name: Execute the ceph_haproxy script on the target machine
   shell: |
     chmod +x /tmp/ceph_haproxy.sh && /tmp/ceph_haproxy.sh
   register: ceph_haproxy_result
+  when: rr_enabled == true
   changed_when: ceph_haproxy_result.rc == 0
 
 - name: Cleanup - Remove ceph_haproxy.sh from the target machine
   file:
     path: /tmp/ceph_haproxy.sh
     state: absent
+  when: rr_enabled == true
