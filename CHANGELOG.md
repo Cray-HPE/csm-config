@@ -9,12 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.44.0] - 2025-07-22
 
+### Added
+
+- CASM-5656
+  - Added new role `csm.rr.ceph_haproxy` for CEPH haproxy config update
+  - Tasks related to CEPH haproxy are moved from `csm.rr.ceph_zoning` to above new role
+  - playbook `rack_resiliency_for_mgmt_nodes.yml` is update accordingly with above changes
+
 ### Changed
 
-- CASM-5626
-  - CASM-5656: Added and modified tasks for CEPH haproxy config update in `main.yml` for role `csm.rr.ceph_zoning`
-  - Changed the hosts for RR CEPH ansible play books in `rack_resiliency_for_mgmt_nodes.yml`
-  - Fixed typo in `ceph_haproxy.sh`
+- CASM-5656
+  - Fixed typo in `ceph_haproxy.sh` of role `csm.rr.ceph_haproxy`
 
 ## [1.43.0] - 2025-07-17
 
