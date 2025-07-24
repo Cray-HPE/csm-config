@@ -32,5 +32,4 @@
   register: mgmt_nodes_discovery
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
-  when: rr_enabled == true
   changed_when: mgmt_nodes_discovery.rc == 0

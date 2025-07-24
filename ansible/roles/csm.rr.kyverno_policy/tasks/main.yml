@@ -30,11 +30,9 @@
     dest: /tmp/rrs_topology_policy.yml
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
-  when: rr_enabled == true
 
 - name: apply kyverno policy and rollout restart services
   script: apply_topology_policy_restart.sh "/tmp/rrs_topology_policy.yml"
   register: kyverno_policy_validation
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
-  when: rr_enabled == true

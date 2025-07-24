@@ -29,5 +29,4 @@
   register: k8s_topology_zoning
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
-  when: rr_enabled == true
   changed_when: k8s_topology_zoning.rc == 0
