@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - CASM-5661: RR Ansible play only checks for RR enablement sometimes
-  - CASM-5660: Changed to skip enabling/ configuring Rack Resiliency instead of failing 
+- CASM-5660: Changed to skip enabling/ configuring Rack Resiliency instead of failing 
   the configuration when it is disabled in the site-init (customizations.yaml) config.
 
 ## [1.44.0] - 2025-07-22
