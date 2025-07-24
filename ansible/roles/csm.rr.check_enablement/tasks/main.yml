@@ -33,9 +33,12 @@
   run_once: true
   changed_when: rr_enablement_flag.rc == 0
 
-# If RR feature is disabled, stop enabling RR
-- name: Stop enabling Rack Resiliency if it is disabled in site-init
+- name: Show RR enablement status
+  ansible.builtin.debug:
+    msg: "{{ rr_enablement_flag.stdout | trim }}"
   run_once: true
-  ansible.builtin.fail:
-    msg: "Rack Resiliency(RR) is currently disabled, Exiting RR enablement."
+
+- name: Skip rest of play if RR is not enabled
+  run_once: true
+  meta: end_play
   when: "'false' in rr_enablement_flag.stdout"
