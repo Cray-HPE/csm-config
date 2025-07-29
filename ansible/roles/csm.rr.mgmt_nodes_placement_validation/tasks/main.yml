@@ -40,3 +40,8 @@
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
   changed_when: mgmt_nodes_placement_validation.rc == 0
+
+- name: Skip rest of play if placement validation fails
+  run_once: true
+  meta: end_play
+  when: "'false' in mgmt_nodes_placement_validation.stdout"

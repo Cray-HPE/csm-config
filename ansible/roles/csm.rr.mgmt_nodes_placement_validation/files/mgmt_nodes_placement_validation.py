@@ -37,6 +37,12 @@ def get_node_rack_missing_quorum(rack_cnt: int) -> int:
     """ Get max quorum loss (toleration) of racks missing specific management node type """
     return rack_cnt - min_rack_cnt
 
+def validation_failed(message):
+    """Handle validation failure by printing message and false flag"""
+    print(message)
+    print("false")  # Signal failure to Ansible
+    sys.exit(0)
+
 def validate_master_nodes_placement(placements_dict: Dict[str, List[str]]) -> None:
     """
     Do master nodes placement validation in order to enable Rack Resiliency.
@@ -85,21 +91,12 @@ def validate_master_nodes_placement(placements_dict: Dict[str, List[str]]) -> No
     print("\nnode_rack_missing_quorum",node_rack_missing_quorum)
 
     if master_nodes_cnt >= min_master_node_cnt:
-        if rack_cnt == min_rack_cnt and master_nodes_cnt == min_master_node_cnt and  missing_cnt > node_rack_missing_quorum:
-            print("\nOne or more management racks missing master node under minimum 3 rack requirement for RR")
-            print("\nPlease re arrange the master nodes for equal distribution")
-            print("Exiting placement validation...\n")
-            sys.exit(1)
+        if rack_cnt == min_rack_cnt and master_nodes_cnt == min_master_node_cnt and missing_cnt > node_rack_missing_quorum:
+            validation_failed("\nOne or more management racks missing master node under minimum 3 rack requirement for RR.\nPlease re arrange the master nodes for equal distribution.\nExiting placement validation...\n")
         if (rack_cnt > min_rack_cnt) and (master_nodes_cnt >= min_master_node_cnt) and (missing_cnt > node_rack_missing_quorum):
-            print("\nMore than one rack missing master node in a", rack_cnt , "rack system")
-            print("\nPlease re arrange the master nodes for equal distribution")
-            print("Exiting placement validation...\n")
-            sys.exit(1)
+            validation_failed(f"\nMore than one rack missing master node in a {rack_cnt} rack system.\nPlease re arrange the master nodes for equal distribution.\nExiting placement validation...\n")
     else:
-        print("\nRack Resiliency can not be enabled with", master_nodes_cnt, "master nodes")
-        print("\nNeed minimum of 3 master nodes configured")
-        print("Exiting placement validation...\n")
-        sys.exit(1)
+        validation_failed(f"\nRack Resiliency can not be enabled with {master_nodes_cnt} master nodes.\nNeed minimum of 3 master nodes configured.\nExiting placement validation...\n")
 
 def validate_worker_nodes_placement(placements_dict: Dict[str, List[str]]) -> None:
     """
@@ -149,20 +146,11 @@ def validate_worker_nodes_placement(placements_dict: Dict[str, List[str]]) -> No
     if worker_nodes_cnt >= min_worker_node_cnt:
         if rack_cnt >= min_rack_cnt and worker_nodes_cnt >= min_worker_node_cnt and  missing_cnt > node_rack_missing_quorum:
             if rack_cnt == min_rack_cnt and (worker_nodes_cnt == min_worker_node_cnt):
-                print("\nOne or more racks missing worker node under minimum 3 rack condition")
-                print("\nPlease re arrange the worker nodes for equal distribution")
-                print("Exiting placement validation...\n")
-                sys.exit(1)
+                validation_failed("\nOne or more racks missing worker node under minimum 3 rack condition.\nPlease re arrange the worker nodes for equal distribution.\nExiting placement validation...\n")
             if rack_cnt > min_rack_cnt and (worker_nodes_cnt >= min_worker_node_cnt):
-                print("\nMore than one rack missing worker node in a", rack_cnt , "rack system")
-                print("\nPlease re arrange the worker nodes for equal distribution")
-                print("Exiting placement validation...\n")
-                sys.exit(1)
+                validation_failed(f"\nMore than one rack missing worker node in a {rack_cnt} rack system.\nPlease re arrange the worker nodes for equal distribution.\nExiting placement validation...\n")
     else:
-        print("\nRack Resiliency can not be enabled with", worker_nodes_cnt, "worker nodes")
-        print("\nNeed minimum of 3 worker nodes configured")
-        print("Exiting placement validation...\n")
-        sys.exit(1)
+        validation_failed(f"\nRack Resiliency can not be enabled with {worker_nodes_cnt} worker nodes.\nNeed minimum of 3 worker nodes configured.\nExiting placement validation...\n")
 
 def validate_ceph_nodes_placement(placements_dict: Dict[str, List[str]]) -> None:
     """
@@ -209,21 +197,12 @@ def validate_ceph_nodes_placement(placements_dict: Dict[str, List[str]]) -> None
     node_rack_missing_quorum=get_node_rack_missing_quorum(rack_cnt)
 
     if storage_nodes_cnt >= min_storage_node_cnt:
-        if rack_cnt == min_rack_cnt and storage_nodes_cnt == min_master_node_cnt and  missing_cnt > node_rack_missing_quorum:
-            print("\nOne or more racks missing storage node under minimum 3 rack condition")
-            print("\nPlease re arrange the storage nodes for equal distribution")
-            print("Exiting placement validation...\n")
-            sys.exit(1)
-        if rack_cnt > min_rack_cnt and storage_nodes_cnt >= min_master_node_cnt and missing_cnt > node_rack_missing_quorum:
-            print("\nMore than one rack missing storage node in a", rack_cnt , "rack system")
-            print("\nPlease re arrange the storage nodes for equal distribution")
-            print("Exiting placement validation...\n")
-            sys.exit(1)
+        if rack_cnt == min_rack_cnt and storage_nodes_cnt == min_storage_node_cnt and  missing_cnt > node_rack_missing_quorum:
+            validation_failed("\nOne or more racks missing storage node under minimum 3 rack condition.\nPlease re arrange the storage nodes for equal distribution.\nExiting placement validation...\n")
+        if rack_cnt > min_rack_cnt and storage_nodes_cnt >= min_storage_node_cnt and missing_cnt > node_rack_missing_quorum:
+            validation_failed(f"\nMore than one rack missing storage node in a {rack_cnt} rack system.\nPlease re arrange the storage nodes for equal distribution.\nExiting placement validation...\n")
     else:
-        print("\nRack Resiliency can not be enabled with", storage_nodes_cnt, "storage nodes")
-        print("\nNeed minimum of 3 storage nodes configured")
-        print("Exiting placement validation...\n")
-        sys.exit(1)
+        validation_failed(f"\nRack Resiliency can not be enabled with {storage_nodes_cnt} storage nodes.\nNeed minimum of 3 storage nodes configured.\nExiting placement validation...\n")
 
 def validate_compute_uan_nodes_placement(placements_dict: Dict[str, List[str]]) -> None:
     """
@@ -285,10 +264,7 @@ def main() -> None:
     ## Fail the validation if the condition is not met.
     num_racks = len(placements_dict)
     if num_racks <= 2:
-        print("\nRack Resiliency can not be enabled with", num_racks, "racks")
-        print("\nNeed minimum of 3 managment racks configured")
-        print("\nExiting mgmt nodes placement validation...\n")
-        sys.exit(1)
+        validation_failed(f"\nRack Resiliency can not be enabled with {num_racks} racks.\nNeed minimum of 3 management racks configured.\nExiting mgmt nodes placement validation...\n")
 
     # Do master nodes placement validation
     validate_master_nodes_placement(placements_dict)
@@ -299,6 +275,7 @@ def main() -> None:
     # Do storge nodes (Utility storage/ CEPH) placement validation
     validate_ceph_nodes_placement(placements_dict)
 
+    print("true")
     print("\nManagment nodes placement validation suceeded...")
 
     # Do managed nodes (compute and UAN) placement validation: Just WARN if they are
