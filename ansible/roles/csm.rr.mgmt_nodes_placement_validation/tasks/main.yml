@@ -41,7 +41,7 @@
   run_once: true
   changed_when: mgmt_nodes_placement_validation.rc == 0
 
-- name: Skip rest of play if placement validation fails
+- name: Skip rest of play if placement validation condition is not met
   run_once: true
   meta: end_play
   when: "'false' in mgmt_nodes_placement_validation.stdout"
