@@ -40,7 +40,7 @@ def get_node_rack_missing_quorum(rack_cnt: int) -> int:
 def validation_failed(message):
     """Handle validation failure by printing message and false flag"""
     print(message)
-    print("false")  # Signal failure to Ansible
+    print("RACK_RESILIENCY_REQUIREMENTS_NOT_MET")  # Signal failure to Ansible
     sys.exit(0)
 
 def validate_master_nodes_placement(placements_dict: Dict[str, List[str]]) -> None:
@@ -275,7 +275,6 @@ def main() -> None:
     # Do storge nodes (Utility storage/ CEPH) placement validation
     validate_ceph_nodes_placement(placements_dict)
 
-    print("true")
     print("\nManagment nodes placement validation suceeded...")
 
     # Do managed nodes (compute and UAN) placement validation: Just WARN if they are

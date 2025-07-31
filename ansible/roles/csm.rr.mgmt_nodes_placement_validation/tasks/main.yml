@@ -44,4 +44,4 @@
 - name: Skip rest of play if placement validation condition is not met
   run_once: true
   meta: end_play
-  when: "'false' in mgmt_nodes_placement_validation.stdout"
+  when: "'RACK_RESILIENCY_REQUIREMENTS_NOT_MET' in mgmt_nodes_placement_validation.stdout"
