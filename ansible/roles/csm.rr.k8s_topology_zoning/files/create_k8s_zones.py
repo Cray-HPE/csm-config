@@ -114,10 +114,10 @@ def label_nodes(rack_info: Dict[str, List[str]]) -> None:
                             )
                 except subprocess.CalledProcessError as e:
                     print(f"Error occurred while running kubectl: {e.stderr}")
-                    sys.exit()
+                    sys.exit(1)
                 except Exception as e:
                     print(f"Unexpected error: {str(e)}")
-                    sys.exit()
+                    sys.exit(1)
                 print(f"Result: {result}")
 
 def main() -> None:

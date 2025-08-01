@@ -105,13 +105,13 @@ do
   fi
 done
 
-kubectl rollout restart deploymet cray-ceph-csi-cephfs-provisioner -n ceph-cephfs
+kubectl rollout restart deployment cray-ceph-csi-cephfs-provisioner -n ceph-cephfs
 if [ $? -ne 0 ]
 then
   echo "Unable to restart the deployment cray-ceph-csi-cephfs-provisioner in ceph-cephfs namespace"
 fi 
 
-kubectl rollout restart deploymet cray-ceph-csi-rbd-provisioner -n ceph-rbd
+kubectl rollout restart deployment cray-ceph-csi-rbd-provisioner -n ceph-rbd
 if [ $? -ne 0 ]
 then
   echo "Unable to restart the deployment cray-ceph-csi-rbd-provisioner in ceph-rbd namespace"
