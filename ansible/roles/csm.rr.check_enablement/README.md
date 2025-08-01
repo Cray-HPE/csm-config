@@ -11,6 +11,10 @@ None.
 Role Variables
 --------------
 
+`rr_enabled` is set to a boolean value based on whether RR is enabled or not.
+If this variable is already set, then this role doesn't bother to re-set it.
+Then, if RR is not enabled, then skip the rest of the current play.
+
 Dependencies
 ------------
 
