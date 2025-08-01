@@ -24,21 +24,17 @@
 ---
 # Check for Rack Resiliency(RR) feature enablement/ disablement
 # with site-init secret flag
-- name: Check Rack Resiliency Enablement
-  script: check_rr_enablement.py
-  args:
-    executable: python3
-  register: rr_enablement_flag
-  delegate_to: "{{ play_hosts | first }}"
-  run_once: true
-  changed_when: rr_enablement_flag.rc == 0
 
-- name: Show RR enablement status
-  ansible.builtin.debug:
-    msg: "{{ rr_enablement_flag.stdout | trim }}"
-  run_once: true
+# Only do this if the rr_enabled variable is not already set to a boolean value
+# This means that if this role is called by multiple plays in the same playbook,
+# it only actually needs to set the variable the first time
+- name: Set the rr_enabled variable to a boolean value
+  ansible.builtin.include_tasks:
+    file: check.yml
+  when: (rr_enabled is not defined) or (rr_enabled not in [true, false])
 
 - name: Skip rest of play if RR is not enabled
   run_once: true
   meta: end_play
-  when: "'false' in rr_enablement_flag.stdout"
+  # Check for both boolean or string value
+  when: not rr_enabled

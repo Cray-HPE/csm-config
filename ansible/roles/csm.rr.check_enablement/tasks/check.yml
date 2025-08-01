@@ -1,0 +1,88 @@
+#
+# MIT License
+#
+# (C) Copyright 2025 Hewlett Packard Enterprise Development LP
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+---
+# Check for Rack Resiliency(RR) feature enablement/ disablement
+# with site-init secret flag
+- name: Get site-init secret
+  delegate_to: localhost
+  run_once: true
+  kubernetes.core.k8s_info:
+    api_version: v1
+    api_key: "{{ lookup('ansible.builtin.file', '/run/secrets/kubernetes.io/serviceaccount/token') }}"
+    kind: Secret
+    name: "site-init"
+    namespace: "loftsman"
+  register: _sec
+  failed_when: (_sec.resources is not defined) or (_sec.resources | length == 0)
+
+- name: Verify secret has data field
+  delegate_to: localhost
+  run_once: true
+  ansible.builtin.assert:
+    that: "{{ 'data' in _sec.resources[0] }}"
+
+- name: Verify that data has customizations.yaml field
+  delegate_to: localhost
+  run_once: true
+  ansible.builtin.assert:
+    that: "{{ 'customizations.yaml' in _sec.resources[0].data }}"
+
+- name: Decode customizations.yaml
+  delegate_to: localhost
+  run_once: true
+  set_fact:
+    customizations_yaml: "{{ _sec.resources[0].data['customizations.yaml'] | b64decode | from_yaml }}"
+
+# If spec.kubernetes.services is not there, this is a big problem, because that should always be there
+- name: spec.kubernetes.services exists in customizations.yaml
+  delegate_to: localhost
+  run_once: true
+  ansible.builtin.assert:
+    fail_msg: "spec.kubernetes.services not found in customizations.yaml"
+    that: >
+      (customizations_yaml.spec is defined) and
+      (customizations_yaml.spec.kubernetes is defined) and
+      (customizations_yaml.spec.kubernetes.services is defined)
+
+- name: RR not enabled if rack-resiliency or rack-resiliency.enabled are not in customizations.yaml
+  delegate_to: localhost
+  run_once: true
+  set_fact:
+    rr_enabled: false
+  when: >
+    ('rack-resiliency' not in customizations_yaml.spec.kubernetes.services) or
+    (customizations_yaml.spec.kubernetes.services['rack-resiliency'].enabled is not defined)
+
+- name: Show RR enablement status
+  run_once: true
+  when: rr_enabled is not defined
+  ansible.builtin.debug:
+    msg: "{{ customizations_yaml.spec.kubernetes.services['rack-resiliency'].enabled }}"
+
+- name: Set rr_enabled variable
+  delegate_to: localhost
+  run_once: true
+  when: rr_enabled is not defined
+  set_fact:
+    rr_enabled: "{{ customizations_yaml.spec.kubernetes.services['rack-resiliency'].enabled | bool }}"
