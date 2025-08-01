@@ -76,13 +76,13 @@
 
 - name: Show RR enablement status
   run_once: true
-  when: rr_enabled is not defined
+  when: (rr_enabled is not defined) or (rr_enabled not in [true, false])
   ansible.builtin.debug:
     msg: "{{ customizations_yaml.spec.kubernetes.services['rack-resiliency'].enabled }}"
 
 - name: Set rr_enabled variable
   delegate_to: localhost
   run_once: true
-  when: rr_enabled is not defined
+  when: (rr_enabled is not defined) or (rr_enabled not in [true, false])
   set_fact:
     rr_enabled: "{{ customizations_yaml.spec.kubernetes.services['rack-resiliency'].enabled | bool }}"
