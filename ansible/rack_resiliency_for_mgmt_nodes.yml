@@ -55,5 +55,5 @@
     - role: csm.rr.mgmt_nodes_placement_validation
     # Perform CEPH zoning
     - role: csm.rr.ceph_zoning
-    # Update CEPH haproxy - will be skipped if variables are false/missing
+    # Update CEPH haproxy
     - role: csm.rr.ceph_haproxy
