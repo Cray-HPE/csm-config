@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.46.0] - 2025-08-01
+
+### Changed
+
+- CASM-8567
+  - Moved `csm.rr.ceph_zoning` Ansible role from management node flow to storage-specific section to better align with Ceph-specific operations.
+  - Standardized error handling by replacing multiple `sys.exit(1)` calls with a consistent and graceful failure pattern across exception handling blocks.
+
+### Fixed
+
+- CASM-8567
+  - Corrected typo in Kubernetes rollout restart command: `deploymet` → `deployment` for `cray-ceph-csi-cephfs-provisioner`.
+
 ## [1.45.0] - 2025-07-23
 
 ### Changed
