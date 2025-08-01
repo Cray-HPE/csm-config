@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CASM-5672: Run placement validation in storage stanza, to prevent storage configuration when placement validation fails
 - CASM-8567
   - Moved `csm.rr.ceph_zoning` Ansible role from management node flow to storage-specific section to better align with Ceph-specific operations.
-  - Standardized error handling by replacing multiple `sys.exit(1)` calls with a consistent and graceful failure pattern across exception handling blocks.
 
 ### Fixed
 
