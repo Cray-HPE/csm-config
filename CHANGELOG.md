@@ -14,8 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- CASM-8567
-  - Corrected typo in Kubernetes rollout restart command: `deploymet` → `deployment` for `cray-ceph-csi-cephfs-provisioner`.
+- CASM-8567: Corrected typo in Kubernetes rollout restart command: `deploymet` → `deployment` for `cray-ceph-csi-cephfs-provisioner`.
 
 ## [1.45.0] - 2025-07-23
 
