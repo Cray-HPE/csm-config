@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.46.0] - 2025-08-01
+
+### Changed
+
+- CASM-5672: Run placement validation in storage stanza, to prevent storage configuration when placement validation fails
+- CASM-8567: Moved `csm.rr.ceph_zoning` Ansible role from management node flow to storage-specific section to better align with Ceph-specific operations.
+- CASM-5671: Modify `csm.rr.check_enablement` role
+  - Rather than assuming that RR is enabled unless it is explicitly set to disabled,
+    instead assume that it is disabled unless it is explicitly set to enabled
+  - Re-implement Python script in native Ansible
+  - Modify so it runs inside the CFS pod
+  - Save the result as an Ansible fact so that if both plays in the playbook run,
+    this only needs to be done once.
+
+### Fixed
+
+- CASM-8567: Corrected typo in Kubernetes rollout restart command: `deploymet` → `deployment` for `cray-ceph-csi-cephfs-provisioner`.
+
 ## [1.45.0] - 2025-07-23
 
 ### Changed
@@ -745,7 +763,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.45.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.46.0...HEAD
+
+[1.46.0]: https://github.com/Cray-HPE/csm-config/compare/1.45.0...1.46.0
 
 [1.45.0]: https://github.com/Cray-HPE/csm-config/compare/1.44.0...1.45.0
 
