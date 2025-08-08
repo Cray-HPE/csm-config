@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- CASMCMS-9512: Modify the `csm.ssh_config` and `csm.ssh_keys` roles so that they no longer
+  call `end_play` when they are only actually wanting to end the role.
+
 ## [1.46.0] - 2025-08-01
 
 ### Changed

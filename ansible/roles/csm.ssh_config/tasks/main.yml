@@ -53,12 +53,9 @@
         ssh_config: ''
         ssh_config_found: false
 
-- name: Determine if play will go on
-  debug: msg="No CSM SSH configuration key exists in Vault for the {{ ssh_config_username }} user. Exiting without error."
-  when: not ssh_config_found
-
-- name: End play if the key does not exist in Vault
-  meta: end_play
+- name: Note that SSH config not found
+  run_once: true
+  debug: msg="No CSM SSH configuration key exists in Vault for the {{ ssh_config_username }} user."
   when: not ssh_config_found
 
 - name: Ensure the user exists
@@ -66,6 +63,7 @@
     name: "{{ ssh_config_username }}"
     state: present
   register: user_registered
+  when: ssh_config_found
 
 - name: Copy the SSH config file
   copy:
