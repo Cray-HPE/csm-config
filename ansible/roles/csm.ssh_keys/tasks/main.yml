@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2021-2025 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -66,12 +66,9 @@
       set_fact:
         ssh_pub_key: ''
 
-- name: Determine if play will go on
-  debug: msg="Neither a private or public key exist in Vault for the {{ ssh_keys_username }} user. Exiting without error."
-  when: ssh_pub_key == '' and ssh_priv_key == ''
-
-- name: End play if neither key exists in Vault
-  meta: end_play
+- name: Check if either key exists
+  debug: msg="Neither a private or public key exist in Vault for the {{ ssh_keys_username }} user."
+  run_once: true
   when: ssh_pub_key == '' and ssh_priv_key == ''
 
 - name: Ensure the user exists
@@ -79,6 +76,7 @@
     name: "{{ ssh_keys_username }}"
     state: present
   register: user_registered
+  when: ssh_pub_key != '' or ssh_priv_key != ''
 
 - name: Add the public key to the authorized keys file
   authorized_key:
@@ -111,4 +109,3 @@
   become: true
   become_user: "{{ ssh_keys_username }}"
   when: ssh_priv_key != ''
-
