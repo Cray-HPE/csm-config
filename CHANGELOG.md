@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       - moving the static ConfigMap file from RRS to RR Ansible play book
       - applying and reading the static ConfigMap as a source of truth for the critical services
       - applying the Kyverno policy
-      - moving rollout restart of the critical services to k8s upgrade scripts
+      - moving rollout restart of the critical services outside of csm-config (to k8s upgrade scripts)
 
 ### Fixed
 
