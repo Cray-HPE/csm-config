@@ -34,10 +34,20 @@
   delegate_to: "{{ play_hosts | first }}"
   run_once: true  
 
-- name: Apply RR static ConfigMap
+- name: Check if RR static ConfigMap exists
+  kubernetes.core.k8s_info:
+    kind: ConfigMap
+    namespace: rack-resiliency
+    name: rrs-mon-static
+  register: rr_statci_configmap
+  delegate_to: "{{ play_hosts | first }}"
+  run_once: true
+
+- name: Apply RR static ConfigMap only if not present
   kubernetes.core.k8s:
     state: present
     src: '/tmp/cm_static.yml'
+  when: rr_statci_configmap.resources | length == 0
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
 
