@@ -26,8 +26,18 @@
 ---
 - name: Copy the yaml file to the target machine
   copy:
-    src: rrs_topology_policy.yml
-    dest: /tmp/rrs_topology_policy.yml
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - { src: 'cm_static.yml', dest: '/tmp/cm_static.yml' }
+    - { src: 'rrs_topology_policy.yml', dest: '/tmp/rrs_topology_policy.yml' }
+  delegate_to: "{{ play_hosts | first }}"
+  run_once: true  
+
+- name: Apply RR static ConfigMap
+  kubernetes.core.k8s:
+    state: present
+    src: '/tmp/cm_static.yml'
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
 
@@ -48,8 +58,9 @@
   run_once: true
 
 - name: apply kyverno policy and rollout restart services
-  script: apply_topology_policy_restart.sh "/tmp/rrs_topology_policy.yml"
+  script: apply_topology_policy_restart.py "/tmp/rrs_topology_policy.yml"
+  args:
+    executable: python3
   register: kyverno_policy_validation
-  when: check_rr_clusterpolicy.resources | length == 0
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
