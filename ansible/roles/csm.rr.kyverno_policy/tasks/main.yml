@@ -61,7 +61,6 @@
   register: check_rr_clusterpolicy
 
 - name: Skip rest of play if RR ClusterPolicy already exists
-  run_once: true
   meta: end_play
   when: check_rr_clusterpolicy.resources | length > 0
   delegate_to: "{{ play_hosts | first }}"
