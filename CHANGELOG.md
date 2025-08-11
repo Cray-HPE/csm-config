@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       - applying and reading the static ConfigMap as a source of truth for the critical services
       - applying the Kyverno policy and do rollout restart of the critical services defined in the static ConfigMap
 
+### Fixed
+
+- CASMCMS-9512: Modify the `csm.ssh_config` and `csm.ssh_keys` roles so that they no longer
+  call `end_play` when they are only actually wanting to end the role.
+
 ## [1.46.0] - 2025-08-01
 
 ### Changed
@@ -776,7 +781,7 @@ RR Ansible plays for:
 
 [Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.47.0...HEAD
 
-[1.47.0]: https://github.com/Cray-HPE/csm-config/compare/1.46.0...1.46.0
+[1.47.0]: https://github.com/Cray-HPE/csm-config/compare/1.46.0...1.47.0
 
 [1.46.0]: https://github.com/Cray-HPE/csm-config/compare/1.45.0...1.46.0
 
