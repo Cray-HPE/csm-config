@@ -66,8 +66,8 @@
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
 
-- name: apply kyverno policy and rollout restart services
-  script: apply_topology_policy_restart.py "/tmp/rrs_topology_policy.yml"
+- name: apply kyverno policy
+  script: apply_topology_policy.py "/tmp/rrs_topology_policy.yml"
   args:
     executable: python3
   register: kyverno_policy_validation

@@ -35,7 +35,6 @@ import sys
 import tempfile
 import os
 
-
 def load_configmap(name, namespace):
     """
     Fetch and return a ConfigMap from the specified namespace as a JSON object.
@@ -119,26 +118,6 @@ def apply_kyverno_policy(policy_dict):
     os.remove(temp_file_path)
 
 
-def rollout_restart_critical_services(critical_services):
-    """
-    Perform a rollout restart for each critical service defined in the input dictionary.
-    Args:
-        critical_services (dict): Dictionary of services with their type and namespace.
-    """
-    for name, details in critical_services.items():
-        resource_type = details["type"].lower()
-        namespace = details["namespace"]
-        command = ["kubectl", "rollout", "restart", f"{resource_type}/{name}", "-n", namespace]
-
-        try:
-            subprocess.run(command, check=True)
-            print(f"Restarted {resource_type}/{name} in namespace {namespace}")
-        except subprocess.CalledProcessError as e:
-            print(f"Failed to restart {resource_type}/{name} in namespace {namespace}")
-            print(f"Error: {e.stderr}")
-            sys.exit(1)
-
-
 def main():
     if len(sys.argv) < 2:
         print("Usage: apply_topology_policy_restart.py <kyverno-policy.yaml>")
@@ -161,10 +140,6 @@ def main():
     # Update policy with names and apply
     updated_policy = update_policy_with_services(policy_path, service_names)
     apply_kyverno_policy(updated_policy)
-
-    # Restart services
-    rollout_restart_critical_services(critical_services)
-
 
 if __name__ == "__main__":
     main()
