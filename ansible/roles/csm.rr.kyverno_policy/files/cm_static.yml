@@ -207,6 +207,10 @@ data:
           "namespace": "vault",
           "type": "Deployment"
         },
+        "hpe-slingshot-jackaloped": {
+          "namespace": "services",
+          "type": "Deployment"
+        },
         "hpe-slingshot-ogopogod": {
           "namespace": "services",
           "type": "Deployment"
