@@ -26,11 +26,8 @@
 ---
 - name: Copy the yaml file to the target machine
   copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-  loop:
-    - { src: 'cm_static.yml', dest: '/tmp/cm_static.yml' }
-    - { src: 'rrs_topology_policy.yml', dest: '/tmp/rrs_topology_policy.yml' }
+    src: rrs_topology_policy.yml
+    dest: /tmp/rrs_topology_policy.yml
   delegate_to: "{{ play_hosts | first }}"
   run_once: true  
 
