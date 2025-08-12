@@ -196,7 +196,7 @@ def main() -> None:
     rack_placement_file is a file with key value pair with xnames of
     racks and corresponding management nodes.
     """
-    if len(sys.argv) < 2:
+    if len(sys.argv) not in {2, 3}:
         logger.error("Usage: python ceph_zoning.py <rack_placement_file> [ceph_prefix]")
         sys.exit(1)
 
@@ -212,6 +212,8 @@ def main() -> None:
     ceph_prefix = sys.argv[2] if len(sys.argv) > 2 else ""
     if ceph_prefix:
         logger.info(f"Using ceph prefix: {ceph_prefix}")
+    else:
+        logger.info("No ceph prefix specified")
     # Create and map racks, create rules, and perform service zoning
     sn_count_in_rack = create_and_map_racks(positions_dict, ceph_prefix)
     create_and_apply_rules()
