@@ -57,7 +57,7 @@ def run_command(command: str) -> str:
         raise ValueError(f"Command {command} errored out with : {e.stderr}") from e
     return result.stdout
 
-def create_and_map_racks(positions_dict: Dict[str, List[str]], ceph_zone_prefix: str) -> list:
+def create_and_map_racks(positions_dict: Dict[str, List[str]], ceph_zone_prefix: str) -> List[int]:
     """
     Create ceph zones and map to management racks.
     positions_dict: dict of rack and corresponding management nodes(xnames)
@@ -104,7 +104,7 @@ def create_and_apply_rules() -> None:
         logger.debug(f"Applying new rule to pool: {pool}")
         run_command(f"ceph osd pool set {pool} crush_rule replicated_rule_with_rack_failure_domain")
 
-def service_zoning(positions_dict: Dict[str, List[str]], sn_count_in_rack: list) -> None:
+def service_zoning(positions_dict: Dict[str, List[str]], sn_count_in_rack: List[int]) -> None:
     """
     Perform service((MON, MGR, MDS) zoning.
     positions_dict: dict of rack and corresponding management nodes(xnames)

@@ -90,10 +90,12 @@
 - name: Set ceph_prefix variable
   delegate_to: localhost
   run_once: true
+  when: rr_enabled
   set_fact:
     ceph_prefix: "{{ customizations_yaml.spec.kubernetes.services['rack-resiliency'].ceph_zone_prefix | default('') }}"
 
 - name: Show ceph_prefix value
+  when: rr_enabled
   debug:
     var: ceph_prefix
 
