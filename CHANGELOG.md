@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.46.1] - 2025-08-12
+
 ### Fixed
 
 - CASMCMS-9512: Modify the `csm.ssh_config` and `csm.ssh_keys` roles so that they no longer
@@ -768,7 +770,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.46.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.46.1...HEAD
+
+[1.46.1]: https://github.com/Cray-HPE/csm-config/compare/1.46.0...1.46.1
 
 [1.46.0]: https://github.com/Cray-HPE/csm-config/compare/1.45.0...1.46.0
 
