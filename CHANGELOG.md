@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Modify `csm.rr.ceph_zoning` to use the `ceph_prefix` fact
   - Modify `csm.rr.ceph_zoning` to run Ceph zoning and haproxy tasks only once. If already run, skip these roles. 
 
+### Dependencies
+
+- Bump `actions/checkout` from 4 to 5 ([#402](https://github.com/Cray-HPE/csm-config/pull/402))
+
 ## [1.46.1] - 2025-08-12
 
 ### Fixed
