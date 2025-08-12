@@ -7,13 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
-
-- CASMCMS-9512: Modify the `csm.ssh_config` and `csm.ssh_keys` roles so that they no longer
-  call `end_play` when they are only actually wanting to end the role.
-
-## [1.47.0] - 2025-08-12
-
 ### Changed
 
 - CASM-5681:
@@ -22,6 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Save the result as an Ansible fact so that can be used by ceph_zoning role.
 - Modify `csm.rr.ceph_zoning` to use the `ceph_prefix` fact that was set above.
 - Modify `csm.rr.ceph_zoning` to run CEPH zoning and haproxy tasks only once. If already run, skip these roles. 
+
+## [1.46.1] - 2025-08-12
+
+### Fixed
+
+- CASMCMS-9512: Modify the `csm.ssh_config` and `csm.ssh_keys` roles so that they no longer
+  call `end_play` when they are only actually wanting to end the role.
 
 ## [1.46.0] - 2025-08-01
 
@@ -779,9 +779,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.47.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.46.1...HEAD
 
-[1.47.0]: https://github.com/Cray-HPE/csm-config/compare/1.46.0...1.47.0
+[1.46.1]: https://github.com/Cray-HPE/csm-config/compare/1.46.0...1.46.1
 
 [1.46.0]: https://github.com/Cray-HPE/csm-config/compare/1.45.0...1.46.0
 
