@@ -10,11 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - CASM-5681:
-- Modify `csm.rr.check_enablement` role for following - 
-  - Instead of getting `ceph_prefix` from python script, retrieving it from ansible play directly.
-  - Save the result as an Ansible fact so that can be used by ceph_zoning role.
-- Modify `csm.rr.ceph_zoning` to use the `ceph_prefix` fact that was set above.
-- Modify `csm.rr.ceph_zoning` to run CEPH zoning and haproxy tasks only once. If already run, skip these roles. 
+  - Modify `csm.rr.check_enablement` role to set `ceph_prefix` fact from `customizations.yaml`,
+    for use by other roles
+  - Modify `csm.rr.ceph_zoning` to use the `ceph_prefix` fact
+  - Modify `csm.rr.ceph_zoning` to run Ceph zoning and haproxy tasks only once. If already run, skip these roles. 
 
 ## [1.46.1] - 2025-08-12
 
