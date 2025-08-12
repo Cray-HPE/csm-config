@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- CASM-5676/CASM-5677/CASM-5678
+- CASM-5676/CASM-5677/CASM-5678:
   - CASM-5676: RR playbook needlessly restarts deployments
   - CASM-5677: RR playbook always overwrites Kyverno policy
   - CASM-5678: RR playbook restarts wrong deployments
@@ -19,6 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       - applying and reading the static ConfigMap as a source of truth for the critical services
       - applying the Kyverno policy
       - moving rollout restart of the critical services outside of csm-config (to k8s upgrade scripts)
+- CASM-5681:
+  - Modify `csm.rr.check_enablement` role to set `ceph_prefix` fact from `customizations.yaml`,
+    for use by other roles
+  - Modify `csm.rr.ceph_zoning` to use the `ceph_prefix` fact
+  - Modify `csm.rr.ceph_zoning` to run Ceph zoning and haproxy tasks only once. If already run, skip these roles. 
 
 ### Dependencies
 
