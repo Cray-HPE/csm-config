@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.47.0] - 2025-08-12
-
 ### Changed
+
 - CASM-5676: RR playbook needlessly restarts deployments
 - CASM-5677: RR playbook always overwrites Kyverno policy
 - CASM-5678: RR playbook restarts wrong deployments
@@ -19,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       - applying and reading the static ConfigMap as a source of truth for the critical services
       - applying the Kyverno policy
       - moving rollout restart of the critical services outside of csm-config (to k8s upgrade scripts)
+
+### Dependencies
+
+- Bump `actions/checkout` from 4 to 5 ([#402](https://github.com/Cray-HPE/csm-config/pull/402))
 
 ## [1.46.1] - 2025-08-12
 
@@ -783,9 +786,7 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.47.0...HEAD
-
-[1.47.0]: https://github.com/Cray-HPE/csm-config/compare/1.46.1...1.47.0
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.46.1...HEAD
 
 [1.46.1]: https://github.com/Cray-HPE/csm-config/compare/1.46.0...1.46.1
 
