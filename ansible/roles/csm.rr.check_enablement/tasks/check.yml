@@ -86,3 +86,14 @@
   when: (rr_enabled is not defined) or (rr_enabled not in [true, false])
   set_fact:
     rr_enabled: "{{ customizations_yaml.spec.kubernetes.services['rack-resiliency'].enabled | bool }}"
+
+- name: Set ceph_prefix variable
+  delegate_to: localhost
+  run_once: true
+  set_fact:
+    ceph_prefix: "{{ customizations_yaml.spec.kubernetes.services['rack-resiliency'].ceph_zone_prefix | default('') }}"
+
+- name: Show ceph_prefix value
+  debug:
+    var: ceph_prefix
+

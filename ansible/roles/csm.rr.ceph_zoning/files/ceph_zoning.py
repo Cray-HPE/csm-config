@@ -33,7 +33,6 @@ import subprocess
 import re
 import sys
 import logging
-import base64
 from typing import Dict, List
 
 # Set up logger
@@ -58,28 +57,7 @@ def run_command(command: str) -> str:
         raise ValueError(f"Command {command} errored out with : {e.stderr}") from e
     return result.stdout
 
-def get_ceph_zone_prefix() -> str:
-    """
-    Get ceph zone prefix if defined from the site-init secret (customization).
-    Return ceph_zone_prefix to be used by create_and_map_racks(positions_dict) function
-    for mapping racks to zones.
-    """
-    namespace = "loftsman"
-    secret_name = "site-init"
-    secret = run_command(f"kubectl -n {namespace} get secret {secret_name} -o json")
-    secret_data = json.loads(secret)
-    encoded_yaml = secret_data["data"]["customizations.yaml"]
-    decoded_yaml = base64.b64decode(encoded_yaml).decode("utf-8")
-    output_file = "/tmp/customizations.yaml"
-    with open(output_file, "w") as f:
-        f.write(decoded_yaml)
-    ceph_key_path = "spec.kubernetes.services.ceph_zone_prefix"
-    # Run yq command to extract the value
-    ceph_zone = run_command(f"yq r {output_file} {ceph_key_path}")
-    ceph_zone_prefix = ceph_zone.strip()
-    return ceph_zone_prefix
-
-def create_and_map_racks(positions_dict: Dict[str, List[str]]) -> int:
+def create_and_map_racks(positions_dict: Dict[str, List[str]], ceph_zone_prefix: str) -> list:
     """
     Create ceph zones and map to management racks.
     positions_dict: dict of rack and corresponding management nodes(xnames)
@@ -92,7 +70,6 @@ def create_and_map_racks(positions_dict: Dict[str, List[str]]) -> int:
 
     for rack, nodes in positions_dict.items():
         # Updating the rack or zone prefix
-        ceph_zone_prefix = get_ceph_zone_prefix()
         if ceph_zone_prefix:
             rack = ceph_zone_prefix + "-" + rack
         # Create buckets for racks
@@ -127,7 +104,7 @@ def create_and_apply_rules() -> None:
         logger.debug(f"Applying new rule to pool: {pool}")
         run_command(f"ceph osd pool set {pool} crush_rule replicated_rule_with_rack_failure_domain")
 
-def service_zoning(positions_dict: Dict[str, List[str]], sn_count_in_rack: int) -> None:
+def service_zoning(positions_dict: Dict[str, List[str]], sn_count_in_rack: list) -> None:
     """
     Perform service((MON, MGR, MDS) zoning.
     positions_dict: dict of rack and corresponding management nodes(xnames)
@@ -219,8 +196,8 @@ def main() -> None:
     rack_placement_file is a file with key value pair with xnames of
     racks and corresponding management nodes.
     """
-    if len(sys.argv) != 2:
-        logger.error("Usage: python ceph_zoning.py <rack_placement_file>")
+    if len(sys.argv) < 2:
+        logger.error("Usage: python ceph_zoning.py <rack_placement_file> [ceph_prefix]")
         sys.exit(1)
 
     # Load the rack placement file
@@ -232,8 +209,11 @@ def main() -> None:
         logger.error(f"Failed to load the rack placement file: {e}")
         sys.exit(1)
 
+    ceph_prefix = sys.argv[2] if len(sys.argv) > 2 else ""
+    if ceph_prefix:
+        logger.info(f"Using ceph prefix: {ceph_prefix}")
     # Create and map racks, create rules, and perform service zoning
-    sn_count_in_rack = create_and_map_racks(positions_dict)
+    sn_count_in_rack = create_and_map_racks(positions_dict, ceph_prefix)
     create_and_apply_rules()
     service_zoning(positions_dict, sn_count_in_rack)
 

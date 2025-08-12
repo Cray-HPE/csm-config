@@ -24,15 +24,40 @@
 ---
 # Apply CEPH zoning to make sure CEPH data gets replicated at rack level, 
 # so that there would not be data loss incase of a rack failure.
+
+- name: Check if CEPH rack entries with assigned children exist
+  shell: |
+    ceph osd tree -f json | jq -r '.nodes[] | select(.type == "rack" and (.children | length > 0)) | .name'
+  register: rack_check
+  delegate_to: "{{ play_hosts | first }}"
+  run_once: true
+  changed_when: false
+
+- name: Debug message when CEPH racks with children exist
+  when: rack_check.stdout_lines | length > 0
+  debug:
+    msg: "Racks already exist in CEPH OSD tree. Skipping CEPH zoning and CEPH haproxy reconfiguration"
+  run_once: true
+
+- name: Skipping CEPH zoning and CEPH haproxy reconfiguration since its already applied
+  meta: end_play
+  when: rack_check.stdout_lines | length > 0
+  run_once: true
+
 - name: Check for mgmt nodes placement discovery file
   stat:
     path: "/tmp/rack_info.txt"
   register: placement_file
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
+  changed_when: false
+
+- name: Debug ceph_prefix
+  debug:
+    var: ceph_prefix
 
 - name: Apply CEPH zoning
-  script: ceph_zoning.py /tmp/rack_info.txt
+  script: "ceph_zoning.py /tmp/rack_info.txt '{{ ceph_prefix | default('') }}'"
   args:
     executable: python3
   when: placement_file.stat.exists
