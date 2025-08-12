@@ -9,9 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- CASM-5676: RR playbook needlessly restarts deployments
-- CASM-5677: RR playbook always overwrites Kyverno policy
-- CASM-5678: RR playbook restarts wrong deployments
+- CASM-5676/CASM-5677/CASM-5678
+  - CASM-5676: RR playbook needlessly restarts deployments
+  - CASM-5677: RR playbook always overwrites Kyverno policy
+  - CASM-5678: RR playbook restarts wrong deployments
   - Fixed to avoid overwriting Kyverno policy and rollout restarts of the RR critical services during every management nodes upgrade (Master nodes)
   - Fixed critical services list by:
       - moving the static ConfigMap file from RRS to RR Ansible play book
