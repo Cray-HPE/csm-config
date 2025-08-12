@@ -36,26 +36,31 @@
 
 - name: Check if RR static ConfigMap exists
   kubernetes.core.k8s_info:
+    api_version: v1
+    api_key: "{{ lookup('ansible.builtin.file', '/run/secrets/kubernetes.io/serviceaccount/token') }}"
     kind: ConfigMap
     namespace: rack-resiliency
     name: rrs-mon-static
   register: rr_statci_configmap
-  delegate_to: "{{ play_hosts | first }}"
+  delegate_to: localhost
   run_once: true
 
 - name: Apply RR static ConfigMap only if not present
   kubernetes.core.k8s:
+    api_version: v1
+    api_key: "{{ lookup('ansible.builtin.file', '/run/secrets/kubernetes.io/serviceaccount/token') }}"
     state: present
-    src: '/tmp/cm_static.yml'
+    src: 'cm_static.yml'
   when: rr_statci_configmap.resources | length == 0
-  delegate_to: "{{ play_hosts | first }}"
+  delegate_to: localhost
   run_once: true
 
 - name: Check if RR ClusterPolicy already exists
-  delegate_to: "{{ play_hosts | first }}"
+  delegate_to: localhost
   run_once: true
   kubernetes.core.k8s_info:
     api_version: kyverno.io/v1
+    api_key: "{{ lookup('ansible.builtin.file', '/run/secrets/kubernetes.io/serviceaccount/token') }}"
     kind: ClusterPolicy
     name: insert-labels-topology-constraints
   register: check_rr_clusterpolicy
