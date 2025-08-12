@@ -47,8 +47,10 @@ logger.addHandler(ch)
 def run_command(command: str) -> str:
     """
     Helper function to run a shell command.
-    command: is one of the command from yq, kubectl and ceph
-    Returns result of the command output(stdout).
+    Args:
+        command (str): The shell command to run.
+    Returns:
+        str: The output of the command.
     """
     logger.info(f"Running command: {command}")
     try:
@@ -59,11 +61,15 @@ def run_command(command: str) -> str:
 
 def create_and_map_racks(positions_dict: Dict[str, List[str]], ceph_zone_prefix: str) -> List[int]:
     """
-    Create ceph zones and map to management racks.
-    positions_dict: dict of rack and corresponding management nodes(xnames)
-    fetched from the rack placement file(/tmp/rack_info.txt).
-    Here ceph zone name is: ceph zone prefix  + xname of the rack
-    Return sn_count_in_rack (storage nodes per rack)
+    Creates Ceph racks corresponding to management racks and maps storage nodes to those racks.
+    Args:
+        positions_dict (dict): A dictionary mapping rack names to their corresponding
+            management node xnames. This information is typically retrieved from
+            the rack placement file located at /tmp/rack_info.txt.
+        ceph_zone_prefix (str): A prefix to prepend to each rack name when creating the Ceph zones.
+    Returns:
+        sn_count_in_rack (list): A list representing the number of storage nodes per rack.
+            Example format: [1, 2, 1]
     """
 
     sn_count_in_rack = []
@@ -106,12 +112,16 @@ def create_and_apply_rules() -> None:
 
 def service_zoning(positions_dict: Dict[str, List[str]], sn_count_in_rack: List[int]) -> None:
     """
-    Perform service((MON, MGR, MDS) zoning.
-    positions_dict: dict of rack and corresponding management nodes(xnames)
-    fetched from the rack placement file(/tmp/rack_info.txt).
-    sn_count_in_rack: number of storage nodes in a rack.
+    Perform CEPH services(MON, MGR, MDS) zoning.
     Apply service zoning only if minimum 3 racks with storage nodes (at least one per rack) are present.
-    Return nothing.
+    Args:
+    positions_dict (dict): A dictionary mapping rack names to their corresponding
+        management node xnames. This information is typically retrieved from
+        the rack placement file located at /tmp/rack_info.txt.
+    sn_count_in_rack (list): A list representing the number of storage nodes per rack.
+        Example format: [1, 2, 1]
+    Returns:
+    None
     """
     service_node_list = []
     remaining_service_node_list = []
@@ -195,6 +205,7 @@ def main() -> None:
     as the failure domain and perform ceph service zoning.
     rack_placement_file is a file with key value pair with xnames of
     racks and corresponding management nodes.
+    ceph_prefix is a prefix to prepend to each rack name when creating the Ceph zones.
     """
     if len(sys.argv) not in {2, 3}:
         logger.error("Usage: python ceph_zoning.py <rack_placement_file> [ceph_prefix]")
