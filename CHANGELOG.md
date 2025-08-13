@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - CASM-5676 (RR needlessly restarts deployments), 
   CASM-5677 (RR always overwrites Kyverno policy),
-  CASM-5678 (RR restarts wrong deployments)
+  CASM-5678 (RR restarts wrong deployments):
     - Remove `csm.rr.kyverno_policy` role from `csm-config`
 - CASM-5681:
   - Modify `csm.rr.check_enablement` role to set `ceph_prefix` fact from `customizations.yaml`,
