@@ -58,7 +58,7 @@ def get_k8s_zone_prefix() -> str:
     print(f"Decoded YAML saved to {output_file}")
 
     # Define the key path
-    k8s_key_path = "spec.kubernetes.services.k8s_zone_prefix"
+    k8s_key_path = "spec.kubernetes.services['rack-resiliency'].k8s_zone_prefix"
 
     # Run yq command to extract the value
     k8s_yq_cmd = ["yq", "r", output_file, k8s_key_path]
