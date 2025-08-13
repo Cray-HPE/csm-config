@@ -38,7 +38,7 @@
     kind: ConfigMap
     namespace: rack-resiliency
     name: rrs-mon-static
-  register: rr_statci_configmap
+  register: rr_static_configmap
   delegate_to: localhost
   run_once: true
 
@@ -48,7 +48,7 @@
     api_key: "{{ lookup('ansible.builtin.file', '/run/secrets/kubernetes.io/serviceaccount/token') }}"
     state: present
     src: 'cm_static.yml'
-  when: rr_statci_configmap.resources | length == 0
+  when: rr_static_configmap.resources | length == 0
   delegate_to: localhost
   run_once: true
 
