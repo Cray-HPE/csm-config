@@ -30,26 +30,53 @@
     dest: /tmp/rrs_topology_policy.yml
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
-
-- name: Check if RR ClusterPolicy already exists
+ 
+- name: Add namespace rack-resiliency
+  kubernetes.core.k8s:
+    api_version: v1
+    api_key: "{{ lookup('ansible.builtin.file', '/run/secrets/kubernetes.io/serviceaccount/token') }}"
+    kind: Namespace
+    name: rack-resiliency
+    state: present
   delegate_to: "{{ play_hosts | first }}"
+  run_once: true
+ 
+- name: Check if RR static ConfigMap exists
+  kubernetes.core.k8s_info:
+    api_version: v1
+    api_key: "{{ lookup('ansible.builtin.file', '/run/secrets/kubernetes.io/serviceaccount/token') }}"
+    kind: ConfigMap
+    namespace: rack-resiliency
+    name: rrs-mon-static
+  register: rr_statci_configmap
+  delegate_to: localhost
+  run_once: true
+ 
+- name: Apply RR static ConfigMap only if not present
+  kubernetes.core.k8s:
+    api_version: v1
+    api_key: "{{ lookup('ansible.builtin.file', '/run/secrets/kubernetes.io/serviceaccount/token') }}"
+    state: present
+    src: 'cm_static.yml'
+  when: rr_statci_configmap.resources | length == 0
+  delegate_to: localhost
+  run_once: true
+ 
+- name: Check if RR ClusterPolicy already exists
+  delegate_to: localhost
   run_once: true
   kubernetes.core.k8s_info:
     api_version: kyverno.io/v1
+    api_key: "{{ lookup('ansible.builtin.file', '/run/secrets/kubernetes.io/serviceaccount/token') }}"
     kind: ClusterPolicy
     name: insert-labels-topology-constraints
   register: check_rr_clusterpolicy
-
-- name: Skip rest of play if RR ClusterPolicy already exists
-  run_once: true
-  meta: end_play
-  when: check_rr_clusterpolicy.resources | length > 0
-  delegate_to: "{{ play_hosts | first }}"
-  run_once: true
-
-- name: apply kyverno policy and rollout restart services
-  script: apply_topology_policy_restart.sh "/tmp/rrs_topology_policy.yml"
+ 
+- name: apply kyverno policy
+  script: apply_topology_policy.py "/tmp/rrs_topology_policy.yml"
+  args:
+    executable: python3
   register: kyverno_policy_validation
-  when: check_rr_clusterpolicy.resources | length == 0
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
+  when: not (check_rr_clusterpolicy.resources | length > 0)
