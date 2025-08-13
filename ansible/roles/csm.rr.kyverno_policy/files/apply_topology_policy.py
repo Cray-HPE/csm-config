@@ -119,7 +119,7 @@ def apply_kyverno_policy(policy_dict):
 
 
 def main():
-    if len(sys.argv) < 2:
+    if len(sys.argv) != 2:
         print("Usage: apply_topology_policy_restart.py <kyverno-policy.yaml>")
         sys.exit(1)
 
