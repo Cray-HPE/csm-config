@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.47.0] - 2025-08-14
+
 ### Changed
 
 - CASM-5681:
@@ -789,7 +791,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.46.1...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.47.0...HEAD
+
+[1.47.0]: https://github.com/Cray-HPE/csm-config/compare/1.46.1...1.47.0
 
 [1.46.1]: https://github.com/Cray-HPE/csm-config/compare/1.46.0...1.46.1
 
