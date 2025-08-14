@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.47.0] - 2025-08-14
+
+### Changed
+
+- CASM-5681:
+  - Modify `csm.rr.check_enablement` role to set `ceph_prefix` fact from `customizations.yaml`,
+    for use by other roles
+  - Modify `csm.rr.ceph_zoning` to use the `ceph_prefix` fact
+  - Modify `csm.rr.ceph_zoning` to run Ceph zoning and haproxy tasks only once. If already run, skip these roles. 
+
+### Removed
+
+- CASM-5676 (RR needlessly restarts deployments), 
+  CASM-5677 (RR always overwrites Kyverno policy),
+  CASM-5678 (RR restarts wrong deployments):
+    - Remove `csm.rr.kyverno_policy` role from `csm-config`
+
+### Dependencies
+
+- Bump `actions/checkout` from 4 to 5 ([#402](https://github.com/Cray-HPE/csm-config/pull/402))
+
 ## [1.46.1] - 2025-08-12
 
 ### Fixed
@@ -770,7 +791,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.46.1...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.47.0...HEAD
+
+[1.47.0]: https://github.com/Cray-HPE/csm-config/compare/1.46.1...1.47.0
 
 [1.46.1]: https://github.com/Cray-HPE/csm-config/compare/1.46.0...1.46.1
 

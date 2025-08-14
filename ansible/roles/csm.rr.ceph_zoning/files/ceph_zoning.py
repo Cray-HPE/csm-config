@@ -33,7 +33,6 @@ import subprocess
 import re
 import sys
 import logging
-import base64
 from typing import Dict, List
 
 # Set up logger
@@ -48,8 +47,10 @@ logger.addHandler(ch)
 def run_command(command: str) -> str:
     """
     Helper function to run a shell command.
-    command: is one of the command from yq, kubectl and ceph
-    Returns result of the command output(stdout).
+    Args:
+        command (str): The shell command to run.
+    Returns:
+        str: The output of the command.
     """
     logger.info(f"Running command: {command}")
     try:
@@ -58,41 +59,23 @@ def run_command(command: str) -> str:
         raise ValueError(f"Command {command} errored out with : {e.stderr}") from e
     return result.stdout
 
-def get_ceph_zone_prefix() -> str:
+def create_and_map_racks(positions_dict: Dict[str, List[str]], ceph_zone_prefix: str) -> List[int]:
     """
-    Get ceph zone prefix if defined from the site-init secret (customization).
-    Return ceph_zone_prefix to be used by create_and_map_racks(positions_dict) function
-    for mapping racks to zones.
-    """
-    namespace = "loftsman"
-    secret_name = "site-init"
-    secret = run_command(f"kubectl -n {namespace} get secret {secret_name} -o json")
-    secret_data = json.loads(secret)
-    encoded_yaml = secret_data["data"]["customizations.yaml"]
-    decoded_yaml = base64.b64decode(encoded_yaml).decode("utf-8")
-    output_file = "/tmp/customizations.yaml"
-    with open(output_file, "w") as f:
-        f.write(decoded_yaml)
-    ceph_key_path = "spec.kubernetes.services.ceph_zone_prefix"
-    # Run yq command to extract the value
-    ceph_zone = run_command(f"yq r {output_file} {ceph_key_path}")
-    ceph_zone_prefix = ceph_zone.strip()
-    return ceph_zone_prefix
-
-def create_and_map_racks(positions_dict: Dict[str, List[str]]) -> int:
-    """
-    Create ceph zones and map to management racks.
-    positions_dict: dict of rack and corresponding management nodes(xnames)
-    fetched from the rack placement file(/tmp/rack_info.txt).
-    Here ceph zone name is: ceph zone prefix  + xname of the rack
-    Return sn_count_in_rack (storage nodes per rack)
+    Creates Ceph racks corresponding to management racks and maps storage nodes to those racks.
+    Args:
+        positions_dict (dict): A dictionary mapping rack names to their corresponding
+            management node xnames. This information is typically retrieved from
+            the rack placement file located at /tmp/rack_info.txt.
+        ceph_zone_prefix (str): A prefix to prepend to each rack name when creating the Ceph zones.
+    Returns:
+        sn_count_in_rack (list): A list representing the number of storage nodes per rack.
+            Example format: [1, 2, 1]
     """
 
     sn_count_in_rack = []
 
     for rack, nodes in positions_dict.items():
         # Updating the rack or zone prefix
-        ceph_zone_prefix = get_ceph_zone_prefix()
         if ceph_zone_prefix:
             rack = ceph_zone_prefix + "-" + rack
         # Create buckets for racks
@@ -127,14 +110,18 @@ def create_and_apply_rules() -> None:
         logger.debug(f"Applying new rule to pool: {pool}")
         run_command(f"ceph osd pool set {pool} crush_rule replicated_rule_with_rack_failure_domain")
 
-def service_zoning(positions_dict: Dict[str, List[str]], sn_count_in_rack: int) -> None:
+def service_zoning(positions_dict: Dict[str, List[str]], sn_count_in_rack: List[int]) -> None:
     """
-    Perform service((MON, MGR, MDS) zoning.
-    positions_dict: dict of rack and corresponding management nodes(xnames)
-    fetched from the rack placement file(/tmp/rack_info.txt).
-    sn_count_in_rack: number of storage nodes in a rack.
+    Perform CEPH services(MON, MGR, MDS) zoning.
     Apply service zoning only if minimum 3 racks with storage nodes (at least one per rack) are present.
-    Return nothing.
+    Args:
+    positions_dict (dict): A dictionary mapping rack names to their corresponding
+        management node xnames. This information is typically retrieved from
+        the rack placement file located at /tmp/rack_info.txt.
+    sn_count_in_rack (list): A list representing the number of storage nodes per rack.
+        Example format: [1, 2, 1]
+    Returns:
+    None
     """
     service_node_list = []
     remaining_service_node_list = []
@@ -218,9 +205,10 @@ def main() -> None:
     as the failure domain and perform ceph service zoning.
     rack_placement_file is a file with key value pair with xnames of
     racks and corresponding management nodes.
+    ceph_prefix is a prefix to prepend to each rack name when creating the Ceph zones.
     """
-    if len(sys.argv) != 2:
-        logger.error("Usage: python ceph_zoning.py <rack_placement_file>")
+    if len(sys.argv) not in {2, 3}:
+        logger.error("Usage: python ceph_zoning.py <rack_placement_file> [ceph_prefix]")
         sys.exit(1)
 
     # Load the rack placement file
@@ -232,8 +220,13 @@ def main() -> None:
         logger.error(f"Failed to load the rack placement file: {e}")
         sys.exit(1)
 
+    ceph_prefix = sys.argv[2] if len(sys.argv) > 2 else ""
+    if ceph_prefix:
+        logger.info(f"Using ceph prefix: {ceph_prefix}")
+    else:
+        logger.info("No ceph prefix specified")
     # Create and map racks, create rules, and perform service zoning
-    sn_count_in_rack = create_and_map_racks(positions_dict)
+    sn_count_in_rack = create_and_map_racks(positions_dict, ceph_prefix)
     create_and_apply_rules()
     service_zoning(positions_dict, sn_count_in_rack)
 

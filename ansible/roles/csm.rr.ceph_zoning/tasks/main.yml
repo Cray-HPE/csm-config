@@ -24,15 +24,21 @@
 ---
 # Apply CEPH zoning to make sure CEPH data gets replicated at rack level, 
 # so that there would not be data loss incase of a rack failure.
+
 - name: Check for mgmt nodes placement discovery file
   stat:
     path: "/tmp/rack_info.txt"
   register: placement_file
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
+  changed_when: false
+
+- name: Debug ceph_prefix
+  debug:
+    var: ceph_prefix
 
 - name: Apply CEPH zoning
-  script: ceph_zoning.py /tmp/rack_info.txt
+  script: "ceph_zoning.py /tmp/rack_info.txt '{{ ceph_prefix | default('') }}'"
   args:
     executable: python3
   when: placement_file.stat.exists
