@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.48.0] - 2025-08-15
+
+### Fixed
+
+- CASM-5685: RR storage play still assumes kubectl configured on all storage nodes
+  - Fixed csm.rr.mgmt_nodes_placement_discovery role to use native Ansible (for kubectl) inside the
+    CFS pod to get the information from Kubernetes instead of getting it from the node directly.
+
 ## [1.47.0] - 2025-08-14
 
 ### Changed
@@ -791,7 +799,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.47.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.48.0...HEAD
+
+[1.48.0]: https://github.com/Cray-HPE/csm-config/compare/1.47.0...1.48.0
 
 [1.47.0]: https://github.com/Cray-HPE/csm-config/compare/1.46.1...1.47.0
 
