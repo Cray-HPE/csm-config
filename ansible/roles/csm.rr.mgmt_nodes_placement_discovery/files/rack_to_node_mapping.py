@@ -93,8 +93,8 @@ def token_fetch(client_secret: str) -> Union[str, None]:
     with requests.post(url, data=data) as response:
         # Check the response status
         if response.status_code != 200:
-            print_stderr(f"Keycloak request failed. Status code: {hsm_response.status_code}")
-            print_stderr(f"Response text: {hsm_response.text}")
+            print_stderr(f"Keycloak request failed. Status code: {response.status_code}")
+            print_stderr(f"Response text: {response.text}")
             return None
 
         # Decode the response body
