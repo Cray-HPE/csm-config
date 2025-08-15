@@ -147,7 +147,7 @@ def rack_info(hsm_data: dict, sls_data: dict) -> None:
             sys.exit(1)
 
     res_rack_str = json.dumps(res_rack, indent=4)
-    print(res_rack)
+    print(res_rack_str)
     # Write the result to the tmp file
     with open("/tmp/rack_info.txt", "w") as file:
         file.write(res_rack_str + "\n")
