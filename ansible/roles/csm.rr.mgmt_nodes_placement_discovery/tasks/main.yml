@@ -52,6 +52,7 @@
 - name: Decode client-secret
   delegate_to: localhost
   run_once: true
+  no_log: true
   set_fact:
     client_secret: "{{ _sec.resources[0].data['client-secret'] | b64decode | from_yaml }}"
 

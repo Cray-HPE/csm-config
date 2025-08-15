@@ -41,7 +41,7 @@ import requests
 hsm_url = "https://api-gw-service-nmn.local/apis/smd/hsm/v2/State/Components"
 sls_url= "https://api-gw-service-nmn.local/apis/sls/v1/search/hardware"
 
-# Get the secret
+# Get the authentication token
 def token_fetch(client_secret: str) -> Union[str, None]:
     """
     Fetch the keycloak token.
