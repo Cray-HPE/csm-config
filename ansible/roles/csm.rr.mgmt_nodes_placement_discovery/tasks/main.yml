@@ -25,7 +25,7 @@
 
 # Discover physical racks and their mapping with respective management nodes
 # placement from HSM/ SLS 
-- name: Get site-init secret
+- name: Get admin-client-auth secret
   delegate_to: localhost
   run_once: true
   kubernetes.core.k8s_info:
