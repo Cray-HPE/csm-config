@@ -150,7 +150,7 @@ def rack_info(hsm_data: dict, sls_data: dict) -> None:
     print(res_rack)
     # Write the result to the tmp file
     with open("/tmp/rack_info.txt", "w") as file:
-        file.write(res_rack + "\n")
+        file.write(res_rack_str + "\n")
 
 def main() -> None:
     """
