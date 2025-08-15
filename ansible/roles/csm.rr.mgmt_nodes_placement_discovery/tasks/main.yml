@@ -25,8 +25,38 @@
 
 # Discover physical racks and their mapping with respective management nodes
 # placement from HSM/ SLS 
+- name: Get site-init secret
+  delegate_to: localhost
+  run_once: true
+  kubernetes.core.k8s_info:
+    api_version: v1
+    api_key: "{{ lookup('ansible.builtin.file', '/run/secrets/kubernetes.io/serviceaccount/token') }}"
+    kind: Secret
+    name: "admin-client-auth"
+    namespace: "default"
+  register: _sec
+  failed_when: (_sec.resources is not defined) or (_sec.resources | length == 0)
+
+- name: Verify secret has data field
+  delegate_to: localhost
+  run_once: true
+  ansible.builtin.assert:
+    that: "{{ 'data' in _sec.resources[0] }}"
+
+- name: Verify that data has client-secret field
+  delegate_to: localhost
+  run_once: true
+  ansible.builtin.assert:
+    that: "{{ 'client-secret' in _sec.resources[0].data }}"
+
+- name: Decode client-secret
+  delegate_to: localhost
+  run_once: true
+  set_fact:
+    client_secret: "{{ _sec.resources[0].data['client-secret'] | b64decode | from_yaml }}"
+
 - name: Discover racks and corresponding management nodes placement
-  script: rack_to_node_mapping.py
+  script: rack_to_node_mapping.py '{{ client_secret }}'
   args:
     executable: python3
   register: mgmt_nodes_discovery
