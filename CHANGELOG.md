@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CASM-5686: Fix bad path bugs in `rack_to_node_mapping.py`
     - Fix reference to an undefined variable
     - Validate the format of xnames returned by HSM, to avoid silently generating an invalid or incomplete data file
+    - Check the status code of the Keycloak response
     - Check the status code of the SLS response
     - Check the status codes of the HSM and SLS responses before attempting to JSON decode their bodies
     - Exit script in error if either request fails, rather than exiting successfully

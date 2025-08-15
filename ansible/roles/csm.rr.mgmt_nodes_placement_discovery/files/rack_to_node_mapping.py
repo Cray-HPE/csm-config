@@ -90,12 +90,17 @@ def token_fetch(client_secret: str) -> Union[str, None]:
     }
 
     # Make the API request to get the token
-    response = requests.post(url, data=data)
+    with requests.post(url, data=data) as response:
+        # Check the response status
+        if response.status_code != 200:
+            print_stderr(f"Keycloak request failed. Status code: {hsm_response.status_code}")
+            print_stderr(f"Response text: {hsm_response.text}")
+            return None
 
-    # Get the json output
-    token = response.json()
-    token = token.get("access_token")
-    return token
+        # Decode the response body
+        token = response.json()
+
+    return token.get("access_token")
 
 def rack_info(hsm_data: dict, sls_data: dict) -> None:
     """
