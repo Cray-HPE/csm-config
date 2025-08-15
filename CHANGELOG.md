@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Do not assume there will only be one alias per entry in SLS
     - Do not assume that the alias we want will be the first one in the entry
     - Validate that an alias for every NCN is found
+    - Skip duplicate xnames in the HSM response
+    - Exit in error if two different xnames have the same NCN alias
 
 ## [1.48.0] - 2025-08-15
 

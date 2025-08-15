@@ -113,10 +113,10 @@ def rack_info(hsm_data: dict, sls_data: dict) -> None:
     Returns nothing.
     """
 
-    component_ids = [
+    component_ids = {
         component['ID'] for component in hsm_data["Components"]
         if component.get("Role") == "Management" and component.get("SubRole") in {"Master", "Worker", "Storage"}
-    ]
+    }
 
     # Group by rack ID (extracted from "ID")
     res_rack = defaultdict(list)
@@ -137,6 +137,11 @@ def rack_info(hsm_data: dict, sls_data: dict) -> None:
                     continue
                 # That means this alias is of the form ncn-[msw]###,
                 # which is what we're looking for
+                # Make sure this alias hasn't been seen before, because that
+                # would mean 2 different xnames using the same alias
+                if any(alias in rack_alias_list for rack_alias_list in res_rack.values()):
+                    print_stderr(f"Alias {alias} is associated with 2 different NCN xnames in the SLS data")
+                    sys.exit(1)
                 res_rack[rack_id].append(alias)
                 found_alias=True
                 break
