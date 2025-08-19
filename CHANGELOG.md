@@ -23,6 +23,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Skip duplicate xnames in the HSM response
     - Exit in error if two different xnames have the same NCN alias
 
+## [1.48.1] - 2025-08-19
+
+### Fixed
+
+- CASMTRIAGE-8638: RR k8s zone prefix is not getting applied correctly
+  - Fixed `csm.rr.k8s_topology_zoning` role to use correct YAML path.
+
 ## [1.48.0] - 2025-08-15
 
 ### Fixed
@@ -815,7 +822,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.48.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.48.1...HEAD
+
+[1.48.1]: https://github.com/Cray-HPE/csm-config/compare/1.48.0...1.48.1
 
 [1.48.0]: https://github.com/Cray-HPE/csm-config/compare/1.47.0...1.48.0
 
