@@ -21,7 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CASM-5685: RR storage play still assumes kubectl configured on all storage nodes
   - Fixed csm.rr.mgmt_nodes_placement_discovery role to use native Ansible (for kubectl) inside the
     CFS pod to get the information from Kubernetes instead of getting it from the node directly.
-  
 ## [1.47.0] - 2025-08-14
 
 ### Changed
