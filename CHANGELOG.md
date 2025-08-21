@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- CASM-5686: Fix bad path bugs in `rack_to_node_mapping.py`
+    - Fix reference to an undefined variable
+    - Validate the format of xnames returned by HSM, to avoid silently generating an invalid or incomplete data file
+    - Check the status code of the Keycloak response
+    - Check the status code of the SLS response
+    - Check the status codes of the HSM and SLS responses before attempting to JSON decode their bodies
+    - Exit script in error if either request fails, rather than exiting successfully
+    - Add validation to make sure we are getting an alias from SLS that fits the expected format for an NCN
+    - Do not assume there will only be one alias per entry in SLS
+    - Do not assume that the alias we want will be the first one in the entry
+    - Validate that an alias for every NCN is found
+    - Skip duplicate xnames in the HSM response
+    - Exit in error if two different xnames have the same NCN alias
+
 ## [1.48.2] - 2025-08-20
 
 ### Changed
@@ -31,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CASM-5685: RR storage play still assumes kubectl configured on all storage nodes
   - Fixed csm.rr.mgmt_nodes_placement_discovery role to use native Ansible (for kubectl) inside the
     CFS pod to get the information from Kubernetes instead of getting it from the node directly.
+
 ## [1.47.0] - 2025-08-14
 
 ### Changed
