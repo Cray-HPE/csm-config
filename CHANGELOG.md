@@ -23,6 +23,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Skip duplicate xnames in the HSM response
     - Exit in error if two different xnames have the same NCN alias
 
+## [1.48.2] - 2025-08-20
+
+### Changed
+
+- CASMPET-7660: Changes to `sbps_dns_srv_records.sh` in `csm.sbps.dns_srv_records`
+  - Fail if `SYSTEM_NAME` or `SITE_DOMAIN` are not set
+  - Added echo statements role, to make it easier to debug in case of failure
+  - Remove `-s` and `-f` flags from `curl` calls, and add `-i` flag, so they will
+    give error messages and information on failure.
+
 ## [1.48.1] - 2025-08-19
 
 ### Fixed
@@ -822,7 +832,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.48.1...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.48.2...HEAD
+
+[1.48.2]: https://github.com/Cray-HPE/csm-config/compare/1.48.1...1.48.2
 
 [1.48.1]: https://github.com/Cray-HPE/csm-config/compare/1.48.0...1.48.1
 
