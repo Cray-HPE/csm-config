@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.48.3] - 2025-10-06
+
 ### Fixed
 
 - CASM-5686: Fix bad path bugs in `rack_to_node_mapping.py`
@@ -832,7 +834,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.48.2...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.48.3...HEAD
+
+[1.48.3]: https://github.com/Cray-HPE/csm-config/compare/1.48.2...1.48.3
 
 [1.48.2]: https://github.com/Cray-HPE/csm-config/compare/1.48.1...1.48.2
 
