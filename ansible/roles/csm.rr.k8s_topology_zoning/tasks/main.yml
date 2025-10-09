@@ -22,11 +22,51 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 ---
-- name: Apply k8s topology zoning for Master and Worker nodes
-  script: create_k8s_zones.py
+- name: Debug k8s_zone_prefix
+  debug:
+    var: k8s_zone_prefix
+
+- name: Generate node to zone mapping for k8s topology zoning
+  script: "create_k8s_zones.py '{{ k8s_zone_prefix | default('') }}'"
   args:
     executable: python3
-  register: k8s_topology_zoning
+  register: k8s_mapping_generation
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
-  changed_when: k8s_topology_zoning.rc == 0
+  changed_when: k8s_mapping_generation.rc == 0
+
+- name: Check if node-zone mapping file exists
+  stat:
+    path: "/tmp/k8s_node_zone_mapping.json"
+  register: mapping_file
+  delegate_to: "{{ play_hosts | first }}"
+  run_once: true
+
+- name: Read node to zone mapping
+  include_vars:
+    file: "/tmp/k8s_node_zone_mapping.json"
+    name: node_zone_mapping
+  delegate_to: "{{ play_hosts | first }}"
+  run_once: true
+  when: mapping_file.stat.exists
+
+- name: Debug node zone mapping
+  debug:
+    var: node_zone_mapping
+  when: node_zone_mapping is defined
+
+- name: Apply k8s topology zone labels to nodes
+  kubernetes.core.k8s:
+    api_version: v1
+    kind: Node
+    name: "{{ item.key }}"
+    definition:
+      metadata:
+        labels:
+          topology.kubernetes.io/zone: "{{ item.value }}"
+  loop: "{{ node_zone_mapping | dict2items }}"
+  delegate_to: "{{ play_hosts | first }}"
+  run_once: true
+  when: 
+    - node_zone_mapping is defined
+    - node_zone_mapping | length > 0
