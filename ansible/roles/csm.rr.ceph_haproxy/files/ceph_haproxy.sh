@@ -38,10 +38,6 @@ fail() {
     exit 1
 }
 
-log "Updating ceph.conf with latest configuration"
-ceph config generate-minimal-conf > /etc/ceph/ceph_conf_min || fail "Failed to generate ceph configuration"
-cp /etc/ceph/ceph_conf_min /etc/ceph/ceph.conf || fail "Failed to copy ceph configuration to /etc/ceph/ceph.conf"
-
 log "Generating temporary haproxy config"
 haproxy_temp_file="/etc/haproxy/haproxy_temp.cfg"
 /srv/cray/scripts/metal/generate_haproxy_cfg.sh > "$haproxy_temp_file" || fail "Failed to generate haproxy config"
