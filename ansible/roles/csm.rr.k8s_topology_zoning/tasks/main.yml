@@ -43,10 +43,17 @@
   run_once: true
 
 - name: Read node to zone mapping
-  include_vars:
-    file: "/tmp/k8s_node_zone_mapping.json"
-    name: node_zone_mapping
+  slurp:
+    src: "/tmp/k8s_node_zone_mapping.json"
+  register: node_zone_mapping_raw
   delegate_to: "{{ play_hosts | first }}"
+  run_once: true
+  when: mapping_file.stat.exists
+
+- name: Parse node to zone mapping
+  set_fact:
+    node_zone_mapping: "{{ node_zone_mapping_raw.content | b64decode | from_json }}"
+  delegate_to: localhost
   run_once: true
   when: mapping_file.stat.exists
 
