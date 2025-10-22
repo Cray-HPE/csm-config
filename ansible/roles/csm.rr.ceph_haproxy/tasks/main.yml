@@ -25,6 +25,28 @@
 # Updates CEPH haproxy configuration with latest information after performing CEPH zoning
 # and also update ceph.conf on all storage nodes with latest configuration.
 
+- name: Generate ceph minimal configuration
+  command:
+    argv:
+      - ceph
+      - config
+      - generate-minimal-conf
+  register: ceph_conf_min
+
+- name: Write ceph minimal configuration to file
+  copy:
+    content: "{{ ceph_conf_min.stdout }}"
+    dest: /etc/ceph/ceph_conf_min
+    mode: "0644"
+
+- name: Update ceph.conf with minimal configuration
+  copy:
+    src: /etc/ceph/ceph_conf_min
+    dest: /etc/ceph/ceph.conf
+    remote_src: true
+    mode: "0644"
+    backup: true
+
 - name: Copy ceph_haproxy.sh script to the target machine
   copy:
     src: ceph_haproxy.sh
@@ -34,9 +56,38 @@
   shell: |
     chmod +x /tmp/ceph_haproxy.sh && /tmp/ceph_haproxy.sh
   register: ceph_haproxy_result
-  changed_when: ceph_haproxy_result.rc == 0
+  changed_when: "'Updated haproxy configuration written' in ceph_haproxy_result.stdout"
 
 - name: Cleanup - Remove ceph_haproxy.sh from the target machine
   file:
     path: /tmp/ceph_haproxy.sh
     state: absent
+
+- name: Check if updated haproxy configuration exists
+  stat:
+    path: /etc/haproxy/haproxy_temp.cfg
+  register: haproxy_temp
+
+- name: Replace haproxy.cfg with updated config
+  copy:
+    src: /etc/haproxy/haproxy_temp.cfg
+    dest: /etc/haproxy/haproxy.cfg
+    remote_src: true
+    mode: "0644"
+    backup: true
+  register: haproxy_cfg_copy
+  when: haproxy_temp.stat.exists
+
+- name: Ensure haproxy service is enabled
+  service:
+    name: haproxy
+    enabled: true
+
+- name: Restart haproxy service to apply new configuration
+  service:
+    name: haproxy
+    state: restarted
+  when:
+    - haproxy_temp.stat.exists
+    - haproxy_cfg_copy is defined
+    - haproxy_cfg_copy is changed

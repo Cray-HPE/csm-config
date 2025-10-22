@@ -38,10 +38,6 @@ fail() {
     exit 1
 }
 
-log "Updating ceph.conf with latest configuration"
-ceph config generate-minimal-conf > /etc/ceph/ceph_conf_min || fail "Failed to generate ceph configuration"
-cp /etc/ceph/ceph_conf_min /etc/ceph/ceph.conf || fail "Failed to copy ceph configuration to /etc/ceph/ceph.conf"
-
 log "Generating temporary haproxy config"
 haproxy_temp_file="/etc/haproxy/haproxy_temp.cfg"
 /srv/cray/scripts/metal/generate_haproxy_cfg.sh > "$haproxy_temp_file" || fail "Failed to generate haproxy config"
@@ -84,13 +80,4 @@ done
 
 [ "$hosts_found" = true ] || exit 0
 
-log "Replacing haproxy.cfg with updated config"
-mv "$haproxy_temp_file" /etc/haproxy/haproxy.cfg || fail "Failed to replace haproxy.cfg"
-
-log "Enabling haproxy.service"
-systemctl enable haproxy.service || fail "Failed to enable haproxy.service"
-
-log "Restarting haproxy.service"
-systemctl restart haproxy.service || fail "Failed to restart haproxy.service"
-
-log "HAProxy config update completed successfully!"
+log "Updated haproxy configuration written to $haproxy_temp_file"
