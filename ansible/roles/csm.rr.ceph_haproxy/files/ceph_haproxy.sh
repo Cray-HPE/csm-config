@@ -78,6 +78,10 @@ for section in "${sections[@]}"; do
     done
 done
 
-[ "$hosts_found" = true ] || exit 0
-
-log "Updated haproxy configuration written to $haproxy_temp_file"
+if [ "$hosts_found" = true ]; then
+    log "Updated haproxy configuration written to $haproxy_temp_file"
+    echo "hosts_found=true"
+else
+    log "No missing IP entries detected; skipping haproxy update"
+    echo "hosts_found=false"
+fi

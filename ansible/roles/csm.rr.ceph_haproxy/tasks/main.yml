@@ -33,17 +33,10 @@
       - generate-minimal-conf
   register: ceph_conf_min
 
-- name: Write ceph minimal configuration to file
-  copy:
-    content: "{{ ceph_conf_min.stdout }}"
-    dest: /etc/ceph/ceph_conf_min
-    mode: "0644"
-
 - name: Update ceph.conf with minimal configuration
   copy:
-    src: /etc/ceph/ceph_conf_min
+    content: "{{ ceph_conf_min.stdout }}\n"
     dest: /etc/ceph/ceph.conf
-    remote_src: true
     mode: "0644"
     backup: true
 
@@ -56,7 +49,7 @@
   shell: |
     chmod +x /tmp/ceph_haproxy.sh && /tmp/ceph_haproxy.sh
   register: ceph_haproxy_result
-  changed_when: "'Updated haproxy configuration written' in ceph_haproxy_result.stdout"
+  changed_when: "'hosts_found=true' in ceph_haproxy_result.stdout"
 
 - name: Cleanup - Remove ceph_haproxy.sh from the target machine
   file:
@@ -67,27 +60,27 @@
   stat:
     path: /etc/haproxy/haproxy_temp.cfg
   register: haproxy_temp
+  when: "'hosts_found=true' in ceph_haproxy_result.stdout"
 
 - name: Replace haproxy.cfg with updated config
   copy:
     src: /etc/haproxy/haproxy_temp.cfg
     dest: /etc/haproxy/haproxy.cfg
-    remote_src: true
     mode: "0644"
     backup: true
   register: haproxy_cfg_copy
-  when: haproxy_temp.stat.exists
+  when:
+    - "'hosts_found=true' in ceph_haproxy_result.stdout"
+    - haproxy_temp.stat.exists
 
 - name: Ensure haproxy service is enabled
   service:
     name: haproxy
     enabled: true
+  when: "'hosts_found=true' in ceph_haproxy_result.stdout"
 
 - name: Restart haproxy service to apply new configuration
   service:
     name: haproxy
     state: restarted
-  when:
-    - haproxy_temp.stat.exists
-    - haproxy_cfg_copy is defined
-    - haproxy_cfg_copy is changed
+  when: haproxy_cfg_copy is defined and haproxy_cfg_copy.changed
