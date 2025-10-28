@@ -31,6 +31,7 @@
    - Management_Master
    - Management_Worker
    - Management_Storage
+   - Management_FabricManager
   gather_facts: yes
   any_errors_fatal: true
   remote_user: root
@@ -51,6 +52,15 @@
       vars:
         ssh_config_username: 'root'
     - role: csm.ncn.pdsh
+
+# Slingshot Baremetal Fabric Manager
+- hosts:
+   - Management_FabricManager
+  gather_facts: yes
+  any_errors_fatal: true
+  remote_user: root
+  roles:
+    - role: shs_bm_fm.custom
 
 # Install packages and configure SAT on Kubernetes NCNs (masters and workers)
 - hosts:
