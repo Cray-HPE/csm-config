@@ -70,15 +70,13 @@
     mode: "0644"
     backup: true
   register: haproxy_cfg_copy
-  when:
-    - ceph_haproxy_result.rc == 1
-    - haproxy_temp.stat.exists
+  when: haproxy_temp.stat.exists
 
 - name: Ensure haproxy service is enabled
   service:
     name: haproxy
     enabled: true
-  when: ceph_haproxy_result.rc == 1
+  when: haproxy_cfg_copy is changed
 
 - name: Restart haproxy service to apply new configuration
   service:
