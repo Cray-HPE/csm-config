@@ -71,7 +71,7 @@
     backup: true
     remote_src: true
   register: haproxy_cfg_copy
-  when: haproxy_temp is defined and haproxy_temp.stat.exists
+  when: ceph_haproxy_result.rc == 1
 
 - name: Ensure haproxy service is enabled
   service:
