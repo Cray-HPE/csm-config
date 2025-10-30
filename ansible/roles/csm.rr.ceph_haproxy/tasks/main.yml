@@ -70,7 +70,9 @@
     mode: "0644"
     backup: true
   register: haproxy_cfg_copy
-  when: haproxy_temp.stat.exists
+  when:
+    - haproxy_temp is defined
+    - haproxy_temp.stat.exists
 
 - name: Ensure haproxy service is enabled
   service:
