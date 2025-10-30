@@ -49,8 +49,7 @@
   shell: |
     chmod +x /tmp/ceph_haproxy.sh && /tmp/ceph_haproxy.sh
   register: ceph_haproxy_result
-  failed_when: ceph_haproxy_result.rc not in [0, 1]
-  changed_when: ceph_haproxy_result.rc == 1
+  failed_when: ceph_haproxy_result.rc ==1
 
 - name: Cleanup - Remove ceph_haproxy.sh from the target machine
   file:
@@ -61,7 +60,7 @@
   stat:
     path: /etc/haproxy/haproxy_temp.cfg
   register: haproxy_temp
-  when: ceph_haproxy_result.rc == 1
+  when: "'Proceed=true' in ceph_haproxy_result.stdout"
 
 - name: Replace haproxy.cfg with updated config
   copy:
@@ -71,7 +70,7 @@
     backup: true
     remote_src: true
   register: haproxy_cfg_copy
-  when: ceph_haproxy_result.rc == 1
+  when: "'Proceed=true' in ceph_haproxy_result.stdout"
 
 - name: Ensure haproxy service is enabled
   service:

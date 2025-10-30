@@ -40,6 +40,7 @@ fail() {
 
 log "Generating temporary haproxy config"
 haproxy_temp_file="/etc/haproxy/haproxy_temp.cfg"
+haproxy_src_file="/etc/haproxy/haproxy.cfg"
 /srv/cray/scripts/metal/generate_haproxy_cfg.sh > "$haproxy_temp_file" || fail "Failed to generate haproxy config"
 
 log "Parsing generated haproxy config"
@@ -52,9 +53,20 @@ for section in "${sections[@]}"; do
     label=$(echo "$section" | cut -d':' -f3)
 
     log "Processing section: $label (svc=$svc, port=$port)"
+    
+    # Handle cases when there are changes in node entries where the CEPH services (mgr) are run.
+    # Check for such changes, update the haproxy config and restart the haproxy service.
+    hosts_tmp=$(sed -En "s/.*(server server-[a-z0-9\-]*-$svc ([0-9]{1,3}\.){3}[0-9]{1,3}:$port check weight 100).*/\1/p" "$haproxy_temp_file") || fail "Failed to parse hosts for $label"
+    hosts_src=$(sed -En "s/.*(server server-[a-z0-9\-]*-$svc ([0-9]{1,3}\.){3}[0-9]{1,3}:$port check weight 100).*/\1/p" "$haproxy_src_file") || fail "Failed to parse hosts for $label"
+    
+    if [ "$hosts_tmp" != "$hosts_src" ]; then
+        log "Difference detected between temporary and source haproxy config for $label"
+        hosts_found=true
+    fi
 
-    hosts=$(sed -n "s/.*server server-\([a-z0-9\-]*\)-$svc :$port check weight 100.*/\1/p" "$haproxy_temp_file") || fail "Failed to parse hosts for $label"
-
+    # Handle rare cases when IPs are missing from generated config file because of incorrect cloud-init entries.
+    # Retrieve those missing IPs, update the haproxy config and restart the haproxy service.
+    hosts=$(sed -En "s/.*server server-([a-z0-9\-]*)-$svc :$port check weight 100.*/\1/p" "$haproxy_temp_file") || fail "Failed to parse hosts for $label"
     if [ -z "$hosts" ]; then
         log "No entries with missing IPs found for $label"
         continue
@@ -78,7 +90,10 @@ for section in "${sections[@]}"; do
     done
 done
 
-log "Updated haproxy configuration written to $haproxy_temp_file"
-[ "$hosts_found" = true ] || { log "No missing IP entries detected; skipping haproxy update"; exit 0; }
-
-exit 1
+if [ "$hosts_found" = true ]; then 
+    log "Updated haproxy configuration written to $haproxy_temp_file"
+    echo "Proceed=true"
+else
+    log "No missing IP entries detected; skipping haproxy update"
+fi
+exit 0
