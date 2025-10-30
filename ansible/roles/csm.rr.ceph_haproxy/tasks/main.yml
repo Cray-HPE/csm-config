@@ -69,10 +69,9 @@
     dest: /etc/haproxy/haproxy.cfg
     mode: "0644"
     backup: true
+    remote_src: true
   register: haproxy_cfg_copy
-  when:
-    - haproxy_temp is defined
-    - haproxy_temp.stat.exists
+  when: haproxy_temp is defined and haproxy_temp.stat.exists
 
 - name: Ensure haproxy service is enabled
   service:
