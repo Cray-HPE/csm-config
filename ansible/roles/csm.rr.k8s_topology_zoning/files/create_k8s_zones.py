@@ -28,6 +28,11 @@ import json
 import sys
 from typing import Dict, List
 
+
+def log(message: str) -> None:
+    """Write informational output to stderr so stdout can carry JSON."""
+    print(message, file=sys.stderr)
+
 def get_rack_info() -> Dict[str, List[str]]:
     """
     Get key value pair of rack(s) and corresponding management nodes (xnames) fetched
@@ -42,22 +47,22 @@ def get_rack_info() -> Dict[str, List[str]]:
         #result = subprocess.run(["python3", "rack_to_node_mapping.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
         result = subprocess.run(["cat", "/tmp/rack_info.txt"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
     except subprocess.CalledProcessError as e:
-        print(f"Error occurred while running kubectl: {e.stderr}")
+        log(f"Error occurred while reading rack info: {e.stderr}")
         sys.exit(1)
     except Exception as e:
-        print(f"Unexpected error: {str(e)}")
+        log(f"Unexpected error: {str(e)}")
         sys.exit(1)
-    print(f"Result: {result}")
+    log(f"Rack info read successfully: {result}")
     rack_info = result.stdout
     rack_info = json.loads(rack_info)
     return rack_info
 
-def generate_node_zone_mapping(rack_info: Dict[str, List[str]], k8s_zone_prefix: str) -> None:
+def generate_node_zone_mapping(rack_info: Dict[str, List[str]], k8s_zone_prefix: str) -> Dict[str, str]:
     """
     Generate node to zone mapping for k8s topology zone labels to management racks 
     with corresponding master and worker nodes.
     Here zone name(rack_id) is: k8s_zone_prefix + xname of the rack
-    Store the mapping in a file for Ansible to process.
+    Return the mapping so Ansible can process it directly.
     """
     node_zone_mapping = {}
     
@@ -69,16 +74,12 @@ def generate_node_zone_mapping(rack_info: Dict[str, List[str]], k8s_zone_prefix:
         
         for node in nodes:
             if not node.startswith("ncn-s"):
-                print(f"Node {node} will be placed on {zone_name}")
+                log(f"Node {node} will be placed on {zone_name}")
                 node_zone_mapping[node] = zone_name
     
-    # Write the node-zone mapping to a file for Ansible to process
-    output_file = "/tmp/k8s_node_zone_mapping.json"
-    with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(node_zone_mapping, f, indent=2)
-    
-    print(f"Node to zone mapping saved to {output_file}")
-    print(f"Total nodes to be labeled: {len(node_zone_mapping)}")
+    log(f"Total nodes to be labeled: {len(node_zone_mapping)}")
+
+    return node_zone_mapping
 
 def main() -> None:
     """
@@ -89,7 +90,7 @@ def main() -> None:
     """
     # Check if k8s_zone_prefix is provided as command line argument
     if len(sys.argv) < 2:
-        print("Usage: create_k8s_zones.py <k8s_zone_prefix>")
+        log("Usage: create_k8s_zones.py <k8s_zone_prefix>")
         sys.exit(1)
     
     k8s_zone_prefix = sys.argv[1]
@@ -97,7 +98,10 @@ def main() -> None:
     # To get the rack info
     rack_info = get_rack_info()
     # Generate the node-zone mapping for Ansible to process
-    generate_node_zone_mapping(rack_info, k8s_zone_prefix)
+    node_zone_mapping = generate_node_zone_mapping(rack_info, k8s_zone_prefix)
+
+    # Emit JSON mapping to stdout for Ansible consumption
+    print(json.dumps(node_zone_mapping))
 
 if __name__ == "__main__":
     main()

@@ -33,34 +33,19 @@
   register: k8s_mapping_generation
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
-  changed_when: k8s_mapping_generation.rc == 0
-
-- name: Check if node-zone mapping file exists
-  stat:
-    path: "/tmp/k8s_node_zone_mapping.json"
-  register: mapping_file
-  delegate_to: "{{ play_hosts | first }}"
-  run_once: true
-
-- name: Read node to zone mapping
-  slurp:
-    src: "/tmp/k8s_node_zone_mapping.json"
-  register: node_zone_mapping_raw
-  delegate_to: "{{ play_hosts | first }}"
-  run_once: true
-  when: mapping_file.stat.exists
+  changed_when: false
 
 - name: Parse node to zone mapping
   set_fact:
-    node_zone_mapping: "{{ node_zone_mapping_raw.content | b64decode | from_json }}"
-  delegate_to: localhost
+    node_zone_mapping: "{{ (k8s_mapping_generation.stdout | default('{}', true)) | from_json }}"
+  delegate_to: "{{ play_hosts | first }}"
   run_once: true
-  when: mapping_file.stat.exists
 
 - name: Debug node zone mapping
   debug:
     var: node_zone_mapping
   when: node_zone_mapping is defined
+  run_once: true
 
 - name: Apply k8s topology zone labels to nodes
   kubernetes.core.k8s:
