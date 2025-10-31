@@ -49,18 +49,12 @@
   shell: |
     chmod +x /tmp/ceph_haproxy.sh && /tmp/ceph_haproxy.sh
   register: ceph_haproxy_result
-  failed_when: ceph_haproxy_result.rc ==1
+  failed_when: ceph_haproxy_result.rc == 1
 
 - name: Cleanup - Remove ceph_haproxy.sh from the target machine
   file:
     path: /tmp/ceph_haproxy.sh
     state: absent
-
-- name: Check if updated haproxy configuration exists
-  stat:
-    path: /etc/haproxy/haproxy_temp.cfg
-  register: haproxy_temp
-  when: "'Proceed=true' in ceph_haproxy_result.stdout"
 
 - name: Replace haproxy.cfg with updated config
   copy:
@@ -70,7 +64,9 @@
     backup: true
     remote_src: true
   register: haproxy_cfg_copy
-  when: "'Proceed=true' in ceph_haproxy_result.stdout"
+  when: 
+   - "'Proceed=true' in ceph_haproxy_result.stdout"
+   - lookup('ansible.builtin.stat', '/etc/haproxy/haproxy_temp.cfg').exists
 
 - name: Ensure haproxy service is enabled
   service:

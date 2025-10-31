@@ -25,7 +25,8 @@
 
 # When CEPH services distribution is modified as a result of CEPH zoning,
 # there would be entries in haproxy with missing IPs which is updated using this script.
-# Also, this script updates ceph.conf accross all storage nodes with latest configuration.
+# Also, this script updates ceph.conf across all storage nodes with latest configuration.
+# This script also handles cases when there are changes in node entries where the CEPH services (mgr) are run.
 
 set -euo pipefail
 
