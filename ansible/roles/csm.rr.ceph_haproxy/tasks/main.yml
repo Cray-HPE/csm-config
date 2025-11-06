@@ -64,9 +64,7 @@
     backup: true
     remote_src: true
   register: haproxy_cfg_copy
-  when: 
-   - "'Proceed=true' in ceph_haproxy_result.stdout"
-   - lookup('ansible.builtin.stat', '/etc/haproxy/haproxy_temp.cfg').exists
+  when: "'Proceed=true' in ceph_haproxy_result.stdout"
 
 - name: Ensure haproxy service is enabled
   service:
