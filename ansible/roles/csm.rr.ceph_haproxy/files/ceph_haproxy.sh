@@ -39,7 +39,7 @@ fail() {
     exit 1
 }
 
-log "Generating temporary haproxy config"
+log "Generating current haproxy config"
 haproxy_temp_file="/etc/haproxy/haproxy_temp.cfg"
 haproxy_src_file="/etc/haproxy/haproxy.cfg"
 /srv/cray/scripts/metal/generate_haproxy_cfg.sh > "$haproxy_temp_file" || fail "Failed to generate haproxy config"
@@ -61,7 +61,7 @@ for section in "${sections[@]}"; do
     hosts_src=$(sed -En "s/.*(server server-[a-z0-9\-]*-$svc ([0-9]{1,3}\.){3}[0-9]{1,3}:$port check weight 100).*/\1/p" "$haproxy_src_file") || fail "Failed to parse hosts for $label"
     
     if [ "$hosts_tmp" != "$hosts_src" ]; then
-        log "Difference detected between temporary and source haproxy config for $label"
+        log "Difference detected between current and previous haproxy config for $label"
         hosts_found=true
     fi
 

@@ -22,12 +22,8 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 ---
-- name: Debug k8s_zone_prefix
-  debug:
-    var: k8s_zone_prefix
-
-- name: Generate node to zone mapping for k8s topology zoning
-  script: "create_k8s_zones.py '{{ k8s_zone_prefix | default('') }}'"
+- name: Add zone prefix to node to zone mapping
+  script: "add_k8s_zone_prefix.py '{{ k8s_zone_prefix | default('') }}'"
   args:
     executable: python3
   register: k8s_mapping_generation
@@ -39,12 +35,6 @@
   set_fact:
     node_zone_mapping: "{{ (k8s_mapping_generation.stdout | default('{}', true)) | from_json }}"
   delegate_to: "{{ play_hosts | first }}"
-  run_once: true
-
-- name: Debug node zone mapping
-  debug:
-    var: node_zone_mapping
-  when: node_zone_mapping is defined
   run_once: true
 
 - name: Apply k8s topology zone labels to nodes
