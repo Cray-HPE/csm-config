@@ -1,8 +1,7 @@
-#!/usr/bin/env ansible-playbook
 #
 # MIT License
 #
-# (C) Copyright 2022-2023 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2025 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -22,11 +21,9 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# NCN Worker Nodes Play
-- hosts: "Management_Master:Management_Worker:Management_Storage:Management_FabricManager:&cfs_image"
-  any_errors_fatal: true
-  remote_user: root
+---
+dependencies:
+  - role: csm.gpg_keys
+    when: >-
+     shs_bm_fm_repositories is defined and  shs_bm_fm_repositories | selectattr('disable_gpg_check', 'equalto', 'no') | list | length > 0
 
-  roles:
-    # Creates an NCN initrd during pre-boot image customization
-    - role: csm.ncn-initrd

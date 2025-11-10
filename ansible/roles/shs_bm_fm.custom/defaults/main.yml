@@ -1,0 +1,90 @@
+#
+# MIT License
+#
+# (C) Copyright 2025 Hewlett Packard Enterprise Development LP
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+---
+# List of repositories to configure
+#shs_bm_fm_repositories:
+#  - name: shs_bm_fm_TODO
+#    description: "TODO Description"
+#    repo: https://packages.local/repository/TODO-${releasever_major}sp${releasever_minor}
+#    disable_gpg_check: true
+
+# List of kernel modules to blacklist
+kernel_modules_blacklist:
+  - ceph
+  - nbd
+  - rbd
+
+# List of SLES RPMs to remove
+#remove_sles_rpms:
+#  - TODO
+
+# List of non-SLES RPMs to remove
+remove_non_sles_rpms:
+  - cm-cli
+  - cni
+  - cni-plugins
+  - ceph-common
+  - cray-kubectl-hns-plugin
+  - cray-kubectl-kubelogin-plugin
+  - cray-prodmgr
+  - cray-sdu-rda
+  - craycli
+  - cri-tools
+  - cvt
+  - dracut-metal-dmk8s
+  - goss-servers
+  - hpe-csm-goss-package
+  - kubeadm
+  - kubectl
+  - kubelet
+  - kubernetes-cni
+  - libcephfs2
+  - libpmemobj1
+  - librados2
+  - librbd1
+  - librgw2
+  - loftsman
+  - manifestgen
+  - python3-ceph-argparse
+  - python3-ceph-common
+  - python3-cephfs
+  - python3-rados
+  - python3-rbd
+  - python3-rgw
+  - python313-cfs-debugger
+
+# List of files and directories to remove
+remove_non_sles_paths:
+  - /opt/cray/csm/scripts/csm_rbd_tool
+  - /opt/kata
+  - /srv/cray/scripts/common/join-spire-on-storage.sh
+  - /srv/cray/scripts/common/kubernetes-cloudinit.sh
+  - /usr/bin/etcd
+  - /usr/bin/etcdctl
+  - /usr/bin/velero
+  - /usr/bin/weave
+  - /usr/local/bin/argo
+  - /usr/local/bin/cilium
+  - /usr/local/bin/hubble
+  - /usr/local/bin/tetra
