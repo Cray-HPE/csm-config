@@ -49,7 +49,7 @@
   shell: |
     chmod +x /tmp/ceph_haproxy.sh && /tmp/ceph_haproxy.sh
   register: ceph_haproxy_result
-  failed_when: ceph_haproxy_result.rc == 1
+  failed_when: ceph_haproxy_result.rc != 0
 
 - name: Cleanup - Remove ceph_haproxy.sh from the target machine
   file:
