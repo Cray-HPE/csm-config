@@ -33,10 +33,6 @@
   run_once: true
   changed_when: false
 
-- name: Debug ceph_prefix
-  debug:
-    var: ceph_prefix
-
 - name: Apply CEPH zoning
   script: "ceph_zoning.py /tmp/rack_info.txt '{{ ceph_prefix | default('') }}'"
   args:

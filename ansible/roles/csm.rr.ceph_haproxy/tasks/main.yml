@@ -25,6 +25,21 @@
 # Updates CEPH haproxy configuration with latest information after performing CEPH zoning
 # and also update ceph.conf on all storage nodes with latest configuration.
 
+- name: Generate ceph minimal configuration
+  command:
+    argv:
+      - ceph
+      - config
+      - generate-minimal-conf
+  register: ceph_conf_min
+
+- name: Update ceph.conf with minimal configuration
+  copy:
+    content: "{{ ceph_conf_min.stdout }}\n"
+    dest: /etc/ceph/ceph.conf
+    mode: "0644"
+    backup: true
+
 - name: Copy ceph_haproxy.sh script to the target machine
   copy:
     src: ceph_haproxy.sh
@@ -34,9 +49,31 @@
   shell: |
     chmod +x /tmp/ceph_haproxy.sh && /tmp/ceph_haproxy.sh
   register: ceph_haproxy_result
-  changed_when: ceph_haproxy_result.rc == 0
+  failed_when: ceph_haproxy_result.rc != 0
 
 - name: Cleanup - Remove ceph_haproxy.sh from the target machine
   file:
     path: /tmp/ceph_haproxy.sh
     state: absent
+
+- name: Replace haproxy.cfg with updated config
+  copy:
+    src: /etc/haproxy/haproxy_temp.cfg
+    dest: /etc/haproxy/haproxy.cfg
+    mode: "0644"
+    backup: true
+    remote_src: true
+  register: haproxy_cfg_copy
+  when: "'Proceed=true' in ceph_haproxy_result.stdout"
+
+- name: Ensure haproxy service is enabled
+  service:
+    name: haproxy
+    enabled: true
+  when: haproxy_cfg_copy is changed
+
+- name: Restart haproxy service to apply new configuration
+  service:
+    name: haproxy
+    state: restarted
+  when: haproxy_cfg_copy is changed

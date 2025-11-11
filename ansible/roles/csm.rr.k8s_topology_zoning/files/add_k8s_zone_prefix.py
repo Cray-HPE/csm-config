@@ -25,48 +25,13 @@
 
 import subprocess
 import json
-import base64
 import sys
 from typing import Dict, List
 
-def get_k8s_zone_prefix() -> str:
-    """
-    Get k8s zone prefix from the site-init secret (customization.yaml).
-    Return k8s_zone_prefix to be used by label_nodes(rack_info)
-    function to apply k8s topology zone lables (k8s_zone_prefix + xname of rack)
-    to management racks.
-    """
-    # Run kubectl command and capture JSON output
-    namespace = "loftsman"
-    secret_name = "site-init"
 
-    kubectl_cmd = ["kubectl", "-n", namespace, "get", "secret", secret_name, "-o", "json"]
-    kubectl_output = subprocess.run(kubectl_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
-
-    # Parse JSON output
-    secret_data = json.loads(kubectl_output.stdout)
-
-    # Extract and decode the base64 data
-    encoded_yaml = secret_data["data"]["customizations.yaml"]
-    decoded_yaml = base64.b64decode(encoded_yaml).decode("utf-8")
-
-    # Write the yaml output to a file
-    output_file = "/tmp/customizations.yaml"
-    with open(output_file, "w") as f:
-        f.write(decoded_yaml)
-
-    print(f"Decoded YAML saved to {output_file}")
-
-    # Define the key path
-    k8s_key_path = "spec.kubernetes.services.rack-resiliency.k8s_zone_prefix"
-
-    # Run yq command to extract the value
-    k8s_yq_cmd = ["yq", "r", output_file, k8s_key_path]
-    k8s_zone = subprocess.run(k8s_yq_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
-
-    # Extract and clean the output
-    k8s_zone_prefix = k8s_zone.stdout.strip()
-    return k8s_zone_prefix
+def log(message: str) -> None:
+    """Write informational output to stderr so stdout can carry JSON."""
+    print(message, file=sys.stderr)
 
 def get_rack_info() -> Dict[str, List[str]]:
     """
@@ -82,54 +47,61 @@ def get_rack_info() -> Dict[str, List[str]]:
         #result = subprocess.run(["python3", "rack_to_node_mapping.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
         result = subprocess.run(["cat", "/tmp/rack_info.txt"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
     except subprocess.CalledProcessError as e:
-        print(f"Error occurred while running kubectl: {e.stderr}")
+        log(f"Error occurred while reading rack info: {e.stderr}")
         sys.exit(1)
     except Exception as e:
-        print(f"Unexpected error: {str(e)}")
+        log(f"Unexpected error: {str(e)}")
         sys.exit(1)
-    print(f"Result: {result}")
+    log(f"Rack info read successfully: {result}")
     rack_info = result.stdout
     rack_info = json.loads(rack_info)
     return rack_info
 
-def label_nodes(rack_info: Dict[str, List[str]]) -> None:
+def generate_node_zone_mapping(rack_info: Dict[str, List[str]], k8s_zone_prefix: str) -> Dict[str, str]:
     """
-    Apply k8s topology zone labels to management racks with corresponding
-    master and worker nodes.
+    Generate node to zone mapping for k8s topology zone labels to management racks 
+    with corresponding master and worker nodes.
     Here zone name(rack_id) is: k8s_zone_prefix + xname of the rack
-    Return nothing.
+    Return the mapping so Ansible can process it directly.
     """
-    # To traverse the nodes in the rack and assign them the labels
+    node_zone_mapping = {}
+    
+    # To traverse the nodes in the rack and build the mapping
     for rack_id, nodes in rack_info.items():
-        k8s_zone_prefix = get_k8s_zone_prefix()
+        zone_name = rack_id
         if k8s_zone_prefix:
-            rack_id = k8s_zone_prefix + "-" + rack_id
+            zone_name = k8s_zone_prefix + "-" + rack_id
+        
         for node in nodes:
             if not node.startswith("ncn-s"):
-                print(f"Node {node} is going to be placed on {rack_id}")
-                try:
-                    result = subprocess.run(
-                            ["kubectl", "label", "node", f"{node}", f"topology.kubernetes.io/zone={rack_id}", "--overwrite"],
-                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True
-                            )
-                except subprocess.CalledProcessError as e:
-                    print(f"Error occurred while running kubectl: {e.stderr}")
-                    sys.exit(1)
-                except Exception as e:
-                    print(f"Unexpected error: {str(e)}")
-                    sys.exit(1)
-                print(f"Result: {result}")
+                log(f"Node {node} will be placed on {zone_name}")
+                node_zone_mapping[node] = zone_name
+    
+    log(f"Total nodes to be labeled: {len(node_zone_mapping)}")
+
+    return node_zone_mapping
 
 def main() -> None:
     """
     Apply k8s topology zones to management racks with corresponding master and worker nodes.
     rack_info here is a key value pair of rack(s) and corresponding management nodes (xnames) fetched
     from the placement file /tmp/rack_info.txt.
+    k8s_zone_prefix is passed as command line argument from Ansible.
     """
+    # Check if k8s_zone_prefix is provided as command line argument
+    if len(sys.argv) < 2:
+        log("Usage: create_k8s_zones.py <k8s_zone_prefix>")
+        sys.exit(1)
+    
+    k8s_zone_prefix = sys.argv[1]
+    
     # To get the rack info
     rack_info = get_rack_info()
-    # To label the rack nodes
-    label_nodes(rack_info)
+    # Generate the node-zone mapping for Ansible to process
+    node_zone_mapping = generate_node_zone_mapping(rack_info, k8s_zone_prefix)
+
+    # Emit JSON mapping to stdout for Ansible consumption
+    print(json.dumps(node_zone_mapping))
 
 if __name__ == "__main__":
     main()
