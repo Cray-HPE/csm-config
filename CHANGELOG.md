@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.49.0] - 2025-10-09
+
+### Changed
+
+- CASM-5649: Convert Rack Resiliency zoning workflows to Ansible and harden Ceph HAProxy validation
+  - `csm.rr.k8s_topology_zoning` now emits a node-to-zone map from Python and applies labels with `kubernetes.core.k8s`, fully replacing `kubectl` loops.
+  - `csm.rr.ceph_haproxy` tasks generate the Ceph configuration, deploy HAProxy updates, and act on a `Proceed=true` flag returned by the script instead of relying on exit codes alone.
+  - `ceph_haproxy.sh` now detects changes in service node assignments as well as missing IPs, ensuring HAProxy restarts when mgr placement shifts.
+
 ## [1.48.3] - 2025-10-06
 
 ### Fixed
@@ -834,7 +843,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.48.3...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.49.0...HEAD
+
+[1.49.0]: https://github.com/Cray-HPE/csm-config/compare/1.48.3...1.49.0
 
 [1.48.3]: https://github.com/Cray-HPE/csm-config/compare/1.48.2...1.48.3
 

@@ -25,7 +25,8 @@
 
 # When CEPH services distribution is modified as a result of CEPH zoning,
 # there would be entries in haproxy with missing IPs which is updated using this script.
-# Also, this script updates ceph.conf accross all storage nodes with latest configuration.
+# Also, this script updates ceph.conf across all storage nodes with latest configuration.
+# This script also handles cases when there are changes in node entries where the CEPH services (mgr) are run.
 
 set -euo pipefail
 
@@ -38,12 +39,9 @@ fail() {
     exit 1
 }
 
-log "Updating ceph.conf with latest configuration"
-ceph config generate-minimal-conf > /etc/ceph/ceph_conf_min || fail "Failed to generate ceph configuration"
-cp /etc/ceph/ceph_conf_min /etc/ceph/ceph.conf || fail "Failed to copy ceph configuration to /etc/ceph/ceph.conf"
-
-log "Generating temporary haproxy config"
+log "Generating current haproxy config"
 haproxy_temp_file="/etc/haproxy/haproxy_temp.cfg"
+haproxy_src_file="/etc/haproxy/haproxy.cfg"
 /srv/cray/scripts/metal/generate_haproxy_cfg.sh > "$haproxy_temp_file" || fail "Failed to generate haproxy config"
 
 log "Parsing generated haproxy config"
@@ -56,9 +54,20 @@ for section in "${sections[@]}"; do
     label=$(echo "$section" | cut -d':' -f3)
 
     log "Processing section: $label (svc=$svc, port=$port)"
+    
+    # Handle cases when there are changes in node entries where the CEPH services (mgr) are run.
+    # Check for such changes, update the haproxy config and restart the haproxy service.
+    hosts_tmp=$(sed -En "s/.*(server server-[a-z0-9\-]*-$svc ([0-9]{1,3}\.){3}[0-9]{1,3}:$port check weight 100).*/\1/p" "$haproxy_temp_file") || fail "Failed to parse hosts for $label"
+    hosts_src=$(sed -En "s/.*(server server-[a-z0-9\-]*-$svc ([0-9]{1,3}\.){3}[0-9]{1,3}:$port check weight 100).*/\1/p" "$haproxy_src_file") || fail "Failed to parse hosts for $label"
+    
+    if [ "$hosts_tmp" != "$hosts_src" ]; then
+        log "Difference detected between current and previous haproxy config for $label"
+        hosts_found=true
+    fi
 
-    hosts=$(sed -n "s/.*server server-\([a-z0-9\-]*\)-$svc :$port check weight 100.*/\1/p" "$haproxy_temp_file") || fail "Failed to parse hosts for $label"
-
+    # Handle rare cases when IPs are missing from generated config file because of incorrect cloud-init entries.
+    # Retrieve those missing IPs, update the haproxy config and restart the haproxy service.
+    hosts=$(sed -En "s/.*server server-([a-z0-9\-]*)-$svc :$port check weight 100.*/\1/p" "$haproxy_temp_file") || fail "Failed to parse hosts for $label"
     if [ -z "$hosts" ]; then
         log "No entries with missing IPs found for $label"
         continue
@@ -82,15 +91,10 @@ for section in "${sections[@]}"; do
     done
 done
 
-[ "$hosts_found" = true ] || exit 0
-
-log "Replacing haproxy.cfg with updated config"
-mv "$haproxy_temp_file" /etc/haproxy/haproxy.cfg || fail "Failed to replace haproxy.cfg"
-
-log "Enabling haproxy.service"
-systemctl enable haproxy.service || fail "Failed to enable haproxy.service"
-
-log "Restarting haproxy.service"
-systemctl restart haproxy.service || fail "Failed to restart haproxy.service"
-
-log "HAProxy config update completed successfully!"
+if [ "$hosts_found" = true ]; then 
+    log "Updated haproxy configuration written to $haproxy_temp_file"
+    echo "Proceed=true"
+else
+    log "No missing IP entries detected; skipping haproxy update"
+fi
+exit 0
