@@ -24,14 +24,17 @@
 ---
 # List of repositories to configure
 shs_bm_fm_repositories:
+  # java-11-openjdk
   - name: SLE-Module-Legacy
     description: "CSM SLE Module Legacy packages (added by Ansible)"
     repo: https://packages.local/repository/SUSE-25.7.250709-SLE-Module-Legacy-15-SP7-x86_64-Updates
     disable_gpg_check: true
+  # nginx
   - name: SLE-Module-Server-Applications
     description: "CSM SLE Module Server Applications packages (added by Ansible)"
-    repo: https://packages.local/repository/SUSE-25.7.250709-SLE-Module-Server-Applications-15-SP7-x86_64-Updates 
+    repo: https://packages.local/repository/SUSE-25.7.250709-SLE-Module-Server-Applications-15-SP7-x86_64-Pool
     disable_gpg_check: true
+  # podman
   - name: SLE-Module-Conainers
     description: "CSM SLE Module Containers packages (added by Ansible)"
     repo: https://packages.local/repository/SUSE-SLE-Module-Containers-15-SP7-x86_64-Updates
@@ -40,11 +43,16 @@ shs_bm_fm_repositories:
     description: "CSM SLE Embedded packages (added by Ansible)"
     repo: https://packages.local/repository/csm-embedded
     disable_gpg_check: true
+  # libfdt1 (dependency for dtc)
+  - name: SLE-Module-Basesystem
+    description: "CSM SLE Module Basesystem packages (added by Ansible)"
+    repo: https://packages.local/repository/SUSE-SLE-Module-Basesystem-15-SP6-x86_64-Pool
+    disable_gpg_check: true
+  # dtc
   - name: SLE-Module-Development-Tools
     description: "CSM SLE Module Development Tools packages (added by Ansible)"
     repo: https://packages.local/repository/SUSE-25.7.250709-SLE-Module-Development-Tools-15-SP6-x86_64-Pool
     disable_gpg_check: true
-
 
 # List of kernel modules to blacklist
 kernel_modules_blacklist:
