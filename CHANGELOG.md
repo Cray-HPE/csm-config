@@ -12,8 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - CASM-5282: Image customization for Fabric Manager baremetal nodes
-  - Added a new role `shs_bm_fm.custom` to customize kubernetes base image for Fabric Manager nodes.
+- CASM-5758: Add repos for installing prerequisite OS RPMs required during Slingshot software installation.
+  - Added a new role `csm.shs_bm_fm` to customize kubernetes base image for Fabric Manager nodes.
   - Modify `ncn_nodes.yml` and `ncn-initrd.yml` for supporting Fabric Manager nodes.
+  - Added repos to install packages java-11-openjdk, nginx, podman, libfdt1(dependency for dtc) and dtc.
 
 ## [1.49.0] - 2025-10-09
 
