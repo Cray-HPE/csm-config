@@ -23,11 +23,28 @@
 #
 ---
 # List of repositories to configure
-#shs_bm_fm_repositories:
-#  - name: shs_bm_fm_TODO
-#    description: "TODO Description"
-#    repo: https://packages.local/repository/TODO-${releasever_major}sp${releasever_minor}
-#    disable_gpg_check: true
+shs_bm_fm_repositories:
+  - name: SLE-Module-Legacy
+    description: "CSM SLE Module Legacy packages (added by Ansible)"
+    repo: https://packages.local/repository/SUSE-25.7.250709-SLE-Module-Legacy-15-SP7-x86_64-Updates
+    disable_gpg_check: true
+  - name: SLE-Module-Server-Applications
+    description: "CSM SLE Module Server Applications packages (added by Ansible)"
+    repo: https://packages.local/repository/SUSE-25.7.250709-SLE-Module-Server-Applications-15-SP7-x86_64-Updates 
+    disable_gpg_check: true
+  - name: SLE-Module-Conainers
+    description: "CSM SLE Module Containers packages (added by Ansible)"
+    repo: https://packages.local/repository/SUSE-SLE-Module-Containers-15-SP7-x86_64-Updates
+    disable_gpg_check: true
+  - name: CSM-Embedded
+    description: "CSM SLE Embedded packages (added by Ansible)"
+    repo: https://packages.local/repository/csm-embedded
+    disable_gpg_check: true
+  - name: SLE-Module-Development-Tools
+    description: "CSM SLE Module Development Tools packages (added by Ansible)"
+    repo: https://packages.local/repository/SUSE-25.7.250709-SLE-Module-Development-Tools-15-SP6-x86_64-Pool
+    disable_gpg_check: true
+
 
 # List of kernel modules to blacklist
 kernel_modules_blacklist:
