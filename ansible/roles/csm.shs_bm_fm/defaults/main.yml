@@ -35,7 +35,7 @@ shs_bm_fm_repositories:
     repo: https://packages.local/repository/SUSE-25.7.250709-SLE-Module-Server-Applications-15-SP7-x86_64-Pool
     disable_gpg_check: true
   # podman
-  - name: SLE-Module-Conainers
+  - name: SLE-Module-Containers
     description: "CSM SLE Module Containers packages (added by Ansible)"
     repo: https://packages.local/repository/SUSE-SLE-Module-Containers-15-SP7-x86_64-Updates
     disable_gpg_check: true
@@ -46,12 +46,12 @@ shs_bm_fm_repositories:
   # libfdt1 (dependency for dtc)
   - name: SLE-Module-Basesystem
     description: "CSM SLE Module Basesystem packages (added by Ansible)"
-    repo: https://packages.local/repository/SUSE-SLE-Module-Basesystem-15-SP6-x86_64-Pool
+    repo: https://packages.local/repository/SUSE-SLE-Module-Basesystem-15-SP7-x86_64-Pool
     disable_gpg_check: true
   # dtc
   - name: SLE-Module-Development-Tools
     description: "CSM SLE Module Development Tools packages (added by Ansible)"
-    repo: https://packages.local/repository/SUSE-25.7.250709-SLE-Module-Development-Tools-15-SP6-x86_64-Pool
+    repo: https://packages.local/repository/SUSE-SLE-Module-Development-Tools-15-SP7-x86_64-Pool
     disable_gpg_check: true
 
 # List of kernel modules to blacklist
