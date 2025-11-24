@@ -11,7 +11,16 @@ None.
 
 Role Variables
 --------------
+Available variables are listed below:
 
+For list of repositories to configure: `shs_bm_fm_repositories:`
+
+For list of kernel modules to blacklist: `kernel_modules_blacklist:`
+  
+For list of non-SLES RPMs to remove: `remove_non_sles_rpms:`
+  
+For list of files and directories to remove `remove_non_sles_paths:`
+  
 Dependencies
 ------------
 
