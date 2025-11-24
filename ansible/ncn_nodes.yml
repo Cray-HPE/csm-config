@@ -60,7 +60,7 @@
   any_errors_fatal: true
   remote_user: root
   roles:
-    - role: shs_bm_fm.custom
+    - role: csm.shs_bm_fm
 
 # Install packages and configure SAT on Kubernetes NCNs (masters and workers)
 - hosts:
