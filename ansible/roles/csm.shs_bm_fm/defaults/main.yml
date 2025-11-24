@@ -70,7 +70,6 @@ remove_non_sles_rpms:
   - cray-kubectl-kubelogin-plugin
   - cray-prodmgr
   - cray-sdu-rda
-  - craycli
   - cri-tools
   - cvt
   - dracut-metal-dmk8s
