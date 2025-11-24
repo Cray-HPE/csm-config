@@ -60,10 +60,6 @@ kernel_modules_blacklist:
   - nbd
   - rbd
 
-# List of SLES RPMs to remove
-#remove_sles_rpms:
-#  - TODO
-
 # List of non-SLES RPMs to remove
 remove_non_sles_rpms:
   - cm-cli
