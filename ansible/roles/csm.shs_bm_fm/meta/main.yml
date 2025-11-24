@@ -24,6 +24,3 @@
 ---
 dependencies:
   - role: csm.gpg_keys
-    when: >-
-     shs_bm_fm_repositories is defined and  shs_bm_fm_repositories | selectattr('disable_gpg_check', 'equalto', 'no') | list | length > 0
-
