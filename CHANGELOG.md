@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.50.0] - 2025-11-12
+
+### Added
+
+- CASM-5282: Image customization for Fabric Manager baremetal nodes
+- CASM-5758: Add repos for installing prerequisite OS RPMs required during Slingshot software installation.
+  - Added a new role `csm.shs_bm_fm` to customize kubernetes base image for Fabric Manager nodes.
+  - Modify `ncn_nodes.yml` and `ncn-initrd.yml` for supporting Fabric Manager nodes.
+  - Added repos to install packages java-11-openjdk, nginx, podman, libfdt1(dependency for dtc) and dtc.
+
 ## [1.49.0] - 2025-10-09
 
 ### Changed
@@ -843,7 +853,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.49.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.50.0...HEAD
+
+[1.50.0]: https://github.com/Cray-HPE/csm-config/compare/1.49.0...1.50.0
 
 [1.49.0]: https://github.com/Cray-HPE/csm-config/compare/1.48.3...1.49.0
 

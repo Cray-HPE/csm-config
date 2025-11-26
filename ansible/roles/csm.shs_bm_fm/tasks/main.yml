@@ -1,0 +1,74 @@
+#
+# MIT License
+#
+# (C) Copyright 2025 Hewlett Packard Enterprise Development LP
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+---
+# Kernel module management
+- name: Blacklist kernel modules
+  community.general.kernel_blacklist:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ kernel_modules_blacklist }}"
+  when: kernel_modules_blacklist is defined and kernel_modules_blacklist | length > 0
+
+# RPM cleanup - Remove unwanted packages
+- name: Remove non-SLES RPMs
+  community.general.zypper:
+    name: "{{ remove_non_sles_rpms }}"
+    state: absent
+  when: remove_non_sles_rpms is defined and remove_non_sles_rpms | length > 0
+
+- name: Remove SLES RPMs
+  community.general.zypper:
+    name: "{{ remove_sles_rpms }}"
+    state: absent
+  when: remove_sles_rpms is defined and remove_sles_rpms | length > 0
+
+# File system cleanup
+- name: Remove files and directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+    force: true
+  loop: "{{ remove_non_sles_paths }}"
+  when: remove_non_sles_paths is defined and remove_non_sles_paths | length > 0
+
+# Repository configuration
+- name: Configure zypper repositories
+  community.general.zypper_repository:
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    repo: "{{ item.repo }}"
+    state: present
+    disable_gpg_check: "{{ item.disable_gpg_check | default('no') }}"
+  loop: "{{ shs_bm_fm_repositories }}"
+  when: >-
+    shs_bm_fm_repositories is defined and shs_bm_fm_repositories | length > 0
+
+- name: Allow unsigned repo metadata
+  ansible.builtin.command: >-
+    zypper modifyrepo --gpgcheck-allow-unsigned-repo {{ item.name }}
+  loop: "{{ shs_bm_fm_repositories }}"
+  when: >-
+    shs_bm_fm_repositories is defined and shs_bm_fm_repositories | length > 0
+  changed_when: true
+
