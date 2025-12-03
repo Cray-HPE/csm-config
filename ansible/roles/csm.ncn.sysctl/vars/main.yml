@@ -55,4 +55,3 @@ sysctl_config:
     value: -1
   - name: net.ipv6.xfrm6_gc_thresh
     value: 32768
-
