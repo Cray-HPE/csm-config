@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.51.0] - 2025-12-3
+
+### Added
+
+- CASMINST-7445: DOCS: Include IPv6 neighbor table in ARP cache tuning guidance
+- Added default IPv6 neighbor table tuning values to CSM sysctl role
+    - Added `net.ipv6.neigh.default.gc_thresh1` to `roles/csm.ncn.sysctl/vars/main.yml`
+    - Added `net.ipv6.neigh.default.gc_thresh2` to `roles/csm.ncn.sysctl/vars/main.yml`
+    - Added `net.ipv6.neigh.default.gc_thresh3` to `roles/csm.ncn.sysctl/vars/main.yml`
+    - Added `net.ipv6.route.gc_thresh` to `roles/csm.ncn.sysctl/vars/main.yml`
+    - Added `net.ipv6.xfrm6_gc_thresh` to `roles/csm.ncn.sysctl/vars/main.yml`
+
 ## [1.50.0] - 2025-11-12
 
 ### Added
