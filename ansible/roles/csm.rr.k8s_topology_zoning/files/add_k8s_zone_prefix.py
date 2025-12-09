@@ -52,7 +52,6 @@ def get_rack_info() -> Dict[str, List[str]]:
     except Exception as e:
         log(f"Unexpected error: {str(e)}")
         sys.exit(1)
-    log(f"Rack info read successfully: {result}")
     rack_info = result.stdout
     rack_info = json.loads(rack_info)
     return rack_info
@@ -74,10 +73,7 @@ def generate_node_zone_mapping(rack_info: Dict[str, List[str]], k8s_zone_prefix:
         
         for node in nodes:
             if not node.startswith("ncn-s"):
-                log(f"Node {node} will be placed on {zone_name}")
                 node_zone_mapping[node] = zone_name
-    
-    log(f"Total nodes to be labeled: {len(node_zone_mapping)}")
 
     return node_zone_mapping
 
@@ -90,7 +86,6 @@ def main() -> None:
     """
     # Check if k8s_zone_prefix is provided as command line argument
     if len(sys.argv) < 2:
-        log("Usage: create_k8s_zones.py <k8s_zone_prefix>")
         sys.exit(1)
     
     k8s_zone_prefix = sys.argv[1]
