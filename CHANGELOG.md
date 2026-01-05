@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.50.2] - 2025-12-17
+
+### Fixed
+
+- CASMTRIAGE-8848: A SQUASHFS error was observed on booted compute nodes during worker node rebuilds.
+  - This was resolved by reverting the change introduced in CASMTRIAGE-8171, which had caused LUN re-mapping on the iSCSI target during rebuild. 
+    This issue is occurred because the target port was disabled, resulted in lun re-mapping to different image than earlier.
+ - CASMTRIAGE-8171:  Reopened to address with documentation.
+
+## [1.50.1] - 2025-12-06
+
+### Fixed
+
+- CASMTRIAGE-8945: Clean up verbose logging in Rack Resiliency k8s topology zoning script
+  - Remove informational log messages from `add_k8s_zone_prefix.py` that were cluttering Ansible stdout output.
+
 ## [1.50.0] - 2025-11-12
 
 ### Added
@@ -853,7 +869,11 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.50.0...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.50.2...HEAD
+
+[1.50.2]: https://github.com/Cray-HPE/csm-config/compare/1.50.1...1.50.2
+
+[1.50.1]: https://github.com/Cray-HPE/csm-config/compare/1.50.0...1.50.1
 
 [1.50.0]: https://github.com/Cray-HPE/csm-config/compare/1.49.0...1.50.0
 

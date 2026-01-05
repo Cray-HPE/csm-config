@@ -70,11 +70,6 @@ function auto_generate_node_acls()
         targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1 set attribute generate_node_acls=1"
 }
 
-function disable_target_port()
-{
-        targetcli "/iscsi/${TARGET_SERVER_IQN}/tpg1" disable
-}
-
 #--------------------------------------------------------------------
 # Base Target Configuration
 #--------------------------------------------------------------------
@@ -98,5 +93,4 @@ SERVER_IQN="$(add_server_target)"
 #--------------------------------------------------------------------
 
 auto_generate_node_acls "$SERVER_IQN"
-disable_target_port
 save_server_config
