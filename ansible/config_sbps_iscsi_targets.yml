@@ -55,9 +55,9 @@
     - role: csm.sbps.apply_label
     # Enable spire for SBPS Marshal Agent (systemd service)
     - role: csm.sbps.enable_spire
-    # Provision iSCSI targets/ LIO services
-    - role: csm.sbps.lio_config
     # Install and enable SBPS Marshal Agent
     - role: csm.sbps.install_enable_marshal
+    # Provision iSCSI targets/ LIO services
+    - role: csm.sbps.lio_config
     # Configure SBPS DNS "SRV" and "A" records
     - role: csm.sbps.dns_srv_records
