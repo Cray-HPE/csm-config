@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2025 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2025-2026 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -27,12 +27,12 @@ shs_bm_fm_repositories:
   # java-11-openjdk
   - name: SLE-Module-Legacy
     description: "CSM SLE Module Legacy packages (added by Ansible)"
-    repo: https://packages.local/repository/SUSE-25.7.250709-SLE-Module-Legacy-15-SP7-x86_64-Updates
+    repo: https://packages.local/repository/SUSE-SLE-Module-Legacy-15-SP7-x86_64-Updates
     disable_gpg_check: true
   # nginx
   - name: SLE-Module-Server-Applications
     description: "CSM SLE Module Server Applications packages (added by Ansible)"
-    repo: https://packages.local/repository/SUSE-25.7.250709-SLE-Module-Server-Applications-15-SP7-x86_64-Pool
+    repo: https://packages.local/repository/SUSE-SLE-Module-Server-Applications-15-SP7-x86_64-Pool
     disable_gpg_check: true
   # podman
   - name: SLE-Module-Containers
