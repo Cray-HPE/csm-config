@@ -27,12 +27,12 @@ shs_bm_fm_repositories:
   # java-11-openjdk
   - name: SLE-Module-Legacy
     description: "CSM SLE Module Legacy packages (added by Ansible)"
-    repo: https://packages.local/repository/SUSE-25.7.250709-SLE-Module-Legacy-15-SP7-x86_64-Updates
+    repo: https://packages.local/repository/SUSE-SLE-Module-Legacy-15-SP7-x86_64-Updates
     disable_gpg_check: true
   # nginx
   - name: SLE-Module-Server-Applications
     description: "CSM SLE Module Server Applications packages (added by Ansible)"
-    repo: https://packages.local/repository/SUSE-25.7.250709-SLE-Module-Server-Applications-15-SP7-x86_64-Pool
+    repo: https://packages.local/repository/SUSE-SLE-Module-Server-Applications-15-SP7-x86_64-Pool
     disable_gpg_check: true
   # podman
   - name: SLE-Module-Containers
