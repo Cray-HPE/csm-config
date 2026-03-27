@@ -38,6 +38,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Modify `ncn_nodes.yml` and `ncn-initrd.yml` for supporting Fabric Manager nodes.
   - Added repos to install packages java-11-openjdk, nginx, podman, libfdt1(dependency for dtc) and dtc.
 
+### Dependencies
+
+- Bump `actions/checkout` from 5 to 6 ([#424](https://github.com/Cray-HPE/csm-config/pull/424))
+
 ## [1.49.0] - 2025-10-09
 
 ### Changed
