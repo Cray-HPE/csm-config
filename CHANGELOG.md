@@ -47,6 +47,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `csm.rr.ceph_haproxy` tasks generate the Ceph configuration, deploy HAProxy updates, and act on a `Proceed=true` flag returned by the script instead of relying on exit codes alone.
   - `ceph_haproxy.sh` now detects changes in service node assignments as well as missing IPs, ensuring HAProxy restarts when mgr placement shifts.
 
+### Dependencies
+
+- Bump `stefanzweifel/git-auto-commit-action` from 5 to 7 ([#419](https://github.com/Cray-HPE/csm-config/pull/419))
+
 ## [1.48.3] - 2025-10-06
 
 ### Fixed
