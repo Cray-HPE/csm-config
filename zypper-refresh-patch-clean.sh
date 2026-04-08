@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2021-2026 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -64,11 +64,23 @@ while [ $count -lt 10 ]; do
     # fail because of Snyk vulnerabilities until I added that argument. I suspect
     # there is lag time between when Snyk knows about a vulnerability and when
     # zypper considers the update to be a security patch.
-    zypper --non-interactive patch --with-update
+    zypper --non-interactive patch \
+        --auto-agree-with-licenses \
+        --force-resolution \
+        --no-confirm \
+        --with-interactive \
+        --with-update \
+        --skip-not-applicable-patches
     rc=$?
 
     # If rc = 0, break out of the while loop
     [ $rc -eq 0 ] && break
+
+    # If rc = 102, this means that a system reboot is suggested, for the patch to
+    # take full effect. Since this is being done in the context of a Dockerfile, a
+    # fresh boot implicitly happens when the Docker image is run. Therefore, this
+    # is also a successful status code.
+    [ $rc -eq 102 ] && break
 
     # If rc != 103, then this is a true failure
     [ $rc -ne 103 ] && exit $rc
