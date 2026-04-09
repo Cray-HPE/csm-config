@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2020-2024 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2020-2024, 2026 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -23,7 +23,7 @@
 #
 # Dockerfile for importing CSM content into gitea, to be used with CFS
 
-FROM artifactory.algol60.net/registry.suse.com/suse/sle15:15.6 as product-content-base
+FROM artifactory.algol60.net/registry.suse.com/suse/sle15:15.6 AS product-content-base
 WORKDIR /
 
 ARG SP=6
@@ -38,7 +38,9 @@ COPY zypper-docker-build.sh /
 # The above script calls the following script, so we need to copy it as well
 COPY zypper-refresh-patch-clean.sh /
 RUN --mount=type=secret,id=ARTIFACTORY_READONLY_USER --mount=type=secret,id=ARTIFACTORY_READONLY_TOKEN \
-    ./zypper-docker-build.sh && \
+    ./zypper-docker-build.sh \
+        csm-ssh-keys-roles-${CSM_SSH_KEYS_VERSION} \
+        --lock csm-ssh-keys-roles && \
     rm /zypper-docker-build.sh /zypper-refresh-patch-clean.sh
 
 FROM artifactory.algol60.net/csm-docker/stable/cf-gitea-import:@CF_GITEA_IMPORT_VERSION@ as cf-gitea-import-base
