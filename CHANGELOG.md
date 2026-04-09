@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [1.50.4] - 2026-04-09
+
 ### Dependencies
 - CASMCMS-9638: Update `zypper-refresh-patch-clean.sh` to ensure it applies all necessary patches
 - CASMCMS-9637: Update `zypper-docker-build.sh`
@@ -880,7 +884,11 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.50.2...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.50.4...HEAD
+
+[1.50.4]: https://github.com/Cray-HPE/csm-config/compare/1.50.3...1.50.4
+
+[1.50.3]: https://github.com/Cray-HPE/csm-config/compare/1.50.2...1.50.3
 
 [1.50.2]: https://github.com/Cray-HPE/csm-config/compare/1.50.1...1.50.2
 
