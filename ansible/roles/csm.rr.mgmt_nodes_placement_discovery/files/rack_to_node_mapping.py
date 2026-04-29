@@ -151,6 +151,10 @@ def rack_info(hsm_data: dict, sls_data: dict) -> None:
             print_stderr(f"Component {xname} has no alias in SLS of the form ncn-[msw]###")
             sys.exit(1)
 
+    # Sort the nodes within each rack in increasing order so that the results are consistent across runs even if the order in HSM/SLS changes every run
+    for rack_id in res_rack:
+        res_rack[rack_id].sort()
+
     res_rack_str = json.dumps(res_rack, indent=4)
     print(res_rack_str)
     # Write the result to the tmp file
