@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.50.5] - 2026-09-08
+
+### Fixed
+
+- CAST-39537: [ALPS] new ceph configuration (after enabling rack resiliency) not updated during management rollout of storage canary node
+- Internal issue for tracking - CASM-5771
+  - Detect changes in rack-based Ceph monitor and service placement before applying zoning updates.
+  - Wait for Ceph daemons and monitor quorum to stabilize after service migration.
+  - Synchronize the current monitor list across Ceph CSI ConfigMaps, the backups `ceph-etc` ConfigMap, `customizations.yaml`, and Ceph exporter endpoints.
+
 ## [1.50.4] - 2026-04-09
 
 ### Dependencies
@@ -884,7 +894,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.50.4...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.50.5...HEAD
+
+[1.50.5]: https://github.com/Cray-HPE/csm-config/compare/1.50.4...1.50.5
 
 [1.50.4]: https://github.com/Cray-HPE/csm-config/compare/1.50.3...1.50.4
 
