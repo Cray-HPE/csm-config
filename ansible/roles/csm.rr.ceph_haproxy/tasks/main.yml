@@ -23,22 +23,6 @@
 #
 ---
 # Updates CEPH haproxy configuration with latest information after performing CEPH zoning
-# and also update ceph.conf on all storage nodes with latest configuration.
-
-- name: Generate ceph minimal configuration
-  command:
-    argv:
-      - ceph
-      - config
-      - generate-minimal-conf
-  register: ceph_conf_min
-
-- name: Update ceph.conf with minimal configuration
-  copy:
-    content: "{{ ceph_conf_min.stdout }}\n"
-    dest: /etc/ceph/ceph.conf
-    mode: "0644"
-    backup: true
 
 - name: Copy ceph_haproxy.sh script to the target machine
   copy:

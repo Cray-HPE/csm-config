@@ -42,3 +42,13 @@
   delegate_to: "{{ play_hosts | first }}"
   run_once: true
   changed_when: ceph_zoning_result.rc == 0
+
+- name: Update ConfigMaps with correct Ceph monitor information
+  script: "update_k8s_configmaps.py"
+  args:
+    executable: python3
+  when: ceph_zoning_result.rc == 0
+  register: configmap_update_result
+  delegate_to: "{{ play_hosts | first }}"
+  run_once: true
+  changed_when: configmap_update_result.rc == 0
