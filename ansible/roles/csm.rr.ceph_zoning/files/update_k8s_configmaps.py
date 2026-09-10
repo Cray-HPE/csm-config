@@ -35,7 +35,6 @@ import os
 import shutil
 import subprocess
 import tempfile
-
 import yaml
 
 # Set up logger
@@ -46,7 +45,6 @@ ch.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 logger.addHandler(ch)
-
 
 def run_command(command: str) -> str:
     """
@@ -68,13 +66,11 @@ def run_command(command: str) -> str:
         raise ValueError(f"Command {command} errored out with: {e.stderr}") from e
     return result.stdout
 
-
 def get_new_monitors() -> list[str]:
     """Get the current list of Ceph monitor addresses from the monitor map."""
     result = run_command("ceph mon dump -f json")
     mon_dump = json.loads(result)
     return [mon["public_addr"].split("/")[0] for mon in mon_dump["mons"]]
-
 
 def update_ceph_csi_configmaps() -> None:
     """
@@ -149,7 +145,6 @@ def update_ceph_csi_configmaps() -> None:
         text=True,
     )
     logger.info("ceph-etc updated in namespace backups")
-
 
 def update_customizations() -> None:
     """
@@ -235,7 +230,6 @@ def main() -> None:
     """Update all Ceph ConfigMaps and customizations with current monitor information."""
     update_ceph_csi_configmaps()
     update_customizations()
-
 
 if __name__ == "__main__":
     main()
