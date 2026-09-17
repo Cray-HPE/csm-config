@@ -55,6 +55,7 @@
     success_msg: "HSM group \"{{iscsi_group_name}}\" contains at least 1 worker NCN"
 
 - name: Update labels
+  run_once: true
   ansible.builtin.include_tasks:
     file: update_labels.yml
   loop: "{{ groups['Management_Worker'] }}"
