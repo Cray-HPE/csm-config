@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Dependencies
+
+- Bump `actions/checkout` from 5 to 7 ([#424](https://github.com/Cray-HPE/csm-config/pull/424))
+
 ## [1.50.5] - 2026-09-08
 
 ### Fixed
