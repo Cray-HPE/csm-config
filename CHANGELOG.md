@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Dependencies
 
 - Bump `stefanzweifel/git-auto-commit-action` from 5 to 7 ([#419](https://github.com/Cray-HPE/csm-config/pull/419))
+- Bump `actions/checkout` from 5 to 7 ([#424](https://github.com/Cray-HPE/csm-config/pull/424))
 
 ## [1.50.5] - 2026-09-08
 
