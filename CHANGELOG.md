@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- CASMTRIAGE-9269, CASMTRIAGE-9270, CASMTRIAGE-9272: Rack Resiliency Ceph zoning fixes for issues found during testing on vShasta
+
 ### Dependencies
 
 - Bump `stefanzweifel/git-auto-commit-action` from 5 to 7 ([#419](https://github.com/Cray-HPE/csm-config/pull/419))

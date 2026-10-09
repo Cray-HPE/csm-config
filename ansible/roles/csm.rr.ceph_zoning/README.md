@@ -18,7 +18,7 @@ Example Playbook
 ----------------
 
 ```yaml
-    - hosts: Management_Master
+    - hosts: Management_Storage
       gather_facts: no
       any_errors_fatal: true
       remote_user: root
@@ -34,4 +34,4 @@ None.
 Author Information
 ------------------
 
-Copyright 2025 Hewlett Packard Enterprise Development LP
+Copyright 2025-2026 Hewlett Packard Enterprise Development LP
