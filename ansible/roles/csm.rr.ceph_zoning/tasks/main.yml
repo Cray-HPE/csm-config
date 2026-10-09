@@ -43,6 +43,30 @@
   run_once: true
   changed_when: ceph_zoning_result.rc == 0
 
+- name: Generate the updated Ceph configuration
+  command: ceph config generate-minimal-conf
+  register: ceph_conf_min
+  delegate_to: "{{ play_hosts | first }}"
+  run_once: true
+  changed_when: false
+  when:
+    - ceph_zoning_result.rc == 0
+
+- name: Copy updated Ceph configuration to management masters
+  copy:
+    content: "{{ ceph_conf_min.stdout }}"
+    dest: /etc/ceph/ceph.conf
+    owner: root
+    group: root
+    mode: "0644"
+    backup: true
+  delegate_to: "{{ item }}"
+  loop: "{{ groups.get('Management_Master', []) }}"
+  run_once: true
+  when:
+    - ceph_zoning_result.rc == 0
+    - groups.get('Management_Master', []) | length > 0
+
 - name: Update ConfigMaps with correct Ceph monitor information
   script: "update_k8s_configmaps.py"
   args:

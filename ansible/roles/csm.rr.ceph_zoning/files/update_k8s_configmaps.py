@@ -35,6 +35,7 @@ import os
 import shutil
 import subprocess
 import tempfile
+from typing import List
 import yaml
 
 # Set up logger
@@ -66,7 +67,7 @@ def run_command(command: str) -> str:
         raise ValueError(f"Command {command} errored out with: {e.stderr}") from e
     return result.stdout
 
-def get_new_monitors() -> list[str]:
+def get_new_monitors() -> List[str]:
     """Get the current list of Ceph monitor addresses from the monitor map."""
     result = run_command("ceph mon dump -f json")
     mon_dump = json.loads(result)
@@ -108,8 +109,9 @@ def update_ceph_csi_configmaps() -> None:
             ["kubectl", "apply", "-f", "-"],
             input=json.dumps(cm),
             check=True,
-            capture_output=True,
-            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=True,
         )
         logger.info(f"ceph-csi-config updated in namespace {ns}")
 
@@ -141,8 +143,9 @@ def update_ceph_csi_configmaps() -> None:
         ["kubectl", "apply", "-f", "-"],
         input=json.dumps(cm),
         check=True,
-        capture_output=True,
-        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True,
     )
     logger.info("ceph-etc updated in namespace backups")
 
@@ -195,12 +198,25 @@ def update_customizations() -> None:
 
     logger.info("Updating cephExporter endpoints in loftsman-cray-sysmgmt-health...")
 
+    try:
+        run_command("kubectl -n loftsman get cm loftsman-cray-sysmgmt-health")
+    except Exception as e:
+        logger.info(f"Skipping loftsman-cray-sysmgmt-health (ConfigMap not found): {e}")
+        return
+
     result = run_command(
         "kubectl get cm -n loftsman loftsman-cray-sysmgmt-health "
         "-o jsonpath='{.data.manifest\\.yaml}'"
     )
     manifest_raw = result.strip().strip("'")
+    if not manifest_raw:
+        logger.info("Skipping loftsman-cray-sysmgmt-health (manifest.yaml is empty)")
+        return
+
     manifest = yaml.safe_load(manifest_raw)
+    if not isinstance(manifest, dict):
+        logger.info("Skipping loftsman-cray-sysmgmt-health (manifest.yaml is not a mapping)")
+        return
 
     # Update cephExporter.endpoints in all charts
     for chart in manifest.get("spec", {}).get("charts", []):
@@ -219,8 +235,9 @@ def update_customizations() -> None:
             "-p", patch_payload,
         ],
         check=True,
-        capture_output=True,
-        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True,
     )
 
     logger.info("loftsman-cray-sysmgmt-health ConfigMap updated successfully")
