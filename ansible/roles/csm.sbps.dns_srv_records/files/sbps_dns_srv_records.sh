@@ -28,60 +28,14 @@ set -euo pipefail
 # - Configure both HSN and NMN SRV records
 function configure_hsn_and_nmn ()
 {
-    # - read each line from the file /tmp/hsn_nmn_info.txt passed on to this script
-    #   to fetch Host Name, HSN and NMN IP's for each worker node.
-    #   line format is: <Host Name>:<HSN IP>:<NMN IP>
-    # - then create DNS SRV and A records based on the above data
-    while read -r line; do
-        # Strip out any '\r' characters
-        line=$(echo "$line" | tr -d '\r')
-
-        echo "Getting worker node name"
-        ncn_worker_node=$(echo "$line" | awk -F ":" '{print $1}')
-
-        echo "Getting iSCSI server ID"
-        iscsi_server_id="id-$(echo "$ncn_worker_node" | awk -F "-" '{print $2}' | awk '{print substr($1,2);}')"
-
-        echo "Getting hsn_ip"
-        hsn_ip=$(echo "$line" | awk -F ":" '{print $2}') || true
-
-        echo "Getting nmn_ip"
-        nmn_ip=$(echo "$line" | awk -F ":" '{print $3}')
-
-        if [[ -n $hsn_ip ]]
-        then
-            echo "Appending to hsn_srv_records"
-            hsn_srv_records="$hsn_srv_records{\"content\": \"1 0 3260 iscsi-server-"${iscsi_server_id}.hsn.${SYSTEM_NAME}.${SITE_DOMAIN}."\",\"disabled\": false},"
-            echo "Appending to hsn_a_records"
-            hsn_a_records="$hsn_a_records{\"comments\": [], \"name\": \"iscsi-server-"${iscsi_server_id}.hsn.${SYSTEM_NAME}.${SITE_DOMAIN}."\",\"changetype\":\"REPLACE\",\"records\":[{\"content\": \"${hsn_ip}\",\"disabled\": false}],\"ttl\": 3600,\"type\": \"A\"},"
-        fi
-
-        echo "Appending to nmn_srv_records"
-        nmn_srv_records="$nmn_srv_records{\"content\": \"1 0 3260 iscsi-server-"${iscsi_server_id}.nmn.${SYSTEM_NAME}.${SITE_DOMAIN}."\",\"disabled\": false},"
-        echo "Appending to nmn_a_records"
-        nmn_a_records="$nmn_a_records{\"comments\": [], \"name\": \"iscsi-server-"${iscsi_server_id}.nmn.${SYSTEM_NAME}.${SITE_DOMAIN}."\",\"changetype\":\"REPLACE\",\"records\":[{\"content\": \"${nmn_ip}\",\"disabled\": false}],\"ttl\": 3600,\"type\": \"A\"},"
-    done
-
-    hsn_srv_records="${hsn_srv_records%?}"
-    echo "hsn_srv_records: ${hsn_srv_records}"
-
-    nmn_srv_records="${nmn_srv_records%?}"
-    echo "nmn_srv_records: ${nmn_srv_records}"
-
-    hsn_a_records="${hsn_a_records%?}"
-    echo "hsn_a_records: ${hsn_a_records}"
-
-    nmn_a_records="${nmn_a_records%?}"
-    echo "nmn_a_records: ${nmn_a_records}"
-
     echo "Patch SRV records"
-    # PATCH (update) DNS "SRV" records for HSN and NMN for all the worker nodes
-    curl -i -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/${SYSTEM_NAME}.${SITE_DOMAIN}" -d'
+    # PATCH (update) DNS "SRV" records for HSN and NMN
+    curl -i -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/${ZONE}" -d'
     {
       "rrsets": [
         {
           "comments": [],
-          "name": "_sbps-hsn._tcp.'"${SYSTEM_NAME}"'.'"${SITE_DOMAIN}."'",
+          "name": "_sbps-hsn._tcp.'"${ZONE}."'",
           "changetype":"REPLACE",
           "records":[
             '"${hsn_srv_records}"'
@@ -91,7 +45,7 @@ function configure_hsn_and_nmn ()
         },
         {
           "comments": [],
-          "name": "_sbps-nmn._tcp.'"${SYSTEM_NAME}"'.'"${SITE_DOMAIN}."'",
+          "name": "_sbps-nmn._tcp.'"${ZONE}."'",
           "changetype":"REPLACE",
           "records":[
             '"${nmn_srv_records}"'
@@ -102,18 +56,18 @@ function configure_hsn_and_nmn ()
       ]
     }'
 
-    # PATCH (update) DNS  "A" records for HSN for all the worker nodes
+    # PATCH (update) DNS  "A" records for HSN
     echo "Patch HSN A records"
-    curl -i -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/hsn.${SYSTEM_NAME}.${SITE_DOMAIN}" -d'
+    curl -i -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/hsn.${ZONE}" -d'
     {
       "rrsets": [
         '"${hsn_a_records}"'
       ]
     }'
 
-    # PATCH (update) DNS  "A" records for NMN for all the worker nodes
+    # PATCH (update) DNS  "A" records for NMN
     echo "Patch NMN A records"
-    curl -i -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/nmn.${SYSTEM_NAME}.${SITE_DOMAIN}" -d'
+    curl -i -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/nmn.${ZONE}" -d'
     {
       "rrsets": [
         '"${nmn_a_records}"'
@@ -124,46 +78,21 @@ function configure_hsn_and_nmn ()
 # - Configure HSN or NMN SRV records
 function configure_hsn_or_nmn ()
 {
-    # - read each line from the file /tmp/hsn_nmn_info.txt passed on to this script
-    #   to fetch Host Name, HSN and NMN IP's for each worker node.
-    #   line format is: <Host Name>:<HSN IP>:<NMN IP>
-    # - then create DNS SRV and A records for the missing network
-
     local network="$1"
-    local ip_field="$2"
+    local srv_records a_records
 
-    echo "Nwtwork: $network IP Field: $ip_field"
+    echo "Nwtwork: $network"
 
     srv_records=""
     a_records=""
 
-    while read -r line; do
-        # Strip out any '\r' characters
-        line=$(echo "$line" | tr -d '\r')
-
-        echo "Getting worker node name"
-        ncn_worker_node=$(echo "$line" | awk -F ":" '{print $1}')
-
-        echo "Getting iSCSI server ID"
-        iscsi_server_id="id-$(echo "$ncn_worker_node" | awk -F "-" '{print $2}' | awk '{print substr($1,2);}')"
-
-        echo "Getting hsn_ip or nmn_ip"
-        ip=$(echo "$line" | awk -F ":" -v f="${ip_field}" '{print $f}')
-
-        if [[ -z ${ip} ]]; then
-            echo "Skipping ${ncn_worker_node}: no ${network} IP"
-            continue
-        fi
-
-        echo "Appending to hsn or nmn srv_records"
-        srv_records="${srv_records}{\"content\": \"1 0 3260 iscsi-server-${iscsi_server_id}.${network}.${ZONE}.\",\"disabled\": false},"
-
-        echo "Appending to hsn or nmn a_records"
-        a_records="${a_records}{\"comments\": [], \"name\": \"iscsi-server-${iscsi_server_id}.${network}.${ZONE}.\",\"changetype\":\"REPLACE\",\"records\":[{\"content\": \"${ip}\",\"disabled\": false}],\"ttl\": 3600,\"type\": \"A\"},"
-    done
-
-    srv_records="${srv_records%?}"
-    a_records="${a_records%?}"
+    if [[ ${network} == "hsn" ]]; then
+        srv_records="${hsn_srv_records}"
+        a_records="${hsn_a_records}"
+    else
+        srv_records="${nmn_srv_records}"
+        a_records="${nmn_a_records}"
+    fi
 
     echo "Patch ${network} SRV records"
     curl -i -X PATCH -H "X-API-Key: ${PDNS_API_KEY}" "http://${PDNS_API}:8081/api/v1/servers/localhost/zones/${ZONE}" -d'
@@ -197,11 +126,6 @@ PDNS_API_KEY=$(kubectl -n services get secret cray-powerdns-credentials -o jsonp
 echo "Getting PDNS_API"
 PDNS_API=$(kubectl -n services get svc cray-dns-powerdns-api -o jsonpath='{.spec.clusterIP}')
 
-hsn_srv_records=""
-nmn_srv_records=""
-hsn_a_records=""
-nmn_a_records=""
-
 echo "Setting SITE_DOMAIN and SYSTEM_NAME from /etc/environment"
 eval "$(grep -e SITE_DOMAIN -e SYSTEM_NAME /etc/environment)"
 
@@ -220,17 +144,81 @@ fi
 
 ZONE="${SYSTEM_NAME}.${SITE_DOMAIN}"
 
-# - check each network independently
-hsn_present=0
-nmn_present=0
+hsn_srv_records=""
+nmn_srv_records=""
+hsn_a_records=""
+nmn_a_records=""
 
-if [[ -n $(dig +short -t SRV "_sbps-hsn._tcp.${ZONE}") ]]; then
-  hsn_present=1
+declare -A expected_hsn_ip=()
+declare -A expected_nmn_ip=()
+
+# - read each line from the file /tmp/hsn_nmn_info.txt passed on to this script
+#   to fetch Host Name, HSN and NMN IP's for each worker node.
+#   line format is: <Host Name>:<HSN IP>:<NMN IP>
+# - then create expected DNS SRV and A records based on the above data after validation.
+while IFS= read -r line || [[ -n ${line} ]]; do
+    # strip '\r' and split the row in one pass - no tr/awk subprocesses
+    IFS=':' read -r ncn_worker_node hsn_ip nmn_ip _ <<< "${line//$'\r'/}"
+
+    # ignore anything that is not a worker record (e.g. kubectl warnings)
+    [[ ${ncn_worker_node} =~ ^ncn-w[0-9]{3}$ ]] || continue
+
+    # ncn-w004 -> id-004
+    iscsi_server_id="${ncn_worker_node#*-}"
+    iscsi_server_id="id-${iscsi_server_id:1}"
+
+    if [[ -n ${hsn_ip} ]]; then
+        target="iscsi-server-${iscsi_server_id}.hsn.${ZONE}."
+        expected_hsn_ip["${target}"]="${hsn_ip}"
+        hsn_srv_records="${hsn_srv_records}{\"content\": \"1 0 3260 ${target}\",\"disabled\": false},"
+        hsn_a_records="${hsn_a_records}{\"comments\": [], \"name\": \"${target}\",\"changetype\":\"REPLACE\",\"records\":[{\"content\": \"${hsn_ip}\",\"disabled\": false}],\"ttl\": 3600,\"type\": \"A\"},"
+    fi
+
+    if [[ -n ${nmn_ip} ]]; then
+        target="iscsi-server-${iscsi_server_id}.nmn.${ZONE}."
+        expected_nmn_ip["${target}"]="${nmn_ip}"
+        nmn_srv_records="${nmn_srv_records}{\"content\": \"1 0 3260 ${target}\",\"disabled\": false},"
+        nmn_a_records="${nmn_a_records}{\"comments\": [], \"name\": \"${target}\",\"changetype\":\"REPLACE\",\"records\":[{\"content\": \"${nmn_ip}\",\"disabled\": false}],\"ttl\": 3600,\"type\": \"A\"},"
+    fi
+done
+
+hsn_srv_records="${hsn_srv_records%,}"
+nmn_srv_records="${nmn_srv_records%,}"
+hsn_a_records="${hsn_a_records%,}"
+nmn_a_records="${nmn_a_records%,}"
+
+if [[ -z ${hsn_srv_records} && -z ${nmn_srv_records} ]]; then
+  echo "ERROR: no valid <hostname>:<hsn-ip>:<nmn-ip> records on stdin;" 1>&2
+  echo "       refusing to REPLACE the SBPS SRV record sets with an empty list" 1>&2
+  exit 1
 fi
 
-if [[ -n $(dig +short -t SRV "_sbps-nmn._tcp.${ZONE}") ]]; then
-  nmn_present=1
-fi
+# - Validation - per record, not just "does the RRset exist"
+published_hsn_srv=$(dig +short -t SRV "_sbps-hsn._tcp.${ZONE}" | awk '{ print $NF }')
+published_nmn_srv=$(dig +short -t SRV "_sbps-nmn._tcp.${ZONE}" | awk '{ print $NF }')
+
+hsn_present=1
+nmn_present=1
+
+for target in "${!expected_hsn_ip[@]}"; do
+    if ! grep -qxF "${target}" <<< "${published_hsn_srv}"; then
+        echo "HSN SRV record missing: ${target}"
+        hsn_present=0
+    elif ! dig +short -t A "${target}" | grep -qxF "${expected_hsn_ip[${target}]}"; then
+        echo "HSN A record missing or stale: ${target} (expected ${expected_hsn_ip[${target}]})"
+        hsn_present=0
+    fi
+done
+
+for target in "${!expected_nmn_ip[@]}"; do
+    if ! grep -qxF "${target}" <<< "${published_nmn_srv}"; then
+        echo "NMN SRV record missing: ${target}"
+        nmn_present=0
+    elif ! dig +short -t A "${target}" | grep -qxF "${expected_nmn_ip[${target}]}"; then
+        echo "NMN A record missing or stale: ${target} (expected ${expected_nmn_ip[${target}]})"
+        nmn_present=0
+    fi
+done
 
 echo "_sbps-hsn._tcp.${ZONE} present: ${hsn_present}"
 echo "_sbps-nmn._tcp.${ZONE} present: ${nmn_present}"
@@ -251,12 +239,10 @@ fi
 if [[ ${hsn_present} -eq 0 ]]; then
   echo "Only NMN SRV records exist - configure the missing HSN SRV records."
   network="hsn"
-  ip_field=2
 else
   echo "Only HSN SRV records exist - configure the missing NMN SRV records."
   network="nmn"
-  ip_field=3
 fi
-configure_hsn_or_nmn $network $ip_field
+configure_hsn_or_nmn "$network"
 
 echo DONE

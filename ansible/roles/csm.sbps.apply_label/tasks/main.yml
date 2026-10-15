@@ -55,9 +55,16 @@
     success_msg: "HSM group \"{{iscsi_group_name}}\" contains at least 1 worker NCN"
 
 - name: Update labels
-  run_once: true
   ansible.builtin.include_tasks:
     file: update_labels.yml
-  loop: "{{ groups['Management_Worker'] }}"
-  loop_control:
-    loop_var: xname
+  vars:
+    xname: "{{ inventory_hostname }}"
+- name: "DEBUG CASMTRIAGE-9052 - session scope"
+  ansible.builtin.debug:
+    msg:
+      - "inventory_hostname       : {{ inventory_hostname }}"
+      - "play host count          : {{ ansible_play_hosts_all | length }}"
+      - "ansible_play_hosts_all   : {{ ansible_play_hosts_all }}"
+      - "Management_Worker members: {{ groups['Management_Worker'] | length }}"
+      - "iscsi_workers members    : {{ iscsi_workers | default([]) | length }}"
+      - "this node is an iSCSI target: {{ inventory_hostname in (iscsi_workers | default([])) }}"
