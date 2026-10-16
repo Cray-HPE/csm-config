@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2025 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2025-2026 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -169,7 +169,7 @@ def compute_expected_service_nodes(positions_dict: Dict[str, List[str]], sn_coun
 def is_zoning_required(positions_dict: Dict[str, List[str]], ceph_zone_prefix: str) -> bool:
     """
     Check if CEPH zoning changes are needed by comparing the current
-    CRUSH rack mapping and service placement with the expected state.
+    CRUSH rack mapping, pool CRUSH rules and service placement with the expected state.
     Returns:
         bool: True if changes are needed, False otherwise.
     """
@@ -190,6 +190,21 @@ def is_zoning_required(positions_dict: Dict[str, List[str]], ceph_zone_prefix: s
             logger.info(f"Rack mapping differs for {node}: current={current_rack}, expected={expected_rack}")
             return True
 
+    # Ensure every pool uses the rack failure domain CRUSH rule
+    try:
+        rack_rule_id = json.loads(run_command(
+            "ceph osd crush rule dump replicated_rule_with_rack_failure_domain --format json"
+        ))["rule_id"]
+        pools = json.loads(run_command("ceph osd pool ls detail --format json"))
+    except Exception:
+        logger.info("Could not retrieve rack failure domain CRUSH rule or pools, zoning is required")
+        return True
+
+    pools_without_rack_rule = [p["pool_name"] for p in pools if p.get("crush_rule") != rack_rule_id]
+    if pools_without_rack_rule:
+        logger.info(f"Pools not using rack failure domain CRUSH rule: {pools_without_rack_rule}")
+        return True
+
     # Compute sn_count_in_rack from positions_dict
     sn_count_in_rack = []
     for nodes in positions_dict.values():
@@ -209,6 +224,11 @@ def is_zoning_required(positions_dict: Dict[str, List[str]], ceph_zone_prefix: s
     try:
         current_mon_hosts = get_current_service_hosts("mon")
         current_mgr_hosts = get_current_service_hosts("mgr")
+        # Checked per service, since both MDS services share the daemon type
+        current_mds_hosts: Dict[str, List[str]] = {}
+        for mds_service in ("mds.admin-tools", "mds.cephfs"):
+            result = run_command(f"ceph orch ps --service_name {mds_service} --format json")
+            current_mds_hosts[mds_service] = sorted(set(d["hostname"] for d in json.loads(result)))
     except Exception:
         logger.info("Could not retrieve current service placement, zoning is required")
         return True
@@ -220,6 +240,11 @@ def is_zoning_required(positions_dict: Dict[str, List[str]], ceph_zone_prefix: s
     if sorted(expected_remaining_nodes) != current_mgr_hosts:
         logger.info(f"MGR placement differs: current={current_mgr_hosts}, expected={sorted(expected_remaining_nodes)}")
         return True
+
+    for mds_service, mds_hosts in current_mds_hosts.items():
+        if sorted(expected_remaining_nodes) != mds_hosts:
+            logger.info(f"{mds_service} placement differs: current={mds_hosts}, expected={sorted(expected_remaining_nodes)}")
+            return True
 
     logger.info("Current zoning matches expected configuration, no changes needed")
     return False
