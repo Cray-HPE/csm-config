@@ -7,10 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.50.6] - 2026-09-30
+
 ### Dependencies
 
 - Bump `stefanzweifel/git-auto-commit-action` from 5 to 7 ([#419](https://github.com/Cray-HPE/csm-config/pull/419))
 - Bump `actions/checkout` from 5 to 7 ([#424](https://github.com/Cray-HPE/csm-config/pull/424))
+
+### Fixed 
+- CASMTRIAGE-9052: config_sbps_iscsi_targets.yml has inefficiencies and conflicts when 6 worker nodes are being rebuilt
+    - Fixed DNS SRV and A record persistence(csm.sbps.dns_srv_records role) across rebuilds and reboots by preventing unnecessary reconfiguration.
+    - Fixed the csm.sbps.apply_label role to avoid unnecessary looping when applying or removing labels.
 
 ## [1.50.5] - 2026-09-08
 
@@ -899,7 +906,9 @@ RR Ansible plays for:
 
 - Ansible playbook for applying csm packages to Compute and Application nodes
 
-[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.50.5...HEAD
+[Unreleased]: https://github.com/Cray-HPE/csm-config/compare/1.50.6...HEAD
+
+[1.50.6]: https://github.com/Cray-HPE/csm-config/compare/1.50.5...1.50.6
 
 [1.50.5]: https://github.com/Cray-HPE/csm-config/compare/1.50.4...1.50.5
 
