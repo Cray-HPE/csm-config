@@ -73,6 +73,12 @@ def get_new_monitors() -> List[str]:
     mon_dump = json.loads(result)
     return [mon["public_addr"].split("/")[0] for mon in mon_dump["mons"]]
 
+def check_configmap_exists(namespace: str, name: str) -> bool:
+    """Return True if the ConfigMap exists; raise on any kubectl/API error."""
+    return bool(run_command(
+        f"kubectl -n {namespace} get cm {name} --ignore-not-found -o name"
+    ).strip())
+
 def update_ceph_csi_configmaps() -> None:
     """
     Update the monitors list in all Ceph CSI ConfigMaps across relevant
@@ -83,10 +89,8 @@ def update_ceph_csi_configmaps() -> None:
 
     # Namespaces ceph-rbd, ceph-cephfs, default, services contain ceph-csi-config configmap
     for ns in ["ceph-rbd", "ceph-cephfs", "default", "services"]:
-        try:
-            run_command(f"kubectl -n {ns} get cm ceph-csi-config")
-        except Exception as e:
-            logger.info(f"Skipping {ns} (ceph-csi-config not found): {e}")
+        if not check_configmap_exists(ns, "ceph-csi-config"):
+            logger.info(f"Skipping {ns} (ceph-csi-config not found)")
             continue
         logger.info(f"Updating ceph-csi-config in namespace {ns}")
         result = run_command(f"kubectl -n {ns} get cm ceph-csi-config -o json")
@@ -116,10 +120,8 @@ def update_ceph_csi_configmaps() -> None:
         logger.info(f"ceph-csi-config updated in namespace {ns}")
 
     # Handle ceph-etc configmap in backups namespace separately
-    try:
-        run_command("kubectl -n backups get cm ceph-etc")
-    except Exception as e:
-        logger.info(f"Skipping backups (ceph-etc not found): {e}")
+    if not check_configmap_exists("backups", "ceph-etc"):
+        logger.info("Skipping backups (ceph-etc not found)")
         return
     logger.info("Updating ceph-etc in namespace backups")
     result = run_command("kubectl -n backups get cm ceph-etc -o json")
@@ -198,10 +200,8 @@ def update_customizations() -> None:
 
     logger.info("Updating cephExporter endpoints in loftsman-cray-sysmgmt-health...")
 
-    try:
-        run_command("kubectl -n loftsman get cm loftsman-cray-sysmgmt-health")
-    except Exception as e:
-        logger.info(f"Skipping loftsman-cray-sysmgmt-health (ConfigMap not found): {e}")
+    if not check_configmap_exists("loftsman", "loftsman-cray-sysmgmt-health"):
+        logger.info("Skipping loftsman-cray-sysmgmt-health (ConfigMap not found)")
         return
 
     result = run_command(

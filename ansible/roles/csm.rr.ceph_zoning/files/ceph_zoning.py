@@ -45,80 +45,24 @@ formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-def run_command(command: str) -> str:
+def run_command(command: str, timeout: int = 300) -> str:
     """
     Helper function to run a shell command.
     Args:
         command (str): The shell command to run.
+        timeout (int): Seconds to wait before the command is killed.
     Returns:
         str: The output of the command.
     """
     logger.info(f"Running command: {command}")
     try:
-        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True, check=True, timeout=300)
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True, check=True, timeout=timeout)
     except subprocess.TimeoutExpired as e:
         raise TimeoutError(f"Command timed out: {command}") from e
     except subprocess.CalledProcessError as e:
         raise ValueError(f"Command {command} errored out with : {e.stderr}") from e
     return result.stdout
 
-
-def label_all_nodes_admin() -> List[str]:
-    """
-    Ensures all Ceph hosts have the _admin label.
-    Returns:
-        List[str]: Nodes that already had the _admin label.
-    """
-    hosts_json = run_command("ceph orch host ls --format json")
-
-    try:
-        hosts = json.loads(hosts_json)
-    except Exception as e:
-        logger.error(f"Failed to parse host list: {e}")
-        raise
-
-    already_admin_nodes: List[str] = []
-
-    for host in hosts:
-        hostname = host.get("hostname")
-        labels = host.get("labels", [])
-
-        if not hostname:
-            continue
-        if "_admin" in labels:
-            already_admin_nodes.append(hostname)
-        else:
-            run_command(f"ceph orch host label add {hostname} _admin")
-
-    logger.info(f"Nodes already having _admin label: {already_admin_nodes}")
-    return already_admin_nodes
-
-def revert_admin_label_from_nodes(already_admin_nodes) -> None:
-    """
-    Removes the _admin label from all Ceph hosts except those
-    that originally had the label.
-    Args:
-        already_admin_nodes (list): Nodes that originally had _admin label.
-    """
-    hosts_json = run_command("ceph orch host ls --format json")
-
-    try:
-        hosts = json.loads(hosts_json)
-    except Exception as e:
-        logger.error(f"Failed to parse host list: {e}")
-        raise
-
-    removed_nodes: List[str] = []
-    for host in hosts:
-        hostname = host.get("hostname")
-        labels = host.get("labels", [])
-        if not hostname:
-            continue
-        if "_admin" in labels and hostname not in already_admin_nodes:
-            run_command(f"ceph orch host label rm {hostname} _admin")
-            removed_nodes.append(hostname)
-
-    logger.info(f"_admin label removed from nodes: {removed_nodes}")
 
 def get_current_crush_rack_mapping() -> Dict[str, str]:
     """
@@ -339,48 +283,52 @@ def wait_for_ceph_orch(expected_quorum_names) -> bool:
     with the expected quorum names, and cluster health does not
     report monitor-related issues.
     """
-    interval=15
-    timeout=1200
-    elapsed = 0
+    interval = 15
+    timeout = 1200
+    command_timeout = 60
+    deadline = time.monotonic() + timeout
     expected_set = set(expected_quorum_names)
     logger.info("Waiting for ceph orchestrator operations to complete...")
 
     while True:
-        # Check for any non-running ceph daemons
-        orch_ps = run_command("ceph orch ps")
-        daemons_transitioning = bool(re.search(r"starting|stopped|error|unknown", orch_ps))
-        if daemons_transitioning:
-            logger.info("Daemons still transitioning...")
-
-        # Ensure all MONs are in quorum with expected names
-        quorum_matched = False
-        quorum_status = run_command("ceph quorum_status --format json")
+        # Commands can hang or fail while MGR fails over / MONs re-elect; retry until the deadline
         try:
-            quorum_data = json.loads(quorum_status)
-            actual_names = set(quorum_data.get("quorum_names", []))
-            if actual_names == expected_set:
-                quorum_matched = True
-            else:
-                logger.info(f"Quorum names mismatch: expected {expected_quorum_names}, got {actual_names}")
-        except json.JSONDecodeError:
-            logger.info("Waiting for MON quorum (invalid JSON response)...")
+            # Check for any non-running ceph daemons
+            orch_ps = run_command("ceph orch ps", timeout=command_timeout)
+            daemons_transitioning = bool(re.search(r"starting|stopped|error|unknown", orch_ps))
+            if daemons_transitioning:
+                logger.info("Daemons still transitioning...")
 
-        # Ensure cluster is not reporting monitor-related health issues
-        ceph_health = run_command("ceph health")
-        health_issues = bool(re.search(r"MON_DOWN|MON_LEFT_QUORUM|MON_JOINED_QUORUM", ceph_health))
-        if health_issues:
-            logger.info("Waiting for monitor health to stabilize...")
+            # Ensure all MONs are in quorum with expected names
+            quorum_matched = False
+            quorum_status = run_command("ceph quorum_status --format json", timeout=command_timeout)
+            try:
+                quorum_data = json.loads(quorum_status)
+                actual_names = set(quorum_data.get("quorum_names", []))
+                if actual_names == expected_set:
+                    quorum_matched = True
+                else:
+                    logger.info(f"Quorum names mismatch: expected {expected_quorum_names}, got {actual_names}")
+            except json.JSONDecodeError:
+                logger.info("Waiting for MON quorum (invalid JSON response)...")
 
-        if not daemons_transitioning and quorum_matched and not health_issues:
-            logger.info("Ceph orchestrator operations completed successfully.")
-            return True
+            # Ensure cluster is not reporting monitor-related health issues
+            ceph_health = run_command("ceph health", timeout=command_timeout)
+            health_issues = bool(re.search(r"MON_DOWN|MON_LEFT_QUORUM|MON_JOINED_QUORUM", ceph_health))
+            if health_issues:
+                logger.info("Waiting for monitor health to stabilize...")
 
-        time.sleep(interval)
-        elapsed += interval
+            if not daemons_transitioning and quorum_matched and not health_issues:
+                logger.info("Ceph orchestrator operations completed successfully.")
+                return True
+        except (TimeoutError, ValueError) as e:
+            logger.info(f"Ceph not responsive yet, retrying: {e}")
 
-        if elapsed >= timeout:
+        if time.monotonic() >= deadline:
             logger.error("Timed out waiting for ceph orchestrator to finish.")
             return False
+
+        time.sleep(interval)
 
 def service_zoning(positions_dict: Dict[str, List[str]], sn_count_in_rack: List[int]) -> None:
     """
@@ -506,17 +454,14 @@ def main() -> None:
         logger.info("Skipping CEPH zoning as current configuration already matches expected state")
         return
 
-    # Label all nodes with _admin and keep track of nodes that were already labeled to avoid removing the label from them later
-    already_admin_nodes = label_all_nodes_admin()
+    # Keep /etc/ceph/ceph.conf current on all storage nodes when MON placement changes
+    logger.info("Enabling cephadm management of /etc/ceph/ceph.conf on all hosts")
+    run_command("ceph config set mgr mgr/cephadm/manage_etc_ceph_ceph_conf true")
 
     # Create and map racks, create rules, and perform service zoning
     sn_count_in_rack = create_and_map_racks(positions_dict, ceph_prefix)
     create_and_apply_rules()
     service_zoning(positions_dict, sn_count_in_rack)
 
-    # Remove _admin label from nodes that did not originally have it
-    revert_admin_label_from_nodes(already_admin_nodes)
-
 if __name__ == "__main__":
     main()
-

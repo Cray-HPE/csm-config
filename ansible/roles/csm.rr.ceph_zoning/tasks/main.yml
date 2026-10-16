@@ -54,7 +54,7 @@
 
 - name: Copy updated Ceph configuration to management masters
   copy:
-    content: "{{ ceph_conf_min.stdout }}"
+    content: "{{ ceph_conf_min.stdout }}\n"
     dest: /etc/ceph/ceph.conf
     owner: root
     group: root
@@ -67,12 +67,15 @@
     - ceph_zoning_result.rc == 0
     - groups.get('Management_Master', []) | length > 0
 
+# Running the following on Master nodes as they have access to the Kubernetes admin configuration
 - name: Update ConfigMaps with correct Ceph monitor information
   script: "update_k8s_configmaps.py"
   args:
     executable: python3
-  when: ceph_zoning_result.rc == 0
+  when:
+    - ceph_zoning_result.rc == 0
+    - groups.get('Management_Master', []) | length > 0
   register: configmap_update_result
-  delegate_to: "{{ play_hosts | first }}"
+  delegate_to: "{{ groups['Management_Master'] | first }}"
   run_once: true
   changed_when: configmap_update_result.rc == 0
