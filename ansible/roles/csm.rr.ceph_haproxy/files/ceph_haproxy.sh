@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2025 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2025-2026 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -25,7 +25,6 @@
 
 # When CEPH services distribution is modified as a result of CEPH zoning,
 # there would be entries in haproxy with missing IPs which is updated using this script.
-# Also, this script updates ceph.conf across all storage nodes with latest configuration.
 # This script also handles cases when there are changes in node entries where the CEPH services (mgr) are run.
 
 set -euo pipefail
