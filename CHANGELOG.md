@@ -10,16 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed 
 CASMTRIAGE-9052: config_sbps_iscsi_targets.yml has inefficiencies and conflicts when 6 worker nodes are being rebuilt:
 - Fix CFS batch labeling (csm.sbps.apply_label role) and DNS record configuration (csm.sbps.dns_srv_records role)
-  .  Restrict label application to the current CFS batch of nodes.
-  .  Configure DNS SRV and A records only for the labeled CFS batch.
-  .  Skip DNS reconfiguration when HSN and NMN records already exist.
-  .  Create records only for missing HSN and/or NMN network configurations.
+  - Restrict label application to the current CFS batch of nodes.
+  - Configure DNS SRV and A records only for the labeled CFS batch.
+  - Skip DNS reconfiguration when HSN and NMN records already exist.
+  - Create records only for missing HSN and/or NMN network configurations.
 
 ### Fixed
 - CASMTRIAGE-9269, CASMTRIAGE-9270, CASMTRIAGE-9272: Rack Resiliency Ceph zoning fixes for issues found during testing on vShasta
-
+ 
 ### Dependencies
-
 - Bump `stefanzweifel/git-auto-commit-action` from 5 to 7 ([#419](https://github.com/Cray-HPE/csm-config/pull/419))
 - Bump `actions/checkout` from 5 to 7 ([#424](https://github.com/Cray-HPE/csm-config/pull/424))
 
