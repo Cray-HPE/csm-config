@@ -5,19 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.50.6] - 2026-10-22
 
-## [1.50.6] - 2026-09-30
+### Fixed 
+CASMTRIAGE-9052: config_sbps_iscsi_targets.yml has inefficiencies and conflicts when 6 worker nodes are being rebuilt:
+- Fix CFS batch labeling (csm.sbps.apply_label role) and DNS record configuration (csm.sbps.dns_srv_records role)
+  .  Restrict label application to the current CFS batch of nodes.
+  .  Configure DNS SRV and A records only for the labeled CFS batch.
+  .  Skip DNS reconfiguration when HSN and NMN records already exist.
+  .  Create records only for missing HSN and/or NMN network configurations.
+
+### Fixed
+- CASMTRIAGE-9269, CASMTRIAGE-9270, CASMTRIAGE-9272: Rack Resiliency Ceph zoning fixes for issues found during testing on vShasta
 
 ### Dependencies
 
 - Bump `stefanzweifel/git-auto-commit-action` from 5 to 7 ([#419](https://github.com/Cray-HPE/csm-config/pull/419))
 - Bump `actions/checkout` from 5 to 7 ([#424](https://github.com/Cray-HPE/csm-config/pull/424))
-
-### Fixed 
-- CASMTRIAGE-9052: config_sbps_iscsi_targets.yml has inefficiencies and conflicts when 6 worker nodes are being rebuilt
-    - Fixed DNS SRV and A record persistence(csm.sbps.dns_srv_records role) across rebuilds and reboots by preventing unnecessary reconfiguration.
-    - Fixed the csm.sbps.apply_label role to avoid unnecessary looping when applying or removing labels.
 
 ## [1.50.5] - 2026-09-08
 

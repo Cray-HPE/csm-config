@@ -24,18 +24,13 @@
 #
 
 """
-This script updates Ceph monitor information in Kubernetes ConfigMaps
-and the loftsman site-init secret after Ceph service zoning changes.
+This script updates Ceph monitor information in Kubernetes ConfigMaps after Ceph service zoning changes.
 """
 
-import base64
 import json
 import logging
-import os
-import shutil
 import subprocess
-import tempfile
-import yaml
+from typing import List
 
 # Set up logger
 logger = logging.getLogger("UpdateCephConfigMaps")
@@ -66,11 +61,17 @@ def run_command(command: str) -> str:
         raise ValueError(f"Command {command} errored out with: {e.stderr}") from e
     return result.stdout
 
-def get_new_monitors() -> list[str]:
+def get_new_monitors() -> List[str]:
     """Get the current list of Ceph monitor addresses from the monitor map."""
     result = run_command("ceph mon dump -f json")
     mon_dump = json.loads(result)
     return [mon["public_addr"].split("/")[0] for mon in mon_dump["mons"]]
+
+def check_configmap_exists(namespace: str, name: str) -> bool:
+    """Return True if the ConfigMap exists; raise on any kubectl/API error."""
+    return bool(run_command(
+        f"kubectl -n {namespace} get cm {name} --ignore-not-found -o name"
+    ).strip())
 
 def update_ceph_csi_configmaps() -> None:
     """
@@ -82,10 +83,8 @@ def update_ceph_csi_configmaps() -> None:
 
     # Namespaces ceph-rbd, ceph-cephfs, default, services contain ceph-csi-config configmap
     for ns in ["ceph-rbd", "ceph-cephfs", "default", "services"]:
-        try:
-            run_command(f"kubectl -n {ns} get cm ceph-csi-config")
-        except Exception as e:
-            logger.info(f"Skipping {ns} (ceph-csi-config not found): {e}")
+        if not check_configmap_exists(ns, "ceph-csi-config"):
+            logger.info(f"Skipping {ns} (ceph-csi-config not found)")
             continue
         logger.info(f"Updating ceph-csi-config in namespace {ns}")
         result = run_command(f"kubectl -n {ns} get cm ceph-csi-config -o json")
@@ -108,16 +107,15 @@ def update_ceph_csi_configmaps() -> None:
             ["kubectl", "apply", "-f", "-"],
             input=json.dumps(cm),
             check=True,
-            capture_output=True,
-            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=True,
         )
         logger.info(f"ceph-csi-config updated in namespace {ns}")
 
     # Handle ceph-etc configmap in backups namespace separately
-    try:
-        run_command("kubectl -n backups get cm ceph-etc")
-    except Exception as e:
-        logger.info(f"Skipping backups (ceph-etc not found): {e}")
+    if not check_configmap_exists("backups", "ceph-etc"):
+        logger.info("Skipping backups (ceph-etc not found)")
         return
     logger.info("Updating ceph-etc in namespace backups")
     result = run_command("kubectl -n backups get cm ceph-etc -o json")
@@ -141,95 +139,15 @@ def update_ceph_csi_configmaps() -> None:
         ["kubectl", "apply", "-f", "-"],
         input=json.dumps(cm),
         check=True,
-        capture_output=True,
-        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True,
     )
     logger.info("ceph-etc updated in namespace backups")
 
-def update_customizations() -> None:
-    """
-    Update the Ceph monitor addresses in the loftsman site-init secret
-    (customizations.yaml) and the loftsman-cray-sysmgmt-health ConfigMap
-    (cephExporter.endpoints).
-    """
-    new_mons = get_new_monitors()
-    tmpdir = tempfile.mkdtemp(dir=os.path.expanduser("~"))
-
-    try:
-        logger.info("Extracting customizations.yaml from secret...")
-
-        result = run_command(
-            "kubectl get secret -n loftsman site-init -o jsonpath='{.data.customizations\\.yaml}'"
-        )
-        customizations_b64 = result.strip().strip("'")
-        customizations_raw = base64.b64decode(customizations_b64).decode("utf-8")
-
-        customizations_path = os.path.join(tmpdir, "customizations.yaml")
-        with open(customizations_path, "w") as f:
-            f.write(customizations_raw)
-
-        logger.info("Updating monitor list in customizations.yaml...")
-
-        with open(customizations_path, "r") as f:
-            customizations = yaml.safe_load(f)
-
-        # Update nmn_ncn_storage_mons
-        customizations.setdefault("spec", {}).setdefault("network", {}).setdefault(
-            "netstaticips", {}
-        )["nmn_ncn_storage_mons"] = new_mons
-
-        with open(customizations_path, "w") as f:
-            yaml.dump(customizations, f, default_flow_style=False)
-
-        logger.info("Recreating site-init secret...")
-
-        run_command("kubectl delete secret -n loftsman site-init --ignore-not-found")
-        run_command(
-            f"kubectl create secret -n loftsman generic site-init "
-            f"--from-file={customizations_path}"
-        )
-
-        logger.info("customizations secret updated successfully")
-    finally:
-        shutil.rmtree(tmpdir, ignore_errors=True)
-
-    logger.info("Updating cephExporter endpoints in loftsman-cray-sysmgmt-health...")
-
-    result = run_command(
-        "kubectl get cm -n loftsman loftsman-cray-sysmgmt-health "
-        "-o jsonpath='{.data.manifest\\.yaml}'"
-    )
-    manifest_raw = result.strip().strip("'")
-    manifest = yaml.safe_load(manifest_raw)
-
-    # Update cephExporter.endpoints in all charts
-    for chart in manifest.get("spec", {}).get("charts", []):
-        chart.setdefault("values", {}).setdefault("cephExporter", {})[
-            "endpoints"
-        ] = new_mons
-
-    updated_manifest = yaml.dump(manifest, default_flow_style=False)
-
-    patch_payload = json.dumps({"data": {"manifest.yaml": updated_manifest}})
-    subprocess.run(
-        [
-            "kubectl", "patch", "cm", "-n", "loftsman",
-            "loftsman-cray-sysmgmt-health",
-            "--type", "merge",
-            "-p", patch_payload,
-        ],
-        check=True,
-        capture_output=True,
-        text=True,
-    )
-
-    logger.info("loftsman-cray-sysmgmt-health ConfigMap updated successfully")
-
-
 def main() -> None:
-    """Update all Ceph ConfigMaps and customizations with current monitor information."""
+    """Update all Ceph ConfigMaps with current monitor information."""
     update_ceph_csi_configmaps()
-    update_customizations()
 
 if __name__ == "__main__":
     main()
