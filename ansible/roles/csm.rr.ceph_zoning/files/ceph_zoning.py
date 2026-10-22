@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2025 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2025-2026 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -45,80 +45,24 @@ formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-def run_command(command: str) -> str:
+def run_command(command: str, timeout: int = 300) -> str:
     """
     Helper function to run a shell command.
     Args:
         command (str): The shell command to run.
+        timeout (int): Seconds to wait before the command is killed.
     Returns:
         str: The output of the command.
     """
     logger.info(f"Running command: {command}")
     try:
-        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True, check=True, timeout=300)
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True, check=True, timeout=timeout)
     except subprocess.TimeoutExpired as e:
         raise TimeoutError(f"Command timed out: {command}") from e
     except subprocess.CalledProcessError as e:
         raise ValueError(f"Command {command} errored out with : {e.stderr}") from e
     return result.stdout
 
-
-def label_all_nodes_admin() -> List[str]:
-    """
-    Ensures all Ceph hosts have the _admin label.
-    Returns:
-        List[str]: Nodes that already had the _admin label.
-    """
-    hosts_json = run_command("ceph orch host ls --format json")
-
-    try:
-        hosts = json.loads(hosts_json)
-    except Exception as e:
-        logger.error(f"Failed to parse host list: {e}")
-        raise
-
-    already_admin_nodes: List[str] = []
-
-    for host in hosts:
-        hostname = host.get("hostname")
-        labels = host.get("labels", [])
-
-        if not hostname:
-            continue
-        if "_admin" in labels:
-            already_admin_nodes.append(hostname)
-        else:
-            run_command(f"ceph orch host label add {hostname} _admin")
-
-    logger.info(f"Nodes already having _admin label: {already_admin_nodes}")
-    return already_admin_nodes
-
-def revert_admin_label_from_nodes(already_admin_nodes) -> None:
-    """
-    Removes the _admin label from all Ceph hosts except those
-    that originally had the label.
-    Args:
-        already_admin_nodes (list): Nodes that originally had _admin label.
-    """
-    hosts_json = run_command("ceph orch host ls --format json")
-
-    try:
-        hosts = json.loads(hosts_json)
-    except Exception as e:
-        logger.error(f"Failed to parse host list: {e}")
-        raise
-
-    removed_nodes: List[str] = []
-    for host in hosts:
-        hostname = host.get("hostname")
-        labels = host.get("labels", [])
-        if not hostname:
-            continue
-        if "_admin" in labels and hostname not in already_admin_nodes:
-            run_command(f"ceph orch host label rm {hostname} _admin")
-            removed_nodes.append(hostname)
-
-    logger.info(f"_admin label removed from nodes: {removed_nodes}")
 
 def get_current_crush_rack_mapping() -> Dict[str, str]:
     """
@@ -225,9 +169,11 @@ def compute_expected_service_nodes(positions_dict: Dict[str, List[str]], sn_coun
 def is_zoning_required(positions_dict: Dict[str, List[str]], ceph_zone_prefix: str) -> bool:
     """
     Check if CEPH zoning changes are needed by comparing the current
-    CRUSH rack mapping and service placement with the expected state.
+    CRUSH rack mapping with the expected state.
+    If the rack mapping already matches, pool CRUSH rules and service placement
+    are expected to match too; any mismatch there is unexpected, so exit with an error.
     Returns:
-        bool: True if changes are needed, False otherwise.
+        bool: True if the rack mapping differs, False if everything matches.
     """
     # Compute expected rack mapping
     expected_rack_mapping = compute_expected_rack_mapping(positions_dict, ceph_zone_prefix)
@@ -246,36 +192,60 @@ def is_zoning_required(positions_dict: Dict[str, List[str]], ceph_zone_prefix: s
             logger.info(f"Rack mapping differs for {node}: current={current_rack}, expected={expected_rack}")
             return True
 
-    # Compute sn_count_in_rack from positions_dict
+    logger.info("Rack mapping matches expected configuration, verifying CRUSH rules and service placement")
+
     sn_count_in_rack = []
     for nodes in positions_dict.values():
         sn_count = sum(1 for n in nodes if re.match(r"^.*ncn-s[0-9][0-9][0-9]$", n))
         sn_count_in_rack.append(sn_count)
 
-    # Compute expected service nodes
     try:
+        # Retrieve the CRUSH rule ID for the 'replicated rule with rack failure domain' and the list of pools
+        rack_rule_id = json.loads(run_command(
+            "ceph osd crush rule dump replicated_rule_with_rack_failure_domain --format json"
+        ))["rule_id"]
+        pools = json.loads(run_command("ceph osd pool ls detail --format json"))
+
+
         expected_mon_nodes, expected_remaining_nodes = compute_expected_service_nodes(
             positions_dict, sn_count_in_rack
         )
-    except Exception:
-        logger.info("Could not compute expected service nodes, zoning is required")
-        return True
-
-    # Get current service hosts
-    try:
+        # Get current service hosts for MON, MGR, and MDS services
         current_mon_hosts = get_current_service_hosts("mon")
         current_mgr_hosts = get_current_service_hosts("mgr")
-    except Exception:
-        logger.info("Could not retrieve current service placement, zoning is required")
-        return True
+        # Check per service, since both MDS services share the daemon type
+        current_mds_hosts: Dict[str, List[str]] = {}
+        for mds_service in ("mds.admin-tools", "mds.cephfs"):
+            result = run_command(f"ceph orch ps --service_name {mds_service} --format json")
+            current_mds_hosts[mds_service] = sorted(set(d["hostname"] for d in json.loads(result)))
+    except Exception as e:
+        logger.error(f"Rack mapping matches expected configuration, but CRUSH rules and service placement could not be verified: {e}")
+        logger.error("This is unexpected and needs further investigation")
+        sys.exit(1)
+
+    mismatches: List[str] = []
+
+    # Check for any mismatches in service placement and CRUSH rule usage
+    pools_without_rack_rule = [p["pool_name"] for p in pools if p.get("crush_rule") != rack_rule_id]
+    if pools_without_rack_rule:
+        mismatches.append(f"Pools not using rack failure domain CRUSH rule: {pools_without_rack_rule}")
 
     if sorted(expected_mon_nodes) != current_mon_hosts:
-        logger.info(f"MON placement differs: current={current_mon_hosts}, expected={sorted(expected_mon_nodes)}")
-        return True
+        mismatches.append(f"MON placement differs: current={current_mon_hosts}, expected={sorted(expected_mon_nodes)}")
 
     if sorted(expected_remaining_nodes) != current_mgr_hosts:
-        logger.info(f"MGR placement differs: current={current_mgr_hosts}, expected={sorted(expected_remaining_nodes)}")
-        return True
+        mismatches.append(f"MGR placement differs: current={current_mgr_hosts}, expected={sorted(expected_remaining_nodes)}")
+
+    for mds_service, mds_hosts in current_mds_hosts.items():
+        if sorted(expected_remaining_nodes) != mds_hosts:
+            mismatches.append(f"{mds_service} placement differs: current={mds_hosts}, expected={sorted(expected_remaining_nodes)}")
+
+    if mismatches:
+        logger.error("Rack mapping matches expected configuration, but the following do not:")
+        for mismatch in mismatches:
+            logger.error(f"  {mismatch}")
+        logger.error("This is unexpected and needs further investigation")
+        sys.exit(1)
 
     logger.info("Current zoning matches expected configuration, no changes needed")
     return False
@@ -339,48 +309,52 @@ def wait_for_ceph_orch(expected_quorum_names) -> bool:
     with the expected quorum names, and cluster health does not
     report monitor-related issues.
     """
-    interval=15
-    timeout=1200
-    elapsed = 0
+    interval = 15
+    timeout = 1200
+    command_timeout = 60
+    deadline = time.monotonic() + timeout
     expected_set = set(expected_quorum_names)
     logger.info("Waiting for ceph orchestrator operations to complete...")
 
     while True:
-        # Check for any non-running ceph daemons
-        orch_ps = run_command("ceph orch ps")
-        daemons_transitioning = bool(re.search(r"starting|stopped|error|unknown", orch_ps))
-        if daemons_transitioning:
-            logger.info("Daemons still transitioning...")
-
-        # Ensure all MONs are in quorum with expected names
-        quorum_matched = False
-        quorum_status = run_command("ceph quorum_status --format json")
+        # Commands can hang or fail while MGR fails over / MONs re-elect; retry until the deadline
         try:
-            quorum_data = json.loads(quorum_status)
-            actual_names = set(quorum_data.get("quorum_names", []))
-            if actual_names == expected_set:
-                quorum_matched = True
-            else:
-                logger.info(f"Quorum names mismatch: expected {expected_quorum_names}, got {actual_names}")
-        except json.JSONDecodeError:
-            logger.info("Waiting for MON quorum (invalid JSON response)...")
+            # Check for any non-running ceph daemons
+            orch_ps = run_command("ceph orch ps", timeout=command_timeout)
+            daemons_transitioning = bool(re.search(r"starting|stopped|error|unknown", orch_ps))
+            if daemons_transitioning:
+                logger.info("Daemons still transitioning...")
 
-        # Ensure cluster is not reporting monitor-related health issues
-        ceph_health = run_command("ceph health")
-        health_issues = bool(re.search(r"MON_DOWN|MON_LEFT_QUORUM|MON_JOINED_QUORUM", ceph_health))
-        if health_issues:
-            logger.info("Waiting for monitor health to stabilize...")
+            # Ensure all MONs are in quorum with expected names
+            quorum_matched = False
+            quorum_status = run_command("ceph quorum_status --format json", timeout=command_timeout)
+            try:
+                quorum_data = json.loads(quorum_status)
+                actual_names = set(quorum_data.get("quorum_names", []))
+                if actual_names == expected_set:
+                    quorum_matched = True
+                else:
+                    logger.info(f"Quorum names mismatch: expected {expected_quorum_names}, got {actual_names}")
+            except json.JSONDecodeError:
+                logger.info("Waiting for MON quorum (invalid JSON response)...")
 
-        if not daemons_transitioning and quorum_matched and not health_issues:
-            logger.info("Ceph orchestrator operations completed successfully.")
-            return True
+            # Ensure cluster is not reporting monitor-related health issues
+            ceph_health = run_command("ceph health", timeout=command_timeout)
+            health_issues = bool(re.search(r"MON_DOWN|MON_LEFT_QUORUM|MON_JOINED_QUORUM", ceph_health))
+            if health_issues:
+                logger.info("Waiting for monitor health to stabilize...")
 
-        time.sleep(interval)
-        elapsed += interval
+            if not daemons_transitioning and quorum_matched and not health_issues:
+                logger.info("Ceph orchestrator operations completed successfully.")
+                return True
+        except (TimeoutError, ValueError) as e:
+            logger.info(f"Ceph not responsive yet, retrying: {e}")
 
-        if elapsed >= timeout:
+        if time.monotonic() >= deadline:
             logger.error("Timed out waiting for ceph orchestrator to finish.")
             return False
+
+        time.sleep(interval)
 
 def service_zoning(positions_dict: Dict[str, List[str]], sn_count_in_rack: List[int]) -> None:
     """
@@ -506,17 +480,14 @@ def main() -> None:
         logger.info("Skipping CEPH zoning as current configuration already matches expected state")
         return
 
-    # Label all nodes with _admin and keep track of nodes that were already labeled to avoid removing the label from them later
-    already_admin_nodes = label_all_nodes_admin()
+    # Keep /etc/ceph/ceph.conf current on all storage nodes when MON placement changes
+    logger.info("Enabling cephadm management of /etc/ceph/ceph.conf on all hosts")
+    run_command("ceph config set mgr mgr/cephadm/manage_etc_ceph_ceph_conf true")
 
     # Create and map racks, create rules, and perform service zoning
     sn_count_in_rack = create_and_map_racks(positions_dict, ceph_prefix)
     create_and_apply_rules()
     service_zoning(positions_dict, sn_count_in_rack)
 
-    # Remove _admin label from nodes that did not originally have it
-    revert_admin_label_from_nodes(already_admin_nodes)
-
 if __name__ == "__main__":
     main()
-
