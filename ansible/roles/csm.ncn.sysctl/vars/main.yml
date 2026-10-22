@@ -45,3 +45,13 @@ sysctl_config:
     value: 8192
   - name: net.ipv4.neigh.default.base_reachable_time_ms
     value: 1500000
+  - name: net.ipv6.neigh.default.gc_thresh1
+    value: 2048
+  - name: net.ipv6.neigh.default.gc_thresh2
+    value: 4096
+  - name: net.ipv6.neigh.default.gc_thresh3
+    value: 8192
+  - name: net.ipv6.route.gc_thresh
+    value: -1
+  - name: net.ipv6.xfrm6_gc_thresh
+    value: 32768
